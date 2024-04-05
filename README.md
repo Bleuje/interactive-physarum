@@ -1,5 +1,7 @@
 Interactive physarum/organic simulations, for an installation with gamepad control.
 
+It is implemnted with openFrameworks and the simulations run on GPU with compute shaders.
+
 ### License:
 License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
 
