@@ -79,8 +79,8 @@ float gn(in vec2 coordinate, in float seed)
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main(){
 
-	ParametersSet currentParams_1 = params[0];
-	ParametersSet currentParams_2 = params[1];
+	ParametersSet currentParams_1 = params[1];
+	ParametersSet currentParams_2 = params[0];
 
 	float tunedSensorScaler_1 = currentParams_1.defaultScalingFactor * pow(1.05, currentParams_1.scalingFactorCount);
 	float tunedSensorScaler_2 = currentParams_2.defaultScalingFactor * pow(1.05, currentParams_2.scalingFactorCount);

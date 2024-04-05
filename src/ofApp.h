@@ -31,6 +31,10 @@ public:
     int sigmaCount = 2;
     int sigmaCountModulo = 6;
     float maxActionSize = 0.85;
+    float getActionAreaSizeSigma();
+    int displayType = 1;
+    void drawCustomCircle(ofVec2f pos,float R,float r);
+
     void actionChangeSigmaCount(int dir);
     void actionChangeParams(int dir);
     void actionSwapParams();

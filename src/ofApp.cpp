@@ -6,6 +6,8 @@
 void ofApp::setup(){
     ofSetFrameRate(60);
 
+    ofEnableAntiAliasing();
+
     myFont.load("fonts/Raleway-Regular.ttf",floor(18.0*ofGetHeight()/HEIGHT));
     myFontBold.load("fonts/Raleway-Bold.ttf",floor(18.0*ofGetHeight()/HEIGHT));
 
@@ -93,6 +95,10 @@ void ofApp::setup(){
     ////////////////////////////////////////
 }
 
+float ofApp::getActionAreaSizeSigma()
+{
+    return ofMap(sigmaCount,0,sigmaCountModulo,0.15,maxActionSize);
+}
 
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -118,9 +124,7 @@ void ofApp::update(){
     moveshader.setUniform1i("height",fbo.getHeight());
     moveshader.setUniform1f("time",time);
 
-    actionAreaSizeSigma = ofMap(sigmaCount,0,sigmaCountModulo,0.15,maxActionSize);
-
-    moveshader.setUniform1f("actionAreaSizeSigma",actionAreaSizeSigma);
+    moveshader.setUniform1f("actionAreaSizeSigma",getActionAreaSizeSigma());
 
     /*
     moveshader.setUniform1f("actionX",ofGetMouseX());
@@ -204,7 +208,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     }
     if(buttonId == 3)
     {
-        // "Y button"
+        displayType = (displayType + 1) % 2;
     }
     if(buttonId == 4)
     {
@@ -317,6 +321,31 @@ void ofApp::buttonReleased(ofxGamepadButtonEvent& e)
 	//cout << "BUTTON " << e.button << " RELEASED" << endl;
 }
 
+void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
+{
+	int mCircle = 34;
+    float r2 = ofMap(R,0,700,0.5*r,1.5*r)*0.6;
+
+    float time = ofGetFrameNum()*0.1 + timeOffset;
+
+    for(int i=0;i<mCircle;i++)
+    {
+        float rot = 0.3*sin(PI*time*0.03);
+        float theta1 = ofMap(i,0,mCircle,0,TWO_PI) + rot;
+        float theta2 = ofMap(i+0.5,0,mCircle,0,TWO_PI) + rot;
+
+        float x1 = R*cos(theta1) + pos.x;
+        float y1 = R*sin(theta1) + pos.y;
+
+        float x2 = R*cos(theta2) + pos.x;
+        float y2 = R*sin(theta2) + pos.y;
+
+        //ofDrawLine(ofVec2f(x1,y1),ofVec2f(x2,y2));
+        ofFill();
+        ofDrawCircle(ofVec2f(x1,y1),r2);
+    }
+}
+
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofPushMatrix();
@@ -324,6 +353,35 @@ void ofApp::draw(){
     ofScale(1.0*ofGetWidth()/fboDisplay.getWidth(),1.0*ofGetHeight()/fboDisplay.getHeight());
     fboDisplay.draw(0,0);
     ofPopMatrix();
+
+    // draw circle
+    if(displayType==1)
+    {
+        ofPushMatrix();
+        
+        float time = ofGetFrameNum()*0.1 + timeOffset;
+
+        float R = getActionAreaSizeSigma()*600*(1.0 + 0.08*sin(0.4f*time));
+
+        float cx = ofMap(curActionX,0,WIDTH,0,ofGetWidth());
+        float cy = ofMap(curActionY,0,HEIGHT,0,ofGetHeight());
+
+        ofSetCircleResolution(100);
+
+        ofSetColor(220);
+        ofNoFill();
+        ofSetLineWidth(9);
+        drawCustomCircle(ofVec2f(cx,cy),R,9);
+
+        ofSetColor(25);
+        ofNoFill();
+        ofSetLineWidth(9);
+        drawCustomCircle(ofVec2f(cx,cy),R,6);
+        
+        ofPopMatrix();
+    }
+
+    ofFill();
 
     ofPushMatrix();
 
