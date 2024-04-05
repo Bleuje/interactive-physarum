@@ -107,6 +107,15 @@ void ofApp::update(){
 
     float time = ofGetFrameNum()*0.1 + timeOffset;
 
+    curActionX += curTranslationAxis1*translationStep;
+    curActionY += curTranslationAxis2*translationStep;
+/*
+    curActionX = fmod(curActionX + WIDTH, WIDTH);
+    curActionY = fmod(curActionY + HEIGHT, HEIGHT);
+*/
+    curActionX = ofClamp(curActionX, 0, WIDTH);
+    curActionY = ofClamp(curActionY, 0, HEIGHT);
+
     fbo2.begin();
     fbo.draw(0,0);
     fbo2.end();
@@ -271,15 +280,6 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
             if(axisType==0) curTranslationAxis1 = e.value;
             if(axisType==1) curTranslationAxis2 = e.value;
         }
-
-        curActionX += curTranslationAxis1*translationStep;
-        curActionY += curTranslationAxis2*translationStep;
-/*
-        curActionX = fmod(curActionX + WIDTH, WIDTH);
-        curActionY = fmod(curActionY + HEIGHT, HEIGHT);
-*/
-        curActionX = ofClamp(curActionX, 0, WIDTH);
-        curActionY = ofClamp(curActionY, 0, HEIGHT);
         //std::cout << "(" << curActionX << "," << curActionY << ")" << std::endl;
     }
     

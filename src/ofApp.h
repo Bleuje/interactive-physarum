@@ -44,7 +44,7 @@ public:
     float curTranslationAxis2 = 0;
     float curActionX = WIDTH/2;
     float curActionY = HEIGHT/2;
-    float translationStep = 5.0;
+    float translationStep = 6.5;
 
     ofFbo fbo,fbo2,fboDisplay;
     ofShader settershader,moveshader,depositshader,computefragshader;
