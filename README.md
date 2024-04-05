@@ -1,0 +1,10 @@
+Interactive physarum/organic simulations, for an installation with gamepad control.
+
+### License:
+License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
+
+#### Crediting:
+Work derived from mxsage's 36 points but with a different implementations.
+Before studying mxsage's I already had a physarum implementation. I modified my implementation to use their technique.
+I'm using atomic counters on pixels and this is different. I'm using the set of parameters from 36 Points. Some work well, some don't, I had to tune stuff.
+This is also introducing interaction with gamepad
