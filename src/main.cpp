@@ -10,7 +10,7 @@
 // I modified my implementation to use their technique
 // I'm using counters on pixels and this is different
 // I'm using the set of parameters from 36 Points, some work well, some don't, I had to tune stuff
-// This is introduing interaction with gamepad
+// This is also introducing interaction with gamepad
 
 
 //========================================================================
