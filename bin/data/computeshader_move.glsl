@@ -154,8 +154,9 @@ void main(){
 	vec2 relDiffWave = relPos - relWaveCenterPos;
 	relDiffWave.x *= float(width)/height;
 	float diffDistWave = distance(relDiffWave,vec2(0));
-	float varWave = diffDistWave/0.35 * (0.8 + 0.4*noise(vec3(relPos2.x,relPos2.t,0.3*time))) - (time - currentWaveTriggerTime);
-	float waveIntensity = 1.0 + 0.6*propagatedWaveFunction(varWave) * max(0.,1. - 0.3*diffDistWave/waveActionAreaSizeSigma);
+	float noiseVariationFactor = (0.8 + 0.4*noise(vec3(relPos2.x,relPos2.t,0.3*time)));
+	float varWave = diffDistWave/0.35 * noiseVariationFactor  - (time - currentWaveTriggerTime);
+	float waveIntensity = 1.0 + 0.6*propagatedWaveFunction(varWave) * max(0.,1. - 0.3*diffDistWave/waveActionAreaSizeSigma*noiseVariationFactor);
 	
 
 	float tunedSensorScaler_mix = mix(tunedSensorScaler_1, tunedSensorScaler_2, lerper);

@@ -30,6 +30,9 @@ void ofApp::setup(){
     computefragshader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_blur.glsl");
     computefragshader.linkProgram();
 
+
+    colorInverterShader.load("", "colorInverter.frag"); // Assuming the vertex shader is default
+
     particles.resize(512*512*14);
     float marginx = 3;
     float marginy = 3;
@@ -344,32 +347,45 @@ void ofApp::buttonReleased(ofxGamepadButtonEvent& e)
 
 void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
 {
-	int mCircle = 34;
-    float r2 = ofMap(R,0,700,0.5*r,1.5*r)*0.6;
+	int mCircle = 14;
+    float r2 = ofMap(R,0,700,0.5*r,1.5*r)*1.0;
 
     float time2 = getTime()*6;
 
     for(int i=0;i<mCircle;i++)
     {
-        float rot = 0.3*sin(PI*time2*0.03);
-        float theta1 = ofMap(i,0,mCircle,0,TWO_PI) + rot;
-        float theta2 = ofMap(i+0.5,0,mCircle,0,TWO_PI) + rot;
+        float rot = 0.3*sin(PI*time2*0.03) + ofMap(i,0,mCircle,0,TWO_PI);
 
-        float x1 = R*cos(theta1) + pos.x;
-        float y1 = R*sin(theta1) + pos.y;
-
-        float x2 = R*cos(theta2) + pos.x;
-        float y2 = R*sin(theta2) + pos.y;
+        ofPushMatrix();
+        ofTranslate(pos.x, pos.y);
+        ofRotateRad(rot);
+        ofTranslate(R, 0);
 
         //ofDrawLine(ofVec2f(x1,y1),ofVec2f(x2,y2));
         ofFill();
-        ofDrawCircle(ofVec2f(x1,y1),r2);
+        ofSetRectMode(OF_RECTMODE_CENTER);
+        ofSetColor(255,120);
+        ofDrawRectangle(ofVec2f(0,0),r2+3,r2*6+3);
+        ofSetColor(0,190);
+        ofDrawRectangle(ofVec2f(0,0),r2,r2*6);
+        //ofDrawCircle(ofVec2f(0,0),r2);
+        ofSetRectMode(OF_RECTMODE_CORNER);
+        ofPopMatrix();
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofPushMatrix();
+/*
+    colorInverterShader.begin();
+    fboDisplay.getTexture().bind();
+    fboDisplay.begin();
+    ofDrawRectangle(-WIDTH/2, -HEIGHT/2, WIDTH, HEIGHT);
+    fboDisplay.end();
+    fboDisplay.getTexture().unbind();
+    colorInverterShader.end();
+*/
     ofPushMatrix();
     ofScale(1.0*ofGetWidth()/fboDisplay.getWidth(),1.0*ofGetHeight()/fboDisplay.getHeight());
     fboDisplay.draw(0,0);
@@ -389,15 +405,7 @@ void ofApp::draw(){
 
         ofSetCircleResolution(100);
 
-        ofSetColor(220);
-        ofNoFill();
-        ofSetLineWidth(9);
         drawCustomCircle(ofVec2f(cx,cy),R,9);
-
-        ofSetColor(25);
-        ofNoFill();
-        ofSetLineWidth(9);
-        drawCustomCircle(ofVec2f(cx,cy),R,6);
         
         ofPopMatrix();
     }
@@ -459,6 +467,8 @@ void ofApp::draw(){
     ofPopMatrix();
 
     ofPopMatrix();
+
+
 /*
     // Saving frames
     if(ofGetFrameNum()<numFrames){
@@ -469,6 +479,7 @@ void ofApp::draw(){
         ofSaveScreen("frames/fr"+str.str()+".png");
     }
 */
+
     ofPopMatrix();
 }
 
