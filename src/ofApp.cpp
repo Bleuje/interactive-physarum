@@ -302,7 +302,6 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
             if(axisType==0) curTranslationAxis1 = e.value;
             if(axisType==1) curTranslationAxis2 = e.value;
         }
-        //std::cout << "(" << curActionX << "," << curActionY << ")" << std::endl;
     }
     
     if(axisType==3 || axisType==4)
@@ -335,8 +334,6 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     }
     */
 
-    //std::cout << "Current parameters choice index : " << getSetName(targetParamsIndex[currentSelectedSet]) << std::endl;
-
     setSimulationParams(currentSelectedSet,selectedSets[targetParamsIndex[currentSelectedSet]]);  
 }
 
@@ -361,14 +358,12 @@ void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
         ofRotateRad(rot);
         ofTranslate(R, 0);
 
-        //ofDrawLine(ofVec2f(x1,y1),ofVec2f(x2,y2));
         ofFill();
         ofSetRectMode(OF_RECTMODE_CENTER);
         ofSetColor(255,120);
         ofDrawRectangle(ofVec2f(0,0),r2+3,r2*6+3);
         ofSetColor(0,190);
         ofDrawRectangle(ofVec2f(0,0),r2,r2*6);
-        //ofDrawCircle(ofVec2f(0,0),r2);
         ofSetRectMode(OF_RECTMODE_CORNER);
         ofPopMatrix();
     }
@@ -523,8 +518,6 @@ void ofApp::keyPressed(int key){
             break;
     }
 
-    //std::cout << "Current parameters choice index : " << getSetName(targetParamsIndex[currentSelectedSet]) << std::endl;
-
     setSimulationParams(currentSelectedSet,selectedSets[targetParamsIndex[currentSelectedSet]]);  
 }
 
@@ -562,8 +555,6 @@ void ofApp::setSimulationParams(int setIndex, int typeIndex)
     simulationParameters[setIndex].SensorBias2 = ParametersMatrix[typeIndex][13];
 
     simulationParametersBuffer.updateData(simulationParameters);
-
-    //printCurrentScalingFactor();
 }
 
 void ofApp::setSimulationParamsToSomeDefault(int i)
@@ -599,7 +590,6 @@ void ofApp::setSimulationParamsToSomeDefault(int i)
 void ofApp::drawPad(float col, float alpha)
 {
     ofPushMatrix();
-    //ofTranslate(x,y);
     
     for(int i=0;i<4;i++)
     {
@@ -636,7 +626,7 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-    //printCurrentScalingFactor();
+
 }
 
 //--------------------------------------------------------------
