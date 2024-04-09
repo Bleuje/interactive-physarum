@@ -43,9 +43,13 @@ public:
 
     float curTranslationAxis1 = 0;
     float curTranslationAxis2 = 0;
+    float curSensorBiasActionX = 0;
+    float curSensorBiasActionY = 0;
+    float curMoveBiasActionX = 0;
+    float curMoveBiasActionY = 0;
     float curActionX = WIDTH/2;
     float curActionY = HEIGHT/2;
-    float translationStep = 6.5;
+    float translationStep = 8.5;
 
     ofFbo fbo,fbo2,fboDisplay;
     ofShader settershader,moveshader,depositshader,computefragshader;

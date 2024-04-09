@@ -10,6 +10,12 @@ uniform float actionAreaSizeSigma;
 uniform float actionX;
 uniform float actionY;
 
+uniform float sensorBiasActionX;
+uniform float sensorBiasActionY;
+
+uniform float moveBiasActionX;
+uniform float moveBiasActionY;
+
 struct Particle{
 	vec4 data;
 	vec4 data2;
@@ -71,6 +77,35 @@ float random(vec2 st) {
     return fract(0.5+0.5*sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);
 }
 
+float random2 (vec3 st) {
+    return fract(sin(dot(st.xyz,
+                         vec3(12.9898,78.233, 151.7182)))
+                 * 43758.5453123);
+}
+
+float noise (vec3 st) {
+    vec3 i = floor(st);
+    vec3 f = fract(st);
+
+    // Calculate the eight corners of the cube
+    float a = random2(i);
+    float b = random2(i + vec3(1.0, 0.0, 0.0));
+    float c = random2(i + vec3(0.0, 1.0, 0.0));
+    float d = random2(i + vec3(1.0, 1.0, 0.0));
+    float e = random2(i + vec3(0.0, 0.0, 1.0));
+    float f_ = random2(i + vec3(1.0, 0.0, 1.0));
+    float g = random2(i + vec3(0.0, 1.0, 1.0));
+    float h = random2(i + vec3(1.0, 1.0, 1.0));
+
+    // Smoothly interpolate the noise value
+    vec3 u = f * f * (3.0 - 2.0 * f);
+
+    return mix(mix(mix( a, b, u.x),
+                   mix( c, d, u.x), u.y),
+               mix(mix( e, f_, u.x),
+                   mix( g, h, u.x), u.y), u.z);
+}
+
 float gn(in vec2 coordinate, in float seed)
 {
 	return abs(fract(123.654*sin(distance(coordinate*(seed+0.118446744073709551614), vec2(0.118446744073709551614, 0.314159265358979323846264)))*0.141421356237309504880169));
@@ -120,7 +155,9 @@ void main(){
 	float SensorBias1_mix = mix(currentParams_1.SensorBias1, currentParams_2.SensorBias1, lerper);
 	float SensorBias2_mix = mix(currentParams_1.SensorBias2, currentParams_2.SensorBias2, lerper);
 
-	float currentSensedValue = getGridValue(particlePos +SensorBias2_mix * direction+vec2(0.,SensorBias1_mix)) * tunedSensorScaler_mix;
+	float sensorActionFactor = 5.0;
+
+	float currentSensedValue = getGridValue(particlePos + SensorBias2_mix * direction + vec2(0.,SensorBias1_mix) + sensorActionFactor*vec2(sensorBiasActionX,sensorBiasActionY)) * tunedSensorScaler_mix;
 	currentSensedValue = min(1.0,max(currentSensedValue, 0.000000001));
 
 	float sensorDistance = SensorDistance0_mix + SD_amplitude_mix * pow(currentSensedValue, SD_exponent_mix) * 250.0;
@@ -148,8 +185,16 @@ void main(){
 		newHeading = heading + rotationAngle;
 	}
 
-	float px = particlePos.x + jumpDistance*cos(newHeading);
-	float py = particlePos.y + jumpDistance*sin(newHeading);
+	vec2 relPos2 = relPos;
+	relPos2.x *= float(width)/height;
+	float noiseScale = 20.0;
+	relPos2 *= noiseScale;
+
+	float moveBiasFactor = 5 * lerper * noise(vec3(relPos2.x,relPos2.t,0.3*time));
+	vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX,moveBiasActionY);
+
+	float px = particlePos.x + jumpDistance*cos(newHeading) + moveBias.x;
+	float py = particlePos.y + jumpDistance*sin(newHeading) + moveBias.y;
 	vec2 nextPos = vec2(mod(px + float(width),float(width)),mod(py + float(height),float(height)));
 	
 	uint depositAmount = uint(1);

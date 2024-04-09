@@ -141,7 +141,13 @@ void ofApp::update(){
     */
     moveshader.setUniform1f("actionX",curActionX);
     moveshader.setUniform1f("actionY",curActionY);
-    
+/*
+    moveshader.setUniform1f("sensorBiasActionX",curSensorBiasActionX);
+    moveshader.setUniform1f("sensorBiasActionY",curSensorBiasActionY);
+*/
+    moveshader.setUniform1f("moveBiasActionX",curMoveBiasActionX);
+    moveshader.setUniform1f("moveBiasActionY",curMoveBiasActionY);
+
     moveshader.dispatchCompute(particles.size()/128,1,1);
     moveshader.end();
 
@@ -285,18 +291,20 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     
     if(axisType==3 || axisType==4)
     {
-        /* other joystick
-        // code in variations-combinator project, to be removed
-        if(axisType==3) curRotAxis1 = 0;
-        if(axisType==4) curRotAxis2 = 0;
-        latest3DJSMoveTime = time;
+        if(axisType==3) curSensorBiasActionX = 0;
+        if(axisType==4) curSensorBiasActionY = 0;
+
+        if(axisType==3) curMoveBiasActionX = 0;
+        if(axisType==4) curMoveBiasActionY = 0;
+
         if(abs(e.value)>0.09)
         {
-            latest3DJSMoveTime = time;
-            if(axisType==3) curRotAxis1 = e.value;
-            if(axisType==4) curRotAxis2 = e.value;
+            if(axisType==3) curSensorBiasActionX = e.value;
+            if(axisType==4) curSensorBiasActionY = e.value;
+
+            if(axisType==3) curMoveBiasActionX = e.value;
+            if(axisType==4) curMoveBiasActionY = e.value;
         }
-        */
     }
     
 
