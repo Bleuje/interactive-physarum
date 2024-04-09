@@ -16,3 +16,10 @@ I'm using atomic counters on pixels and this is different. I'm using the set of 
 This is also introducing interaction with gamepad.
 
 The license from 36 points is reproduced here.
+
+### Screenshots
+
+Some screenshots to give a little taste of the project, as of April 10.
+
+![Screenshot 10 April 2024, 1](/doc/screenshot-10-april-2024-1.png)
+![Screenshot 10 April 2024, 2](/doc/screenshot-10-april-2024-2.png)
