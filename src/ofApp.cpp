@@ -8,8 +8,8 @@ void ofApp::setup(){
 
     ofEnableAntiAliasing();
 
-    myFont.load("fonts/Raleway-Regular.ttf",floor(18.0*ofGetHeight()/HEIGHT));
-    myFontBold.load("fonts/Raleway-Bold.ttf",floor(18.0*ofGetHeight()/HEIGHT));
+    myFont.load("fonts/Raleway-Regular.ttf",floor(15.0*ofGetHeight()/HEIGHT));
+    myFontBold.load("fonts/Raleway-Bold.ttf",floor(15.0*ofGetHeight()/HEIGHT));
 
     counter.resize(WIDTH*HEIGHT);
     counterBuffer.allocate(counter, GL_DYNAMIC_DRAW);
@@ -391,25 +391,37 @@ void ofApp::draw(){
     for(int setIndex=0;setIndex<NUMBER_OF_PARAM_SETS;setIndex++)
     {
         ofPushMatrix();
-        ofTranslate(50*u,50*u + 70*setIndex*u);
-        std::string setString = getSetName(targetParamsIndex[setIndex]) + (setIndex==currentSelectedSet ? " <" : "");
+
+        ofPushMatrix();
+        ofTranslate(53*u,65*u);
+        ofScale(1.3);
+        drawPad(100,255);
+        ofScale(0.92);
+        drawPad(255,255);
+        ofPopMatrix();
+
+        ofTranslate(116*u,50*u + 50*setIndex*u);
+        std::string prefix = setIndex==0 ? "pen: " : "background: ";
+        std::string setString = prefix + getSetName(targetParamsIndex[setIndex]) + (setIndex==currentSelectedSet ? " <" : "");
+
+        ofTrueTypeFont * pBoldOrNotFont = setIndex==currentSelectedSet ? &myFontBold : &myFont;
 
         ofPushMatrix();
         ofSetColor(col);
         ofTranslate(-10*u,-32*u);
-        ofDrawRectangle(0,0,20*u+myFont.stringWidth(setString),41*u);
+        ofDrawRectangle(0,0,20*u + pBoldOrNotFont->stringWidth(setString),41*u);
         ofPopMatrix();
 
         ofSetColor(255-col);
         ofPushMatrix();
-        myFont.drawString(setString,0,0);
+        pBoldOrNotFont->drawString(setString,0,0);
         ofPopMatrix();
         ofPopMatrix();
     }
 
     ofPushMatrix();
     ofTranslate(WIDTH*u*0.7,23*u);
-    ofScale(0.6);
+    ofScale(0.7);
     std::string creditString = "Inspiration and parameters from mxsage's \"36 points\", different implementation";
 
     ofPushMatrix();
@@ -447,7 +459,7 @@ void ofApp::printCurrentScalingFactor()
 
 std::string ofApp::getSetName(int targetParamsIndex_)
 {
-    std::string ret = "Params ";
+    std::string ret = "params ";
     ret.push_back(char('A' + targetParamsIndex_));
     return ret;
 }
@@ -549,6 +561,30 @@ void ofApp::setSimulationParamsToSomeDefault(int i)
     simulationParameters[i].SensorBias2 = 0.;
 
     simulationParametersBuffer.updateData(simulationParameters);
+}
+
+// draw pad with arrows when explaining controls
+void ofApp::drawPad(float col, float alpha)
+{
+    ofPushMatrix();
+    //ofTranslate(x,y);
+    
+    for(int i=0;i<4;i++)
+    {
+        ofPushMatrix();
+        ofRotateRad(HALF_PI*i);
+        float rectangleHeight = 25;
+        ofSetColor(255-col,255*pow(alpha/255.0,2.0));
+        ofDrawRectangle(0,-rectangleHeight/2,30,rectangleHeight);
+        ofSetColor(col,255*pow(alpha/255.0,2.0));
+        ofBeginShape();
+        ofVertex(16,rectangleHeight/3);
+        ofVertex(25,0);
+        ofVertex(16,-rectangleHeight/3);
+        ofEndShape(true);
+        ofPopMatrix();
+    }
+    ofPopMatrix();
 }
 
 //--------------------------------------------------------------

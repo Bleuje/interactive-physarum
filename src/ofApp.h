@@ -26,6 +26,7 @@ public:
     std::array<int,NUMBER_OF_PARAM_SETS> targetParamsIndex = {};
     int currentSelectedSet = 0;
     std::string getSetName(int targetParamsIndex);
+    void drawPad(float col, float alpha);
 
     float actionAreaSizeSigma = 0.3;
     int sigmaCount = 2;
