@@ -1,4 +1,8 @@
+## Interactive physarum
+
 Interactive physarum/organic simulations, for an installation with gamepad control.
+
+Please check out 36 Points by Sage Jenson first: https://www.sagejenson.com/36points/
 
 It is implemented with openFrameworks and the simulations run on GPU with compute shaders.
 
