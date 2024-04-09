@@ -10,6 +10,7 @@
 #define HEIGHT 576
 #define NUMBER_OF_PARAM_SETS 2
 #define ORIGINAL_CONFIGS_NUMBER 36
+#define FRAME_RATE 60
 
 class ofApp : public ofBaseApp{
 
@@ -36,6 +37,8 @@ public:
     int displayType = 1;
     void drawCustomCircle(ofVec2f pos,float R,float r);
 
+    float getTime();
+
     void actionChangeSigmaCount(int dir);
     void actionChangeParams(int dir);
     void actionSwapParams();
@@ -50,6 +53,10 @@ public:
     float curActionX = WIDTH/2;
     float curActionY = HEIGHT/2;
     float translationStep = 8.5;
+    float currentWaveTriggerTime = -12345;
+    float currentWaveX = curActionX;
+    float currentWaveY = curActionY;
+    float waveActionAreaSizeSigma = 0.001;
 
     ofFbo fbo,fbo2,fboDisplay;
     ofShader settershader,moveshader,depositshader,computefragshader;
@@ -67,8 +74,6 @@ public:
 
     vector<Particle> particles;
     ofBufferObject particlesBuffer;
-
-    float timeOffset = ofRandom(10000);
 
     void keyPressed(int key);
     void keyReleased(int key);

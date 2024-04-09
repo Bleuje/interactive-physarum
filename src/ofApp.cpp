@@ -100,12 +100,14 @@ float ofApp::getActionAreaSizeSigma()
     return ofMap(sigmaCount,0,sigmaCountModulo,0.15,maxActionSize);
 }
 
+float ofApp::getTime()
+{
+    return 1.0*ofGetFrameNum()/FRAME_RATE;
+}
+
 //--------------------------------------------------------------
 void ofApp::update(){
-    float t = 1.0*ofGetFrameNum()/700;
-
-
-    float time = ofGetFrameNum()*0.1 + timeOffset;
+    float time = getTime();
 
     curActionX += curTranslationAxis1*translationStep;
     curActionY += curTranslationAxis2*translationStep;
@@ -134,6 +136,7 @@ void ofApp::update(){
     moveshader.setUniform1f("time",time);
 
     moveshader.setUniform1f("actionAreaSizeSigma",getActionAreaSizeSigma());
+    moveshader.setUniform1f("waveActionAreaSizeSigma",waveActionAreaSizeSigma);
 
     /*
     moveshader.setUniform1f("actionX",ofGetMouseX());
@@ -147,6 +150,11 @@ void ofApp::update(){
 */
     moveshader.setUniform1f("moveBiasActionX",curMoveBiasActionX);
     moveshader.setUniform1f("moveBiasActionY",curMoveBiasActionY);
+
+    moveshader.setUniform1f("currentWaveX",currentWaveX);
+    moveshader.setUniform1f("currentWaveY",currentWaveY);
+    moveshader.setUniform1f("currentWaveTriggerTime",currentWaveTriggerTime);
+
 
     moveshader.dispatchCompute(particles.size()/128,1,1);
     moveshader.end();
@@ -211,15 +219,20 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     int buttonId = e.button;
     if(buttonId == 0)
     {
-        actionSwapParams();
+        actionRandomParams();
     }
     if(buttonId == 1)
     {
-        actionRandomParams();
+        actionSwapParams();
     }
     if(buttonId == 2)
     {
-        // "X button"
+        currentWaveX = curActionX;
+        currentWaveY = curActionY;
+
+        currentWaveTriggerTime = getTime();
+
+        waveActionAreaSizeSigma = getActionAreaSizeSigma();
     }
     if(buttonId == 3)
     {
@@ -334,11 +347,11 @@ void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
 	int mCircle = 34;
     float r2 = ofMap(R,0,700,0.5*r,1.5*r)*0.6;
 
-    float time = ofGetFrameNum()*0.1 + timeOffset;
+    float time2 = getTime()*6;
 
     for(int i=0;i<mCircle;i++)
     {
-        float rot = 0.3*sin(PI*time*0.03);
+        float rot = 0.3*sin(PI*time2*0.03);
         float theta1 = ofMap(i,0,mCircle,0,TWO_PI) + rot;
         float theta2 = ofMap(i+0.5,0,mCircle,0,TWO_PI) + rot;
 
@@ -367,9 +380,9 @@ void ofApp::draw(){
     {
         ofPushMatrix();
         
-        float time = ofGetFrameNum()*0.1 + timeOffset;
+        float time2 = getTime()*6;
 
-        float R = getActionAreaSizeSigma()*600*(1.0 + 0.08*sin(0.4f*time));
+        float R = getActionAreaSizeSigma()*600*(1.0 + 0.08*sin(0.4f*time2));
 
         float cx = ofMap(curActionX,0,WIDTH,0,ofGetWidth());
         float cy = ofMap(curActionY,0,HEIGHT,0,ofGetHeight());

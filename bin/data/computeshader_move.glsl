@@ -6,6 +6,7 @@ uniform int height;
 uniform float time;
 
 uniform float actionAreaSizeSigma;
+uniform float waveActionAreaSizeSigma;
 
 uniform float actionX;
 uniform float actionY;
@@ -15,6 +16,10 @@ uniform float sensorBiasActionY;
 
 uniform float moveBiasActionX;
 uniform float moveBiasActionY;
+
+uniform float currentWaveX;
+uniform float currentWaveY;
+uniform float currentWaveTriggerTime;
 
 struct Particle{
 	vec4 data;
@@ -111,6 +116,12 @@ float gn(in vec2 coordinate, in float seed)
 	return abs(fract(123.654*sin(distance(coordinate*(seed+0.118446744073709551614), vec2(0.118446744073709551614, 0.314159265358979323846264)))*0.141421356237309504880169));
 }
 
+float propagatedWaveFunction(float x)
+{
+	float sigmaWave = 0.5 * waveActionAreaSizeSigma;
+	return exp(-x*x/sigmaWave/sigmaWave);
+}
+
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main(){
 
@@ -127,6 +138,7 @@ void main(){
 
 	vec2 relPos = vec2(particlePos.x/width,particlePos.y/height);
 	vec2 relActionPos = vec2(actionX/width,actionY/height);
+	vec2 relWaveCenterPos = vec2(currentWaveX/width,currentWaveY/height);
 
 	// float lerper = particlePos.x/width;
 	vec2 relDiff = relPos - relActionPos;
@@ -134,7 +146,20 @@ void main(){
 	float diffDist = distance(relDiff,vec2(0));
 	float lerper = exp(-diffDist*diffDist/actionAreaSizeSigma/actionAreaSizeSigma);
 
+	vec2 relPos2 = relPos;
+	relPos2.x *= float(width)/height;
+	float noiseScale = 20.0;
+	relPos2 *= noiseScale;
+
+	vec2 relDiffWave = relPos - relWaveCenterPos;
+	relDiffWave.x *= float(width)/height;
+	float diffDistWave = distance(relDiffWave,vec2(0));
+	float varWave = diffDistWave/0.35 * (0.8 + 0.4*noise(vec3(relPos2.x,relPos2.t,0.3*time))) - (time - currentWaveTriggerTime);
+	float waveIntensity = 1.0 + 0.6*propagatedWaveFunction(varWave) * max(0.,1. - 0.3*diffDistWave/waveActionAreaSizeSigma);
+	
+
 	float tunedSensorScaler_mix = mix(tunedSensorScaler_1, tunedSensorScaler_2, lerper);
+	tunedSensorScaler_mix *= waveIntensity;
 
 	float SensorDistance0_mix = mix(currentParams_1.SensorDistance0, currentParams_2.SensorDistance0, lerper);
 	float SD_amplitude_mix = mix(currentParams_1.SD_amplitude, currentParams_2.SD_amplitude, lerper);
@@ -184,11 +209,6 @@ void main(){
 	{
 		newHeading = heading + rotationAngle;
 	}
-
-	vec2 relPos2 = relPos;
-	relPos2.x *= float(width)/height;
-	float noiseScale = 20.0;
-	relPos2 *= noiseScale;
 
 	float moveBiasFactor = 5 * lerper * noise(vec3(relPos2.x,relPos2.t,0.3*time));
 	vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX,moveBiasActionY);
