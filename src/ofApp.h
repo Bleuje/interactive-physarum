@@ -52,7 +52,7 @@ public:
     float curMoveBiasActionY = 0;
     float curActionX = WIDTH/2;
     float curActionY = HEIGHT/2;
-    float translationStep = 8.5;
+    float translationStep = 6.5;
     float currentWaveTriggerTime = -12345;
     float currentWaveX = curActionX;
     float currentWaveY = curActionY;
