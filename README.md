@@ -17,7 +17,7 @@ This is also introducing interaction with gamepad.
 
 The license from 36 points is reproduced here.
 
-Some text for crediting is currently displayed all the time on screen.
+In the current version, some text for crediting is displayed all the time on screen.
 
 ### Screenshots
 
