@@ -59,7 +59,7 @@ public:
     float waveActionAreaSizeSigma = 0.001;
 
     ofFbo fbo,fbo2,fboDisplay;
-    ofShader settershader,moveshader,depositshader,computefragshader,colorInverterShader;
+    ofShader setterShader,moveShader,depositShader,blurShader;
     ofVbo vbo;
 
     std::vector<uint32_t> counter;

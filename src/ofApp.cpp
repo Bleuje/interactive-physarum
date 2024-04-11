@@ -18,17 +18,17 @@ void ofApp::setup(){
     fbo2.allocate(WIDTH, HEIGHT, GL_RGBA32F);
     fboDisplay.allocate(WIDTH, HEIGHT, GL_RGBA32F);
 
-    settershader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_setter.glsl");
-    settershader.linkProgram();
+    setterShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_setter.glsl");
+    setterShader.linkProgram();
 
-    depositshader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_deposit.glsl");
-    depositshader.linkProgram();
+    depositShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_deposit.glsl");
+    depositShader.linkProgram();
 
-    moveshader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_move.glsl");
-    moveshader.linkProgram();
+    moveShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_move.glsl");
+    moveShader.linkProgram();
 
-    computefragshader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_blur.glsl");
-    computefragshader.linkProgram();
+    blurShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_blur.glsl");
+    blurShader.linkProgram();
 
     particles.resize(512*512*14);
     float marginx = 3;
@@ -122,65 +122,65 @@ void ofApp::update(){
     fbo.draw(0,0);
     fbo2.end();
 
-    settershader.begin();
-    settershader.setUniform1i("width",fbo.getWidth());
-    settershader.setUniform1i("height",fbo.getHeight());
-    settershader.setUniform1i("value",0);
-    settershader.dispatchCompute(WIDTH / 32, HEIGHT / 32, 1);
-    settershader.end();
+    setterShader.begin();
+    setterShader.setUniform1i("width",fbo.getWidth());
+    setterShader.setUniform1i("height",fbo.getHeight());
+    setterShader.setUniform1i("value",0);
+    setterShader.dispatchCompute(WIDTH / 32, HEIGHT / 32, 1);
+    setterShader.end();
 
 
-    moveshader.begin();
-    moveshader.setUniform1i("width",fbo.getWidth());
-    moveshader.setUniform1i("height",fbo.getHeight());
-    moveshader.setUniform1f("time",time);
+    moveShader.begin();
+    moveShader.setUniform1i("width",fbo.getWidth());
+    moveShader.setUniform1i("height",fbo.getHeight());
+    moveShader.setUniform1f("time",time);
 
-    moveshader.setUniform1f("actionAreaSizeSigma",getActionAreaSizeSigma());
-    moveshader.setUniform1f("waveActionAreaSizeSigma",waveActionAreaSizeSigma);
+    moveShader.setUniform1f("actionAreaSizeSigma",getActionAreaSizeSigma());
+    moveShader.setUniform1f("waveActionAreaSizeSigma",waveActionAreaSizeSigma);
 
     /*
-    moveshader.setUniform1f("actionX",ofGetMouseX());
-    moveshader.setUniform1f("actionY",ofGetMouseY());
+    moveShader.setUniform1f("actionX",ofGetMouseX());
+    moveShader.setUniform1f("actionY",ofGetMouseY());
     */
-    moveshader.setUniform1f("actionX",curActionX);
-    moveshader.setUniform1f("actionY",curActionY);
+    moveShader.setUniform1f("actionX",curActionX);
+    moveShader.setUniform1f("actionY",curActionY);
 /*
-    moveshader.setUniform1f("sensorBiasActionX",curSensorBiasActionX);
-    moveshader.setUniform1f("sensorBiasActionY",curSensorBiasActionY);
+    moveShader.setUniform1f("sensorBiasActionX",curSensorBiasActionX);
+    moveShader.setUniform1f("sensorBiasActionY",curSensorBiasActionY);
 */
-    moveshader.setUniform1f("moveBiasActionX",curMoveBiasActionX);
-    moveshader.setUniform1f("moveBiasActionY",curMoveBiasActionY);
+    moveShader.setUniform1f("moveBiasActionX",curMoveBiasActionX);
+    moveShader.setUniform1f("moveBiasActionY",curMoveBiasActionY);
 
-    moveshader.setUniform1f("currentWaveX",currentWaveX);
-    moveshader.setUniform1f("currentWaveY",currentWaveY);
-    moveshader.setUniform1f("currentWaveTriggerTime",currentWaveTriggerTime);
-
-
-    moveshader.dispatchCompute(particles.size()/128,1,1);
-    moveshader.end();
+    moveShader.setUniform1f("currentWaveX",currentWaveX);
+    moveShader.setUniform1f("currentWaveY",currentWaveY);
+    moveShader.setUniform1f("currentWaveTriggerTime",currentWaveTriggerTime);
 
 
+    moveShader.dispatchCompute(particles.size()/128,1,1);
+    moveShader.end();
 
-    depositshader.begin();
-    depositshader.setUniform1i("width",fbo.getWidth());
-    depositshader.setUniform1i("height",fbo.getHeight());
-    depositshader.setUniform1f("depositFactor",0.003);
-    depositshader.dispatchCompute(WIDTH / 32, HEIGHT / 32, 1);
-    depositshader.end();
+
+
+    depositShader.begin();
+    depositShader.setUniform1i("width",fbo.getWidth());
+    depositShader.setUniform1i("height",fbo.getHeight());
+    depositShader.setUniform1f("depositFactor",0.003);
+    depositShader.dispatchCompute(WIDTH / 32, HEIGHT / 32, 1);
+    depositShader.end();
 
     fbo.begin();
     fbo2.draw(0,0);
     fbo.end();
 
 
-    computefragshader.begin();
-    computefragshader.setUniform1i("width",fbo.getWidth());
-    computefragshader.setUniform1i("height",fbo.getHeight());
-    computefragshader.setUniform1f("PI",PI);
-    computefragshader.setUniform1f("decayFactor",0.75);
-    computefragshader.setUniform1f("time",time);
-    computefragshader.dispatchCompute(fbo.getWidth()/32,fbo.getHeight()/32,1);
-    computefragshader.end();
+    blurShader.begin();
+    blurShader.setUniform1i("width",fbo.getWidth());
+    blurShader.setUniform1i("height",fbo.getHeight());
+    blurShader.setUniform1f("PI",PI);
+    blurShader.setUniform1f("decayFactor",0.75);
+    blurShader.setUniform1f("time",time);
+    blurShader.dispatchCompute(fbo.getWidth()/32,fbo.getHeight()/32,1);
+    blurShader.end();
 
 
     fbo.begin();
