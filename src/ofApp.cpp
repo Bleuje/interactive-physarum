@@ -165,6 +165,7 @@ void ofApp::update(){
     depositShader.setUniform1i("width",trailReadBuffer.getWidth());
     depositShader.setUniform1i("height",trailReadBuffer.getHeight());
     depositShader.setUniform1f("depositFactor",0.003);
+    depositShader.setUniform1i("colorModeType",colorModeType);
     depositShader.dispatchCompute(WIDTH / 32, HEIGHT / 32, 1);
     depositShader.end();
 
@@ -213,6 +214,11 @@ void ofApp::actionRandomParams()
     targetParamsIndex[1] = floor(ofRandom(sz));
 }
 
+void ofApp::actionChangeColorMode()
+{
+    colorModeType = (colorModeType + 1) % NUMBER_OF_COLOR_MODES;
+}
+
 void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
 {
 	//cout << "BUTTON " << e.button << " PRESSED" << endl;
@@ -252,7 +258,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     }
     if(buttonId == 7)
     {
-        //actionChangeColors();
+        actionChangeColorMode();
     }
     if(buttonId == 10)
     {

@@ -11,6 +11,7 @@
 #define NUMBER_OF_PARAM_SETS 2
 #define ORIGINAL_CONFIGS_NUMBER 36
 #define FRAME_RATE 60
+#define NUMBER_OF_COLOR_MODES 2
 
 class ofApp : public ofBaseApp{
 
@@ -35,6 +36,7 @@ public:
     float maxActionSize = 0.85;
     float getActionAreaSizeSigma();
     int displayType = 1;
+    int colorModeType = 0;
     void drawCustomCircle(ofVec2f pos,float R,float r);
 
     float getTime();
@@ -43,6 +45,7 @@ public:
     void actionChangeParams(int dir);
     void actionSwapParams();
     void actionRandomParams();
+    void actionChangeColorMode();
 
     float curTranslationAxis1 = 0;
     float curTranslationAxis2 = 0;

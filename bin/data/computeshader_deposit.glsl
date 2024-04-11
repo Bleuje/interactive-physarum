@@ -3,6 +3,7 @@
 uniform int width;
 uniform int height;
 uniform float depositFactor;
+uniform int colorModeType;
 
 layout(std430,binding=3) buffer mutex
 {
@@ -22,9 +23,17 @@ void main(){
 	float val = prevColor.x + deposit;
 	imageStore(trailWrite,ivec2(gl_GlobalInvocationID.xy),vec4(val,val,prevColor.z,1.0));
 
-	float colorValue = pow(tanh(7.5*pow(max(0.,(cnt-1)/1000.0),0.3)),8.5)*1.05;
+	float countColorValue = pow(tanh(7.5*pow(max(0.,(cnt-1)/1000.0),0.3)),8.5)*1.05;
 	//float colorValue2 = pow(tanh(7.5*pow(max(0.,(250*val-1)/1000.0),0.3)),8.5)*1.05;
-	//float colorValue3 = pow(tanh(7.5*pow(max(0.,(250*prevColor.z-1)/1000.0),0.3)),8.5)*1.05;
-	vec4 outputColor = vec4(colorValue,colorValue,colorValue,1.0);
+	vec4 outputColor;
+	if(colorModeType == 0) // simple white on black
+	{
+		outputColor = vec4(countColorValue,countColorValue,countColorValue,1.0);
+	}
+	else if(colorModeType == 1) // cyan trail
+	{
+		float trailColorValue = pow(tanh(9.0*pow(max(0.,(250*prevColor.z-1)/1100.0),0.3)),8.5)*1.05;
+		outputColor = vec4(countColorValue,trailColorValue,trailColorValue,1.0);
+	}
 	imageStore(displayWrite,ivec2(gl_GlobalInvocationID.xy),outputColor);
 }
