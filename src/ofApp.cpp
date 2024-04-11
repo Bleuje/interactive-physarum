@@ -14,8 +14,8 @@ void ofApp::setup(){
     counter.resize(WIDTH*HEIGHT);
     counterBuffer.allocate(counter, GL_DYNAMIC_DRAW);
 
-    fbo.allocate(WIDTH, HEIGHT, GL_RGBA32F);
-    fbo2.allocate(WIDTH, HEIGHT, GL_RGBA32F);
+    trailReadBuffer.allocate(WIDTH, HEIGHT, GL_RGBA32F);
+    trailWriteBuffer.allocate(WIDTH, HEIGHT, GL_RGBA32F);
     fboDisplay.allocate(WIDTH, HEIGHT, GL_RGBA32F);
 
     setterShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_setter.glsl");
@@ -54,16 +54,16 @@ void ofApp::setup(){
     simulationParametersBuffer.allocate(simulationParameters,GL_DYNAMIC_DRAW);
     simulationParametersBuffer.bindBase(GL_SHADER_STORAGE_BUFFER, 5);
 
-    fbo.getTexture().bindAsImage(0,GL_READ_ONLY);
-    fbo2.getTexture().bindAsImage(1,GL_WRITE_ONLY);
+    trailReadBuffer.getTexture().bindAsImage(0,GL_READ_ONLY);
+    trailWriteBuffer.getTexture().bindAsImage(1,GL_WRITE_ONLY);
     particlesBuffer.bindBase(GL_SHADER_STORAGE_BUFFER, 2);
     counterBuffer.bindBase(GL_SHADER_STORAGE_BUFFER, 3);
     fboDisplay.getTexture().bindAsImage(4,GL_WRITE_ONLY);
     
 
-    fbo.begin();
+    trailReadBuffer.begin();
 
-    fbo.end();
+    trailReadBuffer.end();
 
     selectedSets = {0,1,2,4,5,6,7,11,13,14,15,19,21,27,30,31,34,37,40};
 
@@ -118,21 +118,21 @@ void ofApp::update(){
     curActionX = ofClamp(curActionX, 0, WIDTH);
     curActionY = ofClamp(curActionY, 0, HEIGHT);
 
-    fbo2.begin();
-    fbo.draw(0,0);
-    fbo2.end();
+    trailWriteBuffer.begin();
+    trailReadBuffer.draw(0,0);
+    trailWriteBuffer.end();
 
     setterShader.begin();
-    setterShader.setUniform1i("width",fbo.getWidth());
-    setterShader.setUniform1i("height",fbo.getHeight());
+    setterShader.setUniform1i("width",trailReadBuffer.getWidth());
+    setterShader.setUniform1i("height",trailReadBuffer.getHeight());
     setterShader.setUniform1i("value",0);
     setterShader.dispatchCompute(WIDTH / 32, HEIGHT / 32, 1);
     setterShader.end();
 
 
     moveShader.begin();
-    moveShader.setUniform1i("width",fbo.getWidth());
-    moveShader.setUniform1i("height",fbo.getHeight());
+    moveShader.setUniform1i("width",trailReadBuffer.getWidth());
+    moveShader.setUniform1i("height",trailReadBuffer.getHeight());
     moveShader.setUniform1f("time",time);
 
     moveShader.setUniform1f("actionAreaSizeSigma",getActionAreaSizeSigma());
@@ -162,30 +162,30 @@ void ofApp::update(){
 
 
     depositShader.begin();
-    depositShader.setUniform1i("width",fbo.getWidth());
-    depositShader.setUniform1i("height",fbo.getHeight());
+    depositShader.setUniform1i("width",trailReadBuffer.getWidth());
+    depositShader.setUniform1i("height",trailReadBuffer.getHeight());
     depositShader.setUniform1f("depositFactor",0.003);
     depositShader.dispatchCompute(WIDTH / 32, HEIGHT / 32, 1);
     depositShader.end();
 
-    fbo.begin();
-    fbo2.draw(0,0);
-    fbo.end();
+    trailReadBuffer.begin();
+    trailWriteBuffer.draw(0,0);
+    trailReadBuffer.end();
 
 
     blurShader.begin();
-    blurShader.setUniform1i("width",fbo.getWidth());
-    blurShader.setUniform1i("height",fbo.getHeight());
+    blurShader.setUniform1i("width",trailReadBuffer.getWidth());
+    blurShader.setUniform1i("height",trailReadBuffer.getHeight());
     blurShader.setUniform1f("PI",PI);
     blurShader.setUniform1f("decayFactor",0.75);
     blurShader.setUniform1f("time",time);
-    blurShader.dispatchCompute(fbo.getWidth()/32,fbo.getHeight()/32,1);
+    blurShader.dispatchCompute(trailReadBuffer.getWidth()/32,trailReadBuffer.getHeight()/32,1);
     blurShader.end();
 
 
-    fbo.begin();
-    fbo2.draw(0,0);
-    fbo.end();
+    trailReadBuffer.begin();
+    trailWriteBuffer.draw(0,0);
+    trailReadBuffer.end();
 
     std::stringstream strm;
     strm << "fps: " << ofGetFrameRate();

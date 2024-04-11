@@ -61,11 +61,11 @@ layout(rgba32f,binding=0) uniform readonly image2D src;
 layout(rgba32f,binding=1) uniform writeonly image2D dst;
 layout(std430,binding=3) buffer mutex
 {
-	uint m[];
+	uint particlesCounter[];
 };
 
 layout(std140, binding=2) buffer particle{
-    Particle p[];
+    Particle particlesArray[];
 };
 
 float getGridValue(vec2 pos)
@@ -131,9 +131,9 @@ void main(){
 	float tunedSensorScaler_1 = currentParams_1.defaultScalingFactor * pow(1.05, currentParams_1.scalingFactorCount);
 	float tunedSensorScaler_2 = currentParams_2.defaultScalingFactor * pow(1.05, currentParams_2.scalingFactorCount);
 
-	vec4 pInput = p[gl_GlobalInvocationID.x].data;
+	vec4 pInput = particlesArray[gl_GlobalInvocationID.x].data;
 	vec2 particlePos = vec2(pInput.x,pInput.y);
-	float heading = p[gl_GlobalInvocationID.x].data.w;
+	float heading = particlesArray[gl_GlobalInvocationID.x].data.w;
 	vec2 direction = vec2(cos(heading), sin(heading));
 
 	vec2 relPos = vec2(particlePos.x/width,particlePos.y/height);
@@ -219,7 +219,7 @@ void main(){
 	vec2 nextPos = vec2(mod(px + float(width),float(width)),mod(py + float(height),float(height)));
 	
 	uint depositAmount = uint(1);
-	atomicAdd(m[ int(round(nextPos.x))*height + int(round(nextPos.y))],depositAmount);
+	atomicAdd(particlesCounter[ int(round(nextPos.x))*height + int(round(nextPos.y))],depositAmount);
 
 	const float reinitSegment=0.0010;
 
@@ -230,5 +230,5 @@ void main(){
     }
 	float nextA = fract(curA+reinitSegment);
 
-	p[gl_GlobalInvocationID.x].data = vec4(nextPos.x,nextPos.y,nextA,newHeading);
+	particlesArray[gl_GlobalInvocationID.x].data = vec4(nextPos.x,nextPos.y,nextA,newHeading);
 }

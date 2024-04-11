@@ -58,7 +58,7 @@ public:
     float currentWaveY = curActionY;
     float waveActionAreaSizeSigma = 0.001;
 
-    ofFbo fbo,fbo2,fboDisplay;
+    ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
     ofShader setterShader,moveShader,depositShader,blurShader;
     ofVbo vbo;
 

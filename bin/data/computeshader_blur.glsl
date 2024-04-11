@@ -6,8 +6,8 @@ uniform float decayFactor;
 uniform float PI;
 uniform float time;
 
-layout(rgba32f,binding=0) uniform readonly image2D src;
-layout(rgba32f,binding=1) uniform writeonly image2D dst;
+layout(rgba32f,binding=0) uniform readonly image2D trailRead;
+layout(rgba32f,binding=1) uniform writeonly image2D trailWrite;
 
 ivec2 LoopedPosition(ivec2 pos)
 {
@@ -26,7 +26,7 @@ void main(){
 	{
 		for(float j=-fw;j<fw+0.5;j+=1.0)
 		{
-			csum += imageLoad(src,LoopedPosition(pos-ivec2(i,j)));
+			csum += imageLoad(trailRead,LoopedPosition(pos-ivec2(i,j)));
 		}
 	}
 
@@ -37,5 +37,5 @@ void main(){
 	float decayed = c.x*decayFactor;
 	vec4 cOutput = vec4(decayed,decayed,decayed,1.0);
 	
-	imageStore(dst,ivec2(gl_GlobalInvocationID.xy),cOutput);
+	imageStore(trailWrite,ivec2(gl_GlobalInvocationID.xy),cOutput);
 }
