@@ -30,9 +30,6 @@ void ofApp::setup(){
     computefragshader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_blur.glsl");
     computefragshader.linkProgram();
 
-
-    colorInverterShader.load("", "colorInverter.frag"); // Assuming the vertex shader is default
-
     particles.resize(512*512*14);
     float marginx = 3;
     float marginy = 3;
@@ -372,15 +369,7 @@ void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofPushMatrix();
-/*
-    colorInverterShader.begin();
-    fboDisplay.getTexture().bind();
-    fboDisplay.begin();
-    ofDrawRectangle(-WIDTH/2, -HEIGHT/2, WIDTH, HEIGHT);
-    fboDisplay.end();
-    fboDisplay.getTexture().unbind();
-    colorInverterShader.end();
-*/
+
     ofPushMatrix();
     ofScale(1.0*ofGetWidth()/fboDisplay.getWidth(),1.0*ofGetHeight()/fboDisplay.getHeight());
     fboDisplay.draw(0,0);
