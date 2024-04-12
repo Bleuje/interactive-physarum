@@ -35,7 +35,7 @@ void main(){
 	vec2 uv = vec2(pos)/float(height);
 	
 	float decayed = c.x*decayFactor;
-	vec4 cOutput = vec4(decayed,decayed,decayed,1.0);
+	vec4 cOutput = vec4(decayed,decayed,0.8*decayed + 0.2*c.z,1.0);
 	
 	imageStore(trailWrite,ivec2(gl_GlobalInvocationID.xy),cOutput);
 }

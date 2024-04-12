@@ -48,6 +48,7 @@ void main(){
 	imageStore(trailWrite,ivec2(gl_GlobalInvocationID.xy),vec4(val,val,prevColor.z,1.0));
 
 	float countColorValue = pow(tanh(7.5*pow(max(0.,(cnt-1)/1000.0),0.3)),8.5)*1.05;
+	countColorValue = min(1.0,countColorValue);
 	//float colorValue2 = pow(tanh(7.5*pow(max(0.,(250*val-1)/1000.0),0.3)),8.5)*1.05;
 	vec4 outputColor;
 	if(colorModeType == 0) // simple white on black
@@ -57,6 +58,7 @@ void main(){
 	else
 	{
 		float trailColorValue = pow(tanh(9.0*pow(max(0.,(250*prevColor.z-1)/1100.0),0.3)),8.5)*1.05;
+		trailColorValue = min(1.0,trailColorValue);
 
 		vec3 rgb0 = vec3(countColorValue,trailColorValue,trailColorValue);
 		vec3 hsv0 = rgb2hsv(rgb0);
