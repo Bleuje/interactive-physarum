@@ -30,7 +30,7 @@ void ofApp::setup(){
     blurShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_blur.glsl");
     blurShader.linkProgram();
 
-    particles.resize(512*512*14);
+    particles.resize(NUMBER_OF_PARTICLES);
     float marginx = 3;
     float marginy = 3;
 
@@ -166,6 +166,7 @@ void ofApp::update(){
     depositShader.setUniform1i("height",trailReadBuffer.getHeight());
     depositShader.setUniform1f("depositFactor",0.003);
     depositShader.setUniform1i("colorModeType",colorModeType);
+    depositShader.setUniform1i("numberOfColorModes",NUMBER_OF_COLOR_MODES);
     depositShader.dispatchCompute(WIDTH / 32, HEIGHT / 32, 1);
     depositShader.end();
 

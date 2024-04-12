@@ -6,12 +6,13 @@
 #include "ofxGamepadHandler.h"
 #include "parametersChoices.h"
 
-#define WIDTH 1024
-#define HEIGHT 576
+#define WIDTH 1280
+#define HEIGHT 736
 #define NUMBER_OF_PARAM_SETS 2
 #define ORIGINAL_CONFIGS_NUMBER 36
 #define FRAME_RATE 60
-#define NUMBER_OF_COLOR_MODES 2
+#define NUMBER_OF_COLOR_MODES 8
+#define NUMBER_OF_PARTICLES (512*512*21)
 
 class ofApp : public ofBaseApp{
 
