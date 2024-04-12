@@ -8,7 +8,7 @@
 
 #define WIDTH 1280
 #define HEIGHT 736
-#define NUMBER_OF_PARAM_SETS 2
+#define NUMBER_OF_USED_POINTS 2
 #define ORIGINAL_CONFIGS_NUMBER 36
 #define FRAME_RATE 60
 #define NUMBER_OF_COLOR_MODES 8
@@ -21,14 +21,13 @@ public:
     void update();
     void draw();
 
-    std::array<float, 30> simulationParams;
     double scalingFactor;
     void setSimulationParamsToSomeDefault(int setIndex);
     void setSimulationParams(int setIndex, int typeIndex);
     void switchToOtherType(int typeIndex);
-    std::array<int,NUMBER_OF_PARAM_SETS> targetParamsIndex = {};
+    std::array<int,NUMBER_OF_USED_POINTS> targetParamsIndex = {};
     int currentSelectedSet = 0;
-    std::string getSetName(int targetParamsIndex);
+    std::string getPointName(int targetParamsIndex);
     void drawPad(float col, float alpha);
 
     float actionAreaSizeSigma = 0.3;
@@ -69,7 +68,7 @@ public:
     std::vector<uint32_t> counter;
     ofBufferObject counterBuffer;
 
-    int numFrames = 4000;
+    // int numFrames = 4000;
 
     struct Particle{
         glm::vec4 data;
@@ -96,8 +95,6 @@ public:
     void axisChanged(ofxGamepadAxisEvent &e);
     void buttonPressed(ofxGamepadButtonEvent &e);
     void buttonReleased(ofxGamepadButtonEvent &e);
-
-    void printCurrentScalingFactor();
 
     ofTrueTypeFont myFont, myFontBold;
 
@@ -128,10 +125,8 @@ public:
     };
 
     std::vector<ParametersSet> simulationParameters;
-    std::vector<int> scalingCounts;
     ofBufferObject simulationParametersBuffer;
     std::vector<ParametersSet> savedSimulationParameters;
-    std::vector<int> savedScalingCounts;
 
-    std::vector<int> selectedSets;
+    std::vector<int> selectedPoints;
 };

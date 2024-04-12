@@ -48,9 +48,7 @@ void ofApp::setup(){
 
     scalingFactor = 1.0;
 
-    simulationParameters.resize(NUMBER_OF_PARAM_SETS);
-    scalingCounts.resize(NUMBER_OF_PARAM_SETS);
-    for(int i=0;i<NUMBER_OF_PARAM_SETS;i++) scalingCounts[i] = 0;
+    simulationParameters.resize(NUMBER_OF_USED_POINTS);
     simulationParametersBuffer.allocate(simulationParameters,GL_DYNAMIC_DRAW);
     simulationParametersBuffer.bindBase(GL_SHADER_STORAGE_BUFFER, 5);
 
@@ -65,20 +63,18 @@ void ofApp::setup(){
 
     trailReadBuffer.end();
 
-    selectedSets = {0,1,2,4,5,6,7,11,13,14,15,19,21,27,30,31,34,37,40};
+    selectedPoints = {0,1,2,4,5,6,7,11,13,14,15,19,21,27,30,31,34,37,40};
 
 
-    for(int i=0;i<NUMBER_OF_PARAM_SETS;i++)
+    for(int i=0;i<NUMBER_OF_USED_POINTS;i++)
     {
         setSimulationParamsToSomeDefault(i);
     }
 
     savedSimulationParameters.resize(ORIGINAL_CONFIGS_NUMBER);
-    savedScalingCounts.resize(ORIGINAL_CONFIGS_NUMBER);
     for(int i=0;i<ORIGINAL_CONFIGS_NUMBER;i++)
     {
         savedSimulationParameters[i] = simulationParameters[currentSelectedSet];
-        savedScalingCounts[i] = scalingCounts[currentSelectedSet];
     }
 
     ////////////////////////////////////////
@@ -209,7 +205,7 @@ void ofApp::actionSwapParams()
 
 void ofApp::actionRandomParams()
 {
-    int sz = selectedSets.size();
+    int sz = selectedPoints.size();
 
     targetParamsIndex[0] = floor(ofRandom(sz));
     targetParamsIndex[1] = floor(ofRandom(sz));
@@ -271,8 +267,8 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
         //actionResetTranslations();
     }
 
-    setSimulationParams(0,selectedSets[targetParamsIndex[0]]);
-    setSimulationParams(1,selectedSets[targetParamsIndex[1]]); 
+    setSimulationParams(0,selectedPoints[targetParamsIndex[0]]);
+    setSimulationParams(1,selectedPoints[targetParamsIndex[1]]); 
 }
 
 void ofApp::axisChanged(ofxGamepadAxisEvent& e)
@@ -291,11 +287,11 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     }
     if(axisType==7 && e.value>0.5)
     {
-        currentSelectedSet = (currentSelectedSet - 1 + NUMBER_OF_PARAM_SETS) % NUMBER_OF_PARAM_SETS;
+        currentSelectedSet = (currentSelectedSet - 1 + NUMBER_OF_USED_POINTS) % NUMBER_OF_USED_POINTS;
     }
     if(axisType==7 && e.value<-0.5)
     {
-        currentSelectedSet = (currentSelectedSet + 1 + NUMBER_OF_PARAM_SETS) % NUMBER_OF_PARAM_SETS;
+        currentSelectedSet = (currentSelectedSet + 1 + NUMBER_OF_USED_POINTS) % NUMBER_OF_USED_POINTS;
     }
     if(axisType==0 || axisType==1)
     {
@@ -338,7 +334,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     }
     */
 
-    setSimulationParams(currentSelectedSet,selectedSets[targetParamsIndex[currentSelectedSet]]);  
+    setSimulationParams(currentSelectedSet,selectedPoints[targetParamsIndex[currentSelectedSet]]);  
 }
 
 void ofApp::buttonReleased(ofxGamepadButtonEvent& e)
@@ -408,7 +404,7 @@ void ofApp::draw(){
     float col = 0;
     float u = ofGetHeight()/HEIGHT;
 
-    for(int setIndex=0;setIndex<NUMBER_OF_PARAM_SETS;setIndex++)
+    for(int setIndex=0;setIndex<NUMBER_OF_USED_POINTS;setIndex++)
     {
         ofPushMatrix();
 
@@ -422,7 +418,7 @@ void ofApp::draw(){
 
         ofTranslate(116*u,50*u + 50*setIndex*u);
         std::string prefix = setIndex==0 ? "pen: " : "background: ";
-        std::string setString = prefix + getSetName(targetParamsIndex[setIndex]) + (setIndex==currentSelectedSet ? " <" : "");
+        std::string setString = prefix + getPointName(targetParamsIndex[setIndex]) + (setIndex==currentSelectedSet ? " <" : "");
 
         ofTrueTypeFont * pBoldOrNotFont = setIndex==currentSelectedSet ? &myFontBold : &myFont;
 
@@ -474,13 +470,7 @@ void ofApp::draw(){
     ofPopMatrix();
 }
 
-
-void ofApp::printCurrentScalingFactor()
-{
-    std::cout << "Scale factor = " << simulationParameters[currentSelectedSet].defaultScalingFactor * pow(1.05, simulationParameters[currentSelectedSet].scalingFactorCount) << std::endl;
-}
-
-std::string ofApp::getSetName(int targetParamsIndex_)
+std::string ofApp::getPointName(int targetParamsIndex_)
 {
     std::string ret = "params ";
     ret.push_back(char('A' + targetParamsIndex_));
@@ -489,7 +479,7 @@ std::string ofApp::getSetName(int targetParamsIndex_)
 
 void ofApp::actionChangeParams(int dir)
 {
-    int sz = selectedSets.size();
+    int sz = selectedPoints.size();
     targetParamsIndex[currentSelectedSet] = (targetParamsIndex[currentSelectedSet] + dir + sz)%sz;
 }
 
@@ -503,25 +493,19 @@ void ofApp::keyPressed(int key){
         case OF_KEY_UP:
             actionChangeParams(-1);
             break;
-        case OF_KEY_RIGHT:
-            scalingCounts[currentSelectedSet]++;
-            break;
-        case OF_KEY_LEFT:
-            scalingCounts[currentSelectedSet]--;
-            break;
         case ' ':
-            currentSelectedSet = (currentSelectedSet + 1) % NUMBER_OF_PARAM_SETS;
+            currentSelectedSet = (currentSelectedSet + 1) % NUMBER_OF_USED_POINTS;
             break;
     }
 
-    setSimulationParams(currentSelectedSet,selectedSets[targetParamsIndex[currentSelectedSet]]);  
+    setSimulationParams(currentSelectedSet,selectedPoints[targetParamsIndex[currentSelectedSet]]);  
 }
 
 void ofApp::switchToOtherType(int typeIndex)
 {
-    savedScalingCounts[targetParamsIndex[currentSelectedSet]] = scalingCounts[currentSelectedSet];
+    savedSimulationParameters[targetParamsIndex[currentSelectedSet]] = simulationParameters[currentSelectedSet];
     targetParamsIndex[currentSelectedSet] = typeIndex;
-    scalingCounts[currentSelectedSet] = savedScalingCounts[targetParamsIndex[currentSelectedSet]];
+    simulationParameters[currentSelectedSet] = savedSimulationParameters[targetParamsIndex[currentSelectedSet]];
 }
 
 void ofApp::setSimulationParams(int setIndex, int typeIndex)
@@ -529,7 +513,7 @@ void ofApp::setSimulationParams(int setIndex, int typeIndex)
     simulationParameters[setIndex].typeIndex = typeIndex;
 
     simulationParameters[setIndex].defaultScalingFactor = ParametersMatrix[typeIndex][PARAMS_DIMENSION-1];
-    simulationParameters[setIndex].scalingFactorCount = scalingCounts[setIndex];
+    simulationParameters[setIndex].scalingFactorCount = 0;
 
     simulationParameters[setIndex].SensorDistance0 = ParametersMatrix[typeIndex][0];
     simulationParameters[setIndex].SD_exponent = ParametersMatrix[typeIndex][1];
