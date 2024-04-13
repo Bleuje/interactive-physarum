@@ -158,7 +158,7 @@ void main(){
 	
 	for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
 	{
-		int maxWaveTime = 4; // in seconds
+		int maxWaveTime = 5; // in seconds
 		if((time - waveTriggerTimes[i]) <= maxWaveTime)
 		{
 			vec2 relWaveCenterPos = vec2(waveXarray[i]/width,waveYarray[i]/height);
@@ -172,7 +172,9 @@ void main(){
 		}
 	}
 
-	waveIntensity += waveSum;
+	//waveIntensity += waveSum;
+
+	lerper = mix(lerper,0.,tanh(5.*waveSum));
 	
 
 	float tunedSensorScaler_mix = mix(tunedSensorScaler_1, tunedSensorScaler_2, lerper);
