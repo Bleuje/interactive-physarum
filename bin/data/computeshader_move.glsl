@@ -14,9 +14,6 @@ uniform float waveActionAreaSizeSigma;
 uniform float actionX;
 uniform float actionY;
 
-uniform float sensorBiasActionX;
-uniform float sensorBiasActionY;
-
 uniform float moveBiasActionX;
 uniform float moveBiasActionY;
 
@@ -135,6 +132,8 @@ void main(){
 	float tunedSensorScaler_2 = currentParams_2.defaultScalingFactor * pow(1.05, currentParams_2.scalingFactorCount);
 
 	vec4 pInput = particlesArray[gl_GlobalInvocationID.x].data;
+	vec4 pInput2 = particlesArray[gl_GlobalInvocationID.x].data2;
+
 	vec2 particlePos = vec2(pInput.x,pInput.y);
 	float heading = particlesArray[gl_GlobalInvocationID.x].data.w;
 	vec2 direction = vec2(cos(heading), sin(heading));
@@ -198,9 +197,7 @@ void main(){
 	float SensorBias1_mix = mix(currentParams_1.SensorBias1, currentParams_2.SensorBias1, lerper);
 	float SensorBias2_mix = mix(currentParams_1.SensorBias2, currentParams_2.SensorBias2, lerper);
 
-	float sensorActionFactor = 5.0;
-
-	float currentSensedValue = getGridValue(particlePos + SensorBias2_mix * direction + vec2(0.,SensorBias1_mix) + sensorActionFactor*vec2(sensorBiasActionX,sensorBiasActionY)) * tunedSensorScaler_mix;
+	float currentSensedValue = getGridValue(particlePos + SensorBias2_mix * direction + vec2(0.,SensorBias1_mix)) * tunedSensorScaler_mix;
 	currentSensedValue = min(1.0,max(currentSensedValue, 0.000000001));
 
 	float sensorDistance = SensorDistance0_mix + SD_amplitude_mix * pow(currentSensedValue, SD_exponent_mix) * 250.0;
@@ -228,7 +225,9 @@ void main(){
 		newHeading = heading + rotationAngle;
 	}
 
-	float moveBiasFactor = 5 * lerper * noise(vec3(relPos2.x,relPos2.t,0.3*time));
+	float noiseValue = noise(vec3(relPos2.x,relPos2.t,0.3*time));
+
+	float moveBiasFactor = 5 * lerper * noiseValue;
 	vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX,moveBiasActionY);
 
 	float px = particlePos.x + jumpDistance*cos(newHeading) + moveBias.x;

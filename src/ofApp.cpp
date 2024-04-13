@@ -147,10 +147,7 @@ void ofApp::update(){
     */
     moveShader.setUniform1f("actionX",curActionX);
     moveShader.setUniform1f("actionY",curActionY);
-/*
-    moveShader.setUniform1f("sensorBiasActionX",curSensorBiasActionX);
-    moveShader.setUniform1f("sensorBiasActionY",curSensorBiasActionY);
-*/
+
     moveShader.setUniform1f("moveBiasActionX",curMoveBiasActionX);
     moveShader.setUniform1f("moveBiasActionY",curMoveBiasActionY);
 
@@ -314,17 +311,11 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     
     if(axisType==3 || axisType==4)
     {
-        if(axisType==3) curSensorBiasActionX = 0;
-        if(axisType==4) curSensorBiasActionY = 0;
-
         if(axisType==3) curMoveBiasActionX = 0;
         if(axisType==4) curMoveBiasActionY = 0;
 
         if(abs(e.value)>0.09)
         {
-            if(axisType==3) curSensorBiasActionX = e.value;
-            if(axisType==4) curSensorBiasActionY = e.value;
-
             if(axisType==3) curMoveBiasActionX = e.value;
             if(axisType==4) curMoveBiasActionY = e.value;
         }

@@ -50,8 +50,6 @@ public:
 
     float curTranslationAxis1 = 0;
     float curTranslationAxis2 = 0;
-    float curSensorBiasActionX = 0;
-    float curSensorBiasActionY = 0;
     float curMoveBiasActionX = 0;
     float curMoveBiasActionY = 0;
     float curActionX = WIDTH/2;
