@@ -21,7 +21,7 @@ In the current version, some text for crediting is displayed all the time on scr
 
 ### Screenshots
 
-Some screenshots to give a little taste of the project, as of April 10.
+Some screenshots to give a little taste of the project, as of April 10 2024.
 
 ![Screenshot 10 April 2024, 1](/doc/screenshot-10-april-2024-1.png)
 ![Screenshot 10 April 2024, 2](/doc/screenshot-10-april-2024-2.png)
