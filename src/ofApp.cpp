@@ -77,6 +77,13 @@ void ofApp::setup(){
         savedSimulationParameters[i] = simulationParameters[currentSelectedSet];
     }
 
+    for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
+    {
+        waveXarray[i] = WIDTH/2;
+        waveYarray[i] = HEIGHT/2;
+        waveTriggerTimes[i] = -12345;
+    }
+
     ////////////////////////////////////////
     // check if there is a gamepad connected
     numberOfGamepads = ofxGamepadHandler::get()->getNumPads();
@@ -147,9 +154,9 @@ void ofApp::update(){
     moveShader.setUniform1f("moveBiasActionX",curMoveBiasActionX);
     moveShader.setUniform1f("moveBiasActionY",curMoveBiasActionY);
 
-    moveShader.setUniform1f("currentWaveX",currentWaveX);
-    moveShader.setUniform1f("currentWaveY",currentWaveY);
-    moveShader.setUniform1f("currentWaveTriggerTime",currentWaveTriggerTime);
+    moveShader.setUniform1fv("waveXarray", waveXarray.data(), waveXarray.size());
+    moveShader.setUniform1fv("waveYarray", waveYarray.data(), waveYarray.size());
+    moveShader.setUniform1fv("waveTriggerTimes", waveTriggerTimes.data(), waveTriggerTimes.size());
 
 
     moveShader.dispatchCompute(particles.size()/128,1,1);
@@ -230,10 +237,11 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     }
     if(buttonId == 2)
     {
-        currentWaveX = curActionX;
-        currentWaveY = curActionY;
+        waveXarray[currentWaveIndex] = curActionX;
+        waveYarray[currentWaveIndex] = curActionY;
+        waveTriggerTimes[currentWaveIndex] = getTime();
 
-        currentWaveTriggerTime = getTime();
+        currentWaveIndex = (currentWaveIndex + 1) % MAX_NUMBER_OF_WAVES;
 
         waveActionAreaSizeSigma = getActionAreaSizeSigma();
     }

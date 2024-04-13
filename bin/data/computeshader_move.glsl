@@ -1,5 +1,8 @@
 #version 440
 
+// warning: must match c++ code
+#define MAX_NUMBER_OF_WAVES 5
+
 uniform int width;
 uniform int height;
 
@@ -17,9 +20,9 @@ uniform float sensorBiasActionY;
 uniform float moveBiasActionX;
 uniform float moveBiasActionY;
 
-uniform float currentWaveX;
-uniform float currentWaveY;
-uniform float currentWaveTriggerTime;
+uniform float waveXarray[MAX_NUMBER_OF_WAVES];
+uniform float waveYarray[MAX_NUMBER_OF_WAVES];
+uniform float waveTriggerTimes[MAX_NUMBER_OF_WAVES];
 
 struct Particle{
 	vec4 data;
@@ -138,7 +141,6 @@ void main(){
 
 	vec2 relPos = vec2(particlePos.x/width,particlePos.y/height);
 	vec2 relActionPos = vec2(actionX/width,actionY/height);
-	vec2 relWaveCenterPos = vec2(currentWaveX/width,currentWaveY/height);
 
 	// float lerper = particlePos.x/width;
 	vec2 relDiff = relPos - relActionPos;
@@ -151,12 +153,27 @@ void main(){
 	float noiseScale = 20.0;
 	relPos2 *= noiseScale;
 
-	vec2 relDiffWave = relPos - relWaveCenterPos;
-	relDiffWave.x *= float(width)/height;
-	float diffDistWave = distance(relDiffWave,vec2(0));
-	float noiseVariationFactor = (0.8 + 0.4*noise(vec3(relPos2.x,relPos2.t,0.3*time)));
-	float varWave = diffDistWave/0.35 * noiseVariationFactor  - (time - currentWaveTriggerTime);
-	float waveIntensity = 1.0 + 0.6*propagatedWaveFunction(varWave) * max(0.,1. - 0.3*diffDistWave/waveActionAreaSizeSigma*noiseVariationFactor);
+	float waveIntensity = 1.0;
+
+	float waveSum = 0.;
+	
+	for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
+	{
+		int maxWaveTime = 4; // in seconds
+		if((time - waveTriggerTimes[i]) <= maxWaveTime)
+		{
+			vec2 relWaveCenterPos = vec2(waveXarray[i]/width,waveYarray[i]/height);
+			vec2 relDiffWave = relPos - relWaveCenterPos;
+			relDiffWave.x *= float(width)/height;
+			float diffDistWave = distance(relDiffWave,vec2(0));
+			float noiseVariationFactor = (0.8 + 0.4*noise(vec3(relPos2.x,relPos2.t,0.3*time)));
+
+			float varWave = diffDistWave/0.35 * noiseVariationFactor  - (time - waveTriggerTimes[i]);
+			waveSum += 0.6*propagatedWaveFunction(varWave) * max(0.,1. - 0.3*diffDistWave/waveActionAreaSizeSigma*noiseVariationFactor);
+		}
+	}
+
+	waveIntensity += waveSum;
 	
 
 	float tunedSensorScaler_mix = mix(tunedSensorScaler_1, tunedSensorScaler_2, lerper);
@@ -227,7 +244,7 @@ void main(){
 	if (curA<reinitSegment)
 	{
 		nextPos = vec2(width*gn(particlePos*13.436515/width,14.365475),height*gn(particlePos*12.765177/width+vec2(353.647,958.6515),35.6198849));
-    }
+  }
 	float nextA = fract(curA+reinitSegment);
 
 	particlesArray[gl_GlobalInvocationID.x].data = vec4(nextPos.x,nextPos.y,nextA,newHeading);

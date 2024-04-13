@@ -11,8 +11,9 @@
 #define NUMBER_OF_USED_POINTS 2
 #define ORIGINAL_CONFIGS_NUMBER 36
 #define FRAME_RATE 60
-#define NUMBER_OF_COLOR_MODES 8
+#define NUMBER_OF_COLOR_MODES 2
 #define NUMBER_OF_PARTICLES (512*512*21)
+#define MAX_NUMBER_OF_WAVES 5
 
 class ofApp : public ofBaseApp{
 
@@ -56,9 +57,10 @@ public:
     float curActionX = WIDTH/2;
     float curActionY = HEIGHT/2;
     float translationStep = 6.5;
-    float currentWaveTriggerTime = -12345;
-    float currentWaveX = curActionX;
-    float currentWaveY = curActionY;
+    int currentWaveIndex = 0;
+    std::array<float, MAX_NUMBER_OF_WAVES> waveXarray = {};
+    std::array<float, MAX_NUMBER_OF_WAVES> waveYarray = {};
+    std::array<float, MAX_NUMBER_OF_WAVES> waveTriggerTimes = {};
     float waveActionAreaSizeSigma = 0.001;
 
     ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
