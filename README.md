@@ -44,7 +44,7 @@ Sage Jenson's approach is to control the original physarum simulation parameters
 - simulation parameters of pen and background areas can be chosen with pad controls, there are currently 19 kinds of settings.
 - button to set random settings
 - button to swap the settings of pen and background
-- button to trigger a wave of increased sensed value, from the pen location
+- button to trigger a wave of background parameters, from the pen location
 - button to display or not the pen
 - button to decrease the pen size
 - button to increase the pen size
