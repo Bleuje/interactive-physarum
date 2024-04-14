@@ -47,3 +47,4 @@ Sage Jenson's approach is to control the original physarum simulation parameters
 - button to display or not the pen
 - button to decrease the pen size
 - button to increase the pen size
+- button for color style change
