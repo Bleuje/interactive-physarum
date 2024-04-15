@@ -21,6 +21,9 @@ uniform float waveXarray[MAX_NUMBER_OF_WAVES];
 uniform float waveYarray[MAX_NUMBER_OF_WAVES];
 uniform float waveTriggerTimes[MAX_NUMBER_OF_WAVES];
 
+uniform float mouseXchange;
+uniform float L2Action;
+
 struct Particle{
 	vec4 data;
 	vec4 data2;
@@ -137,6 +140,7 @@ void main(){
 	vec2 particlePos = vec2(pInput.x,pInput.y);
 	float heading = particlesArray[gl_GlobalInvocationID.x].data.w;
 	vec2 direction = vec2(cos(heading), sin(heading));
+	vec2 vel = vec2(pInput2.x,pInput2.y);
 
 	vec2 relPos = vec2(particlePos.x/width,particlePos.y/height);
 	vec2 relActionPos = vec2(actionX/width,actionY/height);
@@ -232,8 +236,25 @@ void main(){
 	float moveBiasFactor = 5 * lerper * noiseValue;
 	vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX,moveBiasActionY);
 
-	float px = particlePos.x + moveDistance*cos(newHeading) + moveBias.x;
-	float py = particlePos.y + moveDistance*sin(newHeading) + moveBias.y;
+	float px1 = particlePos.x + moveDistance*cos(newHeading) + moveBias.x;
+	float py1 = particlePos.y + moveDistance*sin(newHeading) + moveBias.y;
+	
+	vel *= 0.98;
+	float vf = 1.0;
+	float vx = vel.x + vf*cos(heading);
+	float vy = vel.y + vf*sin(heading);
+
+	//float dt = 0.05*moveDistance;
+	float dt = 0.07*pow(moveDistance,1.4);
+
+	float px2 = particlePos.x + dt*vx + moveBias.x;
+	float py2 = particlePos.y + dt*vy + moveBias.y;
+
+	float moveStyleLerper = 0.6*L2Action;
+
+	float px = mix(px1,px2,moveStyleLerper);
+	float py = mix(py1,py2,moveStyleLerper);
+
 	vec2 nextPos = vec2(mod(px + float(width),float(width)),mod(py + float(height),float(height)));
 	
 	uint depositAmount = uint(1);
@@ -249,4 +270,5 @@ void main(){
 	float nextA = fract(curA+reinitSegment);
 
 	particlesArray[gl_GlobalInvocationID.x].data = vec4(nextPos.x,nextPos.y,nextA,newHeading);
+	particlesArray[gl_GlobalInvocationID.x].data2 = vec4(vx,vy,0,0);
 }

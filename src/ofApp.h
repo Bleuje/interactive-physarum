@@ -12,7 +12,7 @@
 #define ORIGINAL_CONFIGS_NUMBER 36
 #define FRAME_RATE 60
 #define NUMBER_OF_COLOR_MODES 2
-#define NUMBER_OF_PARTICLES (512*512*21)
+#define NUMBER_OF_PARTICLES (512*512*22)
 #define MAX_NUMBER_OF_WAVES 5
 
 class ofApp : public ofBaseApp{
@@ -56,6 +56,8 @@ public:
     float curActionY = HEIGHT/2;
     float translationStep = 6.5;
     int currentWaveIndex = 0;
+    float curL2 = 0;
+    float curR2 = 0;
     std::array<float, MAX_NUMBER_OF_WAVES> waveXarray = {};
     std::array<float, MAX_NUMBER_OF_WAVES> waveYarray = {};
     std::array<float, MAX_NUMBER_OF_WAVES> waveTriggerTimes = {};

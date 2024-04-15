@@ -155,6 +155,8 @@ void ofApp::update(){
     moveShader.setUniform1fv("waveYarray", waveYarray.data(), waveYarray.size());
     moveShader.setUniform1fv("waveTriggerTimes", waveTriggerTimes.data(), waveTriggerTimes.size());
 
+    moveShader.setUniform1f("mouseXchange",1.0*ofGetMouseX()/ofGetWidth());
+    moveShader.setUniform1f("L2Action",ofMap(curL2,-1,1,0,1.0,true));
 
     moveShader.dispatchCompute(particles.size()/128,1,1);
     moveShader.end();
@@ -322,7 +324,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     }
     
 
-    /*
+    
     if(axisType==2)
     {
         curL2 = e.value;
@@ -331,7 +333,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     {
         curR2 = e.value;
     }
-    */
+    
 
     setSimulationParams(currentSelectedSet,selectedPoints[targetParamsIndex[currentSelectedSet]]);  
 }
