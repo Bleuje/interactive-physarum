@@ -50,4 +50,4 @@ It's designed for xbox gamepad.
 - button to decrease the pen size
 - button to increase the pen size
 - button for color style change
-- left trigger: control the use of inertia in movement (speed updates instead of movement updates)
+- left trigger: control the use of inertia in movement (speed updates instead of position updates)
