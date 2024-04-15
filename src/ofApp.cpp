@@ -526,9 +526,9 @@ void ofApp::setSimulationParams(int setIndex, int typeIndex)
     simulationParameters[setIndex].RA_exponent = ParametersMatrix[typeIndex][7];
     simulationParameters[setIndex].RA_amplitude = ParametersMatrix[typeIndex][8];
 
-    simulationParameters[setIndex].JumpDistance0 = ParametersMatrix[typeIndex][9];
-    simulationParameters[setIndex].JD_exponent = ParametersMatrix[typeIndex][10];
-    simulationParameters[setIndex].JD_amplitude = ParametersMatrix[typeIndex][11];
+    simulationParameters[setIndex].MoveDistance0 = ParametersMatrix[typeIndex][9];
+    simulationParameters[setIndex].MD_exponent = ParametersMatrix[typeIndex][10];
+    simulationParameters[setIndex].MD_amplitude = ParametersMatrix[typeIndex][11];
 
     simulationParameters[setIndex].SensorBias1 = ParametersMatrix[typeIndex][12];
     simulationParameters[setIndex].SensorBias2 = ParametersMatrix[typeIndex][13];
@@ -555,9 +555,9 @@ void ofApp::setSimulationParamsToSomeDefault(int i)
     simulationParameters[i].RA_exponent = 2.0;
     simulationParameters[i].RA_amplitude = 0.;
 
-    simulationParameters[i].JumpDistance0 = 0.75;
-    simulationParameters[i].JD_exponent = 2.0;
-    simulationParameters[i].JD_amplitude = 0.;
+    simulationParameters[i].MoveDistance0 = 0.75;
+    simulationParameters[i].MD_exponent = 2.0;
+    simulationParameters[i].MD_amplitude = 0.;
 
     simulationParameters[i].SensorBias1 = 0.;
     simulationParameters[i].SensorBias2 = 0.;

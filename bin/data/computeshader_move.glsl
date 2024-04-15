@@ -44,9 +44,9 @@ struct ParametersSet{
 	float RA_exponent;
 	float RA_amplitude;
 
-	float JumpDistance0;
-	float JD_exponent;
-	float JD_amplitude;
+	float MoveDistance0;
+	float MD_exponent;
+	float MD_amplitude;
 
 	float SensorBias1;
 	float SensorBias2;
@@ -184,9 +184,9 @@ void main(){
 	float SD_amplitude_mix = mix(currentParams_1.SD_amplitude, currentParams_2.SD_amplitude, lerper);
 	float SD_exponent_mix = mix(currentParams_1.SD_exponent, currentParams_2.SD_exponent, lerper);
 
-	float JumpDistance0_mix = mix(currentParams_1.JumpDistance0, currentParams_2.JumpDistance0, lerper);
-	float JD_amplitude_mix = mix(currentParams_1.JD_amplitude, currentParams_2.JD_amplitude, lerper);
-	float JD_exponent_mix = mix(currentParams_1.JD_exponent, currentParams_2.JD_exponent, lerper);
+	float MoveDistance0_mix = mix(currentParams_1.MoveDistance0, currentParams_2.MoveDistance0, lerper);
+	float MD_amplitude_mix = mix(currentParams_1.MD_amplitude, currentParams_2.MD_amplitude, lerper);
+	float MD_exponent_mix = mix(currentParams_1.MD_exponent, currentParams_2.MD_exponent, lerper);
 
 	float SensorAngle0_mix = mix(currentParams_1.SensorAngle0, currentParams_2.SensorAngle0, lerper);
 	float SA_amplitude_mix = mix(currentParams_1.SA_amplitude, currentParams_2.SA_amplitude, lerper);
@@ -203,7 +203,7 @@ void main(){
 	currentSensedValue = min(1.0,max(currentSensedValue, 0.000000001));
 
 	float sensorDistance = SensorDistance0_mix + SD_amplitude_mix * pow(currentSensedValue, SD_exponent_mix) * 250.0;
-	float jumpDistance = JumpDistance0_mix + JD_amplitude_mix * pow(currentSensedValue, JD_exponent_mix) * 250.0;
+	float moveDistance = MoveDistance0_mix + MD_amplitude_mix * pow(currentSensedValue, MD_exponent_mix) * 250.0;
 	float sensorAngle = SensorAngle0_mix + SA_amplitude_mix * pow(currentSensedValue, SA_exponent_mix);
 	float rotationAngle = RotationAngle0_mix + RA_amplitude_mix * pow(currentSensedValue, RA_exponent_mix);
 	
@@ -232,8 +232,8 @@ void main(){
 	float moveBiasFactor = 5 * lerper * noiseValue;
 	vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX,moveBiasActionY);
 
-	float px = particlePos.x + jumpDistance*cos(newHeading) + moveBias.x;
-	float py = particlePos.y + jumpDistance*sin(newHeading) + moveBias.y;
+	float px = particlePos.x + moveDistance*cos(newHeading) + moveBias.x;
+	float py = particlePos.y + moveDistance*sin(newHeading) + moveBias.y;
 	vec2 nextPos = vec2(mod(px + float(width),float(width)),mod(py + float(height),float(height)));
 	
 	uint depositAmount = uint(1);

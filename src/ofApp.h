@@ -116,9 +116,9 @@ public:
         float RA_exponent;
         float RA_amplitude;
 
-        float JumpDistance0;
-        float JD_exponent;
-        float JD_amplitude;
+        float MoveDistance0;
+        float MD_exponent;
+        float MD_amplitude;
 
         float SensorBias1;
         float SensorBias2;
