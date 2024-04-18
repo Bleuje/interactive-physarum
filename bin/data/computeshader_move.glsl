@@ -242,13 +242,15 @@ void main(){
 	float moveBiasFactor = 5 * lerper * noiseValue;
 	vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX,moveBiasActionY);
 
+	float velBias = 0.6*L2Action;
+
 	float px1 = particlePos.x + moveDistance*cos(newHeading) + moveBias.x;
 	float py1 = particlePos.y + moveDistance*sin(newHeading) + moveBias.y;
 	
 	vel *= 0.98;
 	float vf = 1.0;
-	float vx = vel.x + vf*cos(heading);
-	float vy = vel.y + vf*sin(heading);
+	float vx = vel.x + vf*cos(heading) + velBias*moveBias.x;
+	float vy = vel.y + vf*sin(heading) + velBias*moveBias.y;
 
 	//float dt = 0.05*moveDistance;
 	float dt = 0.07*pow(moveDistance,1.4);
