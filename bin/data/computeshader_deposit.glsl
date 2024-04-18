@@ -69,12 +69,5 @@ void main(){
 		vec3 rgb = hsv2rgb(hsv);
 		outputColor = vec4(rgb,1.0);
 	}
-	/*
-	else if(colorModeType == 2) // yellow
-	{
-		float trailColorValue = pow(tanh(9.0*pow(max(0.,(250*prevColor.z-1)/1100.0),0.3)),8.5)*1.05;
-		float trailColorValue2 = pow(tanh(9.0*pow(max(0.,(250*prevColor.z-1)/1100.0),0.3)),11.5)*1.15;
-		outputColor = vec4(trailColorValue2,0.4*countColorValue+0.7*trailColorValue,countColorValue,1.0);
-	}*/
 	imageStore(displayWrite,ivec2(gl_GlobalInvocationID.xy),outputColor);
 }

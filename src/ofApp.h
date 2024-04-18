@@ -37,7 +37,7 @@ public:
     float maxActionSize = 0.85;
     float getActionAreaSizeSigma();
     int displayType = 1;
-    int colorModeType = 0;
+    int colorModeType = 1;
     void drawCustomCircle(ofVec2f pos,float R,float r);
 
     float getTime();
