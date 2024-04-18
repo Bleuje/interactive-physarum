@@ -231,7 +231,7 @@ void main(){
 		newHeading = heading + rotationAngle;
 	}
 
-	float noiseValue = noise(vec3(relPos2.x,relPos2.t,0.3*time));
+	float noiseValue = noise(vec3(relPos2.x,relPos2.t,0.8*time));
 
 	float moveBiasFactor = 5 * lerper * noiseValue;
 	vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX,moveBiasActionY);
