@@ -108,9 +108,24 @@ float ofApp::getTime()
     return 1.0*ofGetFrameNum()/FRAME_RATE;
 }
 
+float ofApp::currentTransitionProgress()
+{
+    return ofMap(getTime() - transitionTriggerTime, 0, TRANSITION_TIME, 0., 1., true);
+}
+
+bool ofApp::activeTransition()
+{
+    return (getTime() - transitionTriggerTime) <= TRANSITION_TIME;
+}
+
 //--------------------------------------------------------------
 void ofApp::update(){
     float time = getTime();
+
+    if(activeTransition())
+    {
+        paramsUpdate();
+    }
 
     curActionX += curTranslationAxis1*translationStep;
     curActionY += curTranslationAxis2*translationStep;
@@ -207,6 +222,8 @@ void ofApp::actionSwapParams()
     int targetParamsIndexAux = targetParamsIndex[0];
     targetParamsIndex[0] = targetParamsIndex[1];
     targetParamsIndex[1] = targetParamsIndexAux;
+
+    transitionTriggerTime = getTime();
 }
 
 void ofApp::actionRandomParams()
@@ -215,6 +232,8 @@ void ofApp::actionRandomParams()
 
     targetParamsIndex[0] = floor(ofRandom(sz));
     targetParamsIndex[1] = floor(ofRandom(sz));
+
+    transitionTriggerTime = getTime();
 }
 
 void ofApp::actionChangeColorMode()
@@ -274,8 +293,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
         //actionResetTranslations();
     }
 
-    setSimulationParams(0,selectedPoints[targetParamsIndex[0]]);
-    setSimulationParams(1,selectedPoints[targetParamsIndex[1]]); 
+    paramsUpdate();
 }
 
 void ofApp::axisChanged(ofxGamepadAxisEvent& e)
@@ -482,6 +500,8 @@ void ofApp::actionChangeParams(int dir)
 {
     int sz = selectedPoints.size();
     targetParamsIndex[currentSelectedSet] = (targetParamsIndex[currentSelectedSet] + dir + sz)%sz;
+
+    transitionTriggerTime = getTime();
 }
 
 //--------------------------------------------------------------
@@ -509,31 +529,39 @@ void ofApp::switchToOtherType(int typeIndex)
     simulationParameters[currentSelectedSet] = savedSimulationParameters[targetParamsIndex[currentSelectedSet]];
 }
 
+template<class valueType>
+void ofApp::updateParamTowardsMatrixValue(valueType& value, int matrixColumnIndex, int typeIndex)
+{
+    float lerper = pow(currentTransitionProgress(),1.5);
+    value = ofLerp(value,ParametersMatrix[typeIndex][matrixColumnIndex],lerper);
+}
+
+void ofApp::paramsUpdate()
+{
+    setSimulationParams(0,selectedPoints[targetParamsIndex[0]]);
+    setSimulationParams(1,selectedPoints[targetParamsIndex[1]]); 
+}
+
 void ofApp::setSimulationParams(int setIndex, int typeIndex)
 {
     simulationParameters[setIndex].typeIndex = typeIndex;
-
-    simulationParameters[setIndex].defaultScalingFactor = ParametersMatrix[typeIndex][PARAMS_DIMENSION-1];
     simulationParameters[setIndex].scalingFactorCount = 0;
 
-    simulationParameters[setIndex].SensorDistance0 = ParametersMatrix[typeIndex][0];
-    simulationParameters[setIndex].SD_exponent = ParametersMatrix[typeIndex][1];
-    simulationParameters[setIndex].SD_amplitude = ParametersMatrix[typeIndex][2];
-
-    simulationParameters[setIndex].SensorAngle0 = ParametersMatrix[typeIndex][3];
-    simulationParameters[setIndex].SA_exponent = ParametersMatrix[typeIndex][4];
-    simulationParameters[setIndex].SA_amplitude = ParametersMatrix[typeIndex][5];
-
-    simulationParameters[setIndex].RotationAngle0 = ParametersMatrix[typeIndex][6];
-    simulationParameters[setIndex].RA_exponent = ParametersMatrix[typeIndex][7];
-    simulationParameters[setIndex].RA_amplitude = ParametersMatrix[typeIndex][8];
-
-    simulationParameters[setIndex].MoveDistance0 = ParametersMatrix[typeIndex][9];
-    simulationParameters[setIndex].MD_exponent = ParametersMatrix[typeIndex][10];
-    simulationParameters[setIndex].MD_amplitude = ParametersMatrix[typeIndex][11];
-
-    simulationParameters[setIndex].SensorBias1 = ParametersMatrix[typeIndex][12];
-    simulationParameters[setIndex].SensorBias2 = ParametersMatrix[typeIndex][13];
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].defaultScalingFactor, PARAMS_DIMENSION-1, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].SensorDistance0, 0, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].SD_exponent, 1, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].SD_amplitude, 2, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].SensorAngle0, 3, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].SA_exponent, 4, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].SA_amplitude, 5, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].RotationAngle0, 6, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].RA_exponent, 7, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].RA_amplitude, 8, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].MoveDistance0, 9, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].MD_exponent, 10, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].MD_amplitude, 11, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].SensorBias1, 12, typeIndex);
+    updateParamTowardsMatrixValue(simulationParameters[setIndex].SensorBias2, 13, typeIndex);
 
     simulationParametersBuffer.updateData(simulationParameters);
 }

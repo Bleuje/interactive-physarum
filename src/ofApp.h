@@ -14,6 +14,7 @@
 #define NUMBER_OF_COLOR_MODES 2
 #define NUMBER_OF_PARTICLES (512*512*22)
 #define MAX_NUMBER_OF_WAVES 5
+#define TRANSITION_TIME 0.5
 
 class ofApp : public ofBaseApp{
 
@@ -24,7 +25,14 @@ public:
 
     double scalingFactor;
     void setSimulationParamsToSomeDefault(int setIndex);
+
+    template<class valueType>
+    void updateParamTowardsMatrixValue(valueType& value, int matrixColumnIndex, int typeIndex);
+    bool activeTransition();
+
     void setSimulationParams(int setIndex, int typeIndex);
+    void paramsUpdate();
+
     void switchToOtherType(int typeIndex);
     std::array<int,NUMBER_OF_USED_POINTS> targetParamsIndex = {};
     int currentSelectedSet = 0;
@@ -41,6 +49,7 @@ public:
     void drawCustomCircle(ofVec2f pos,float R,float r);
 
     float getTime();
+    float currentTransitionProgress();
 
     void actionChangeSigmaCount(int dir);
     void actionChangeParams(int dir);
@@ -61,6 +70,7 @@ public:
     std::array<float, MAX_NUMBER_OF_WAVES> waveXarray = {};
     std::array<float, MAX_NUMBER_OF_WAVES> waveYarray = {};
     std::array<float, MAX_NUMBER_OF_WAVES> waveTriggerTimes = {};
+    float transitionTriggerTime = -12345;
     float waveActionAreaSizeSigma = 0.001;
 
     ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
