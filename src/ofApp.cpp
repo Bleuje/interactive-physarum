@@ -63,20 +63,6 @@ void ofApp::setup(){
 
     trailReadBuffer.end();
 
-    selectedPoints = {0,1,2,4,5,6,7,11,13,14,15,19,21,27,30,31,34,37,40};
-
-
-    for(int i=0;i<NUMBER_OF_USED_POINTS;i++)
-    {
-        setSimulationParamsToSomeDefault(i);
-    }
-
-    savedSimulationParameters.resize(ORIGINAL_CONFIGS_NUMBER);
-    for(int i=0;i<ORIGINAL_CONFIGS_NUMBER;i++)
-    {
-        savedSimulationParameters[i] = simulationParameters[currentSelectedSet];
-    }
-
     for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
     {
         waveXarray[i] = WIDTH/2;
@@ -96,6 +82,8 @@ void ofApp::setup(){
 	}
 	std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
     ////////////////////////////////////////
+
+    paramsUpdate();
 }
 
 float ofApp::getActionAreaSizeSigma()
@@ -217,21 +205,23 @@ void ofApp::actionChangeSigmaCount(int dir)
     sigmaCount = (sigmaCount + sigmaCountModulo + dir) % sigmaCountModulo;
 }
 
+void ofApp::actionChangeParams(int dir)
+{
+    pointsDataManager.changeParamIndex(dir);
+
+    transitionTriggerTime = getTime();
+}
+
 void ofApp::actionSwapParams()
 {
-    int targetParamsIndexAux = targetParamsIndex[0];
-    targetParamsIndex[0] = targetParamsIndex[1];
-    targetParamsIndex[1] = targetParamsIndexAux;
+    pointsDataManager.swapUsedPoints();
 
     transitionTriggerTime = getTime();
 }
 
 void ofApp::actionRandomParams()
 {
-    int sz = selectedPoints.size();
-
-    targetParamsIndex[0] = floor(ofRandom(sz));
-    targetParamsIndex[1] = floor(ofRandom(sz));
+    pointsDataManager.useRandomIndices();
 
     transitionTriggerTime = getTime();
 }
@@ -312,11 +302,11 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     }
     if(axisType==7 && e.value>0.5)
     {
-        currentSelectedSet = (currentSelectedSet - 1 + NUMBER_OF_USED_POINTS) % NUMBER_OF_USED_POINTS;
+        pointsDataManager.changeSelectionIndex(-1);
     }
     if(axisType==7 && e.value<-0.5)
     {
-        currentSelectedSet = (currentSelectedSet + 1 + NUMBER_OF_USED_POINTS) % NUMBER_OF_USED_POINTS;
+        pointsDataManager.changeSelectionIndex(1);
     }
     if(axisType==0 || axisType==1)
     {
@@ -353,7 +343,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     }
     
 
-    setSimulationParams(currentSelectedSet,selectedPoints[targetParamsIndex[currentSelectedSet]]);  
+    paramsUpdate();
 }
 
 void ofApp::buttonReleased(ofxGamepadButtonEvent& e)
@@ -437,9 +427,10 @@ void ofApp::draw(){
 
         ofTranslate(116*u,50*u + 50*setIndex*u);
         std::string prefix = setIndex==0 ? "pen: " : "background: ";
-        std::string setString = prefix + getPointName(targetParamsIndex[setIndex]) + (setIndex==currentSelectedSet ? " <" : "");
+        std::string setString = prefix + pointsDataManager.getPointName(setIndex)
+        + (setIndex==pointsDataManager.getSelectionIndex() ? " <" : "");
 
-        ofTrueTypeFont * pBoldOrNotFont = setIndex==currentSelectedSet ? &myFontBold : &myFont;
+        ofTrueTypeFont * pBoldOrNotFont = setIndex==pointsDataManager.getSelectionIndex() ? &myFontBold : &myFont;
 
         ofPushMatrix();
         ofSetColor(col);
@@ -489,21 +480,6 @@ void ofApp::draw(){
     ofPopMatrix();
 }
 
-std::string ofApp::getPointName(int targetParamsIndex_)
-{
-    std::string ret = "params ";
-    ret.push_back(char('A' + targetParamsIndex_));
-    return ret;
-}
-
-void ofApp::actionChangeParams(int dir)
-{
-    int sz = selectedPoints.size();
-    targetParamsIndex[currentSelectedSet] = (targetParamsIndex[currentSelectedSet] + dir + sz)%sz;
-
-    transitionTriggerTime = getTime();
-}
-
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     switch(key)
@@ -515,18 +491,11 @@ void ofApp::keyPressed(int key){
             actionChangeParams(-1);
             break;
         case ' ':
-            currentSelectedSet = (currentSelectedSet + 1) % NUMBER_OF_USED_POINTS;
+            pointsDataManager.changeSelectionIndex(1);
             break;
     }
 
-    setSimulationParams(currentSelectedSet,selectedPoints[targetParamsIndex[currentSelectedSet]]);  
-}
-
-void ofApp::switchToOtherType(int typeIndex)
-{
-    savedSimulationParameters[targetParamsIndex[currentSelectedSet]] = simulationParameters[currentSelectedSet];
-    targetParamsIndex[currentSelectedSet] = typeIndex;
-    simulationParameters[currentSelectedSet] = savedSimulationParameters[targetParamsIndex[currentSelectedSet]];
+    paramsUpdate();
 }
 
 template<class valueType>
@@ -538,59 +507,12 @@ void ofApp::updateParamTowardsMatrixValue(valueType& value, int matrixColumnInde
 
 void ofApp::paramsUpdate()
 {
-    setSimulationParams(0,selectedPoints[targetParamsIndex[0]]);
-    setSimulationParams(1,selectedPoints[targetParamsIndex[1]]); 
-}
+    pointsDataManager.updateCurrentValuesFromTransitionProgress(currentTransitionProgress());
 
-void ofApp::setSimulationParams(int setIndex, int typeIndex)
-{
-    simulationParameters[setIndex].typeIndex = typeIndex;
-    simulationParameters[setIndex].scalingFactorCount = 0;
-
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].defaultScalingFactor, PARAMS_DIMENSION-1, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].SensorDistance0, 0, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].SD_exponent, 1, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].SD_amplitude, 2, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].SensorAngle0, 3, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].SA_exponent, 4, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].SA_amplitude, 5, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].RotationAngle0, 6, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].RA_exponent, 7, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].RA_amplitude, 8, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].MoveDistance0, 9, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].MD_exponent, 10, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].MD_amplitude, 11, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].SensorBias1, 12, typeIndex);
-    updateParamTowardsMatrixValue(simulationParameters[setIndex].SensorBias2, 13, typeIndex);
-
-    simulationParametersBuffer.updateData(simulationParameters);
-}
-
-void ofApp::setSimulationParamsToSomeDefault(int i)
-{
-    simulationParameters[i].typeIndex = 1;
-
-    simulationParameters[i].defaultScalingFactor = 1.0;
-    simulationParameters[i].scalingFactorCount = 0;
-
-    simulationParameters[i].SensorDistance0 = 7;
-    simulationParameters[i].SD_exponent = 2.0;
-    simulationParameters[i].SD_amplitude = 0.;
-
-    simulationParameters[i].SensorAngle0 = TWO_PI/27;
-    simulationParameters[i].SA_exponent = 2.0;
-    simulationParameters[i].SA_amplitude = 0.;
-
-    simulationParameters[i].RotationAngle0 = TWO_PI/15;
-    simulationParameters[i].RA_exponent = 2.0;
-    simulationParameters[i].RA_amplitude = 0.;
-
-    simulationParameters[i].MoveDistance0 = 0.75;
-    simulationParameters[i].MD_exponent = 2.0;
-    simulationParameters[i].MD_amplitude = 0.;
-
-    simulationParameters[i].SensorBias1 = 0.;
-    simulationParameters[i].SensorBias2 = 0.;
+    for(int k=0;k<NUMBER_OF_USED_POINTS;k++)
+    {
+        simulationParameters[k] = pointsDataManager.getPointsParamsFromArray(pointsDataManager.currentPointValues[k]);
+    }
 
     simulationParametersBuffer.updateData(simulationParameters);
 }

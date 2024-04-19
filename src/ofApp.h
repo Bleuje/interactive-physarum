@@ -4,11 +4,10 @@
 
 #include "ofMain.h"
 #include "ofxGamepadHandler.h"
-#include "parametersChoices.h"
+#include "pointsManagement.h"
 
 #define WIDTH 1280
 #define HEIGHT 736
-#define NUMBER_OF_USED_POINTS 2
 #define ORIGINAL_CONFIGS_NUMBER 36
 #define FRAME_RATE 60
 #define NUMBER_OF_COLOR_MODES 2
@@ -36,7 +35,6 @@ public:
     void switchToOtherType(int typeIndex);
     std::array<int,NUMBER_OF_USED_POINTS> targetParamsIndex = {};
     int currentSelectedSet = 0;
-    std::string getPointName(int targetParamsIndex);
     void drawPad(float col, float alpha);
 
     float actionAreaSizeSigma = 0.3;
@@ -110,35 +108,8 @@ public:
 
     ofTrueTypeFont myFont, myFontBold;
 
-    struct ParametersSet{
-        int typeIndex;
+    PointsDataManager pointsDataManager;
 
-        float defaultScalingFactor;
-        int scalingFactorCount;
-
-        float SensorDistance0;
-        float SD_exponent;
-        float SD_amplitude;
-
-        float SensorAngle0;
-        float SA_exponent;
-        float SA_amplitude;
-
-        float RotationAngle0;
-        float RA_exponent;
-        float RA_amplitude;
-
-        float MoveDistance0;
-        float MD_exponent;
-        float MD_amplitude;
-
-        float SensorBias1;
-        float SensorBias2;
-    };
-
-    std::vector<ParametersSet> simulationParameters;
+    std::vector<PointSettings> simulationParameters;
     ofBufferObject simulationParametersBuffer;
-    std::vector<ParametersSet> savedSimulationParameters;
-
-    std::vector<int> selectedPoints;
 };

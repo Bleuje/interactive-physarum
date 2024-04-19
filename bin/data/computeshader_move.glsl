@@ -29,7 +29,7 @@ struct Particle{
 	vec4 data2;
 };
 
-struct ParametersSet{
+struct PointSettings{
 	int typeIndex;
 
 	float defaultScalingFactor;
@@ -57,7 +57,7 @@ struct ParametersSet{
 
 layout(std430,binding=5) buffer parameters
 {
-	ParametersSet params[];
+	PointSettings params[];
 };
 
 layout(rgba32f,binding=0) uniform readonly image2D src;
@@ -128,8 +128,8 @@ float propagatedWaveFunction(float x)
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main(){
 
-	ParametersSet currentParams_1 = params[1];
-	ParametersSet currentParams_2 = params[0];
+	PointSettings currentParams_1 = params[1];
+	PointSettings currentParams_2 = params[0];
 
 	float tunedSensorScaler_1 = currentParams_1.defaultScalingFactor * pow(1.05, currentParams_1.scalingFactorCount);
 	float tunedSensorScaler_2 = currentParams_2.defaultScalingFactor * pow(1.05, currentParams_2.scalingFactorCount);
