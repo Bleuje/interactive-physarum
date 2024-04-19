@@ -455,12 +455,12 @@ void ofApp::draw(){
     }
 
     ofPushMatrix();
-    ofTranslate(WIDTH*u*0.7,23*u);
+    ofTranslate(u*9,ofGetHeight() - 9*u);
     ofScale(0.7);
-    std::string creditString = "Inspiration and parameters from mxsage's \"36 points\", different implementation";
+    std::string creditString = "Inspiration and parameters from mxsage's \"36 points\"";
 
     ofPushMatrix();
-    ofSetColor(col);
+    ofSetColor(col,150);
     ofTranslate(-10*u,-32*u);
     ofDrawRectangle(0,0,20*u+myFont.stringWidth(creditString),41*u);
     ofPopMatrix();
