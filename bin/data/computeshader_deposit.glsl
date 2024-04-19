@@ -50,7 +50,7 @@ void main(){
 	float countColorValue = pow(tanh(7.5*pow(max(0.,(cnt-1)/1000.0),0.3)),8.5)*1.05;
 	countColorValue = min(1.0,countColorValue);
 	//float colorValue2 = pow(tanh(7.5*pow(max(0.,(250*val-1)/1000.0),0.3)),8.5)*1.05;
-	vec4 outputColor;
+	vec4 outputColor = vec4(0.,1.,0.,1.);
 	if(colorModeType == 0) // simple white on black
 	{
 		outputColor = vec4(countColorValue,countColorValue,countColorValue,1.0);

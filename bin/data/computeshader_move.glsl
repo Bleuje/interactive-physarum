@@ -249,8 +249,8 @@ void main(){
 	
 	vel *= 0.98;
 	float vf = 1.0;
-	float vx = vel.x + vf*cos(heading) + velBias*moveBias.x;
-	float vy = vel.y + vf*sin(heading) + velBias*moveBias.y;
+	float vx = vel.x + vf*cos(newHeading) + velBias*moveBias.x;
+	float vy = vel.y + vf*sin(newHeading) + velBias*moveBias.y;
 
 	//float dt = 0.05*moveDistance;
 	float dt = 0.07*pow(moveDistance,1.4);
