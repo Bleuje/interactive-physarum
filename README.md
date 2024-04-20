@@ -40,7 +40,7 @@ Sage Jenson's approach is to control the original physarum simulation parameters
 
 It's designed for xbox gamepad.
 
-- Have a "*pen*" with location controlled by a joystick. The area near the pen has different simulation parameters comapred to *background*, and linear interpolation (with a gaussian function) is done between pen and background.
+- Have a "*pen*" with location controlled by a joystick. The area near the pen has different simulation parameters compared to *background*, and linear interpolation (with a gaussian function) is done between pen and background.
 - The other joystick can displace particles near the pen area. Some noise is used for better looking displacement.
 - simulation parameters of pen and background areas can be chosen with pad controls, there are currently 19 kinds of settings.
 - button to set random settings
