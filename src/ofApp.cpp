@@ -101,12 +101,12 @@ float ofApp::getTime()
 
 float ofApp::currentTransitionProgress()
 {
-    return ofMap(getTime() - transitionTriggerTime, 0, TRANSITION_TIME, 0., 1., true);
+    return ofMap(getTime() - transitionTriggerTime, 0, TRANSITION_DURATION, 0., 1., true);
 }
 
 bool ofApp::activeTransition()
 {
-    return (getTime() - transitionTriggerTime) <= TRANSITION_TIME;
+    return (getTime() - transitionTriggerTime) <= TRANSITION_DURATION;
 }
 
 //--------------------------------------------------------------

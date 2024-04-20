@@ -12,7 +12,7 @@
 #define NUMBER_OF_COLOR_MODES 2
 #define NUMBER_OF_PARTICLES (512*512*22)
 #define MAX_NUMBER_OF_WAVES 5
-#define TRANSITION_TIME 0.5
+#define TRANSITION_DURATION 0.5
 
 class ofApp : public ofBaseApp{
 
