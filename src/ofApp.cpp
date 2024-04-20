@@ -75,10 +75,13 @@ void ofApp::setup(){
     numberOfGamepads = ofxGamepadHandler::get()->getNumPads();
 
 	if(numberOfGamepads>0){
-			ofxGamepad* pad = ofxGamepadHandler::get()->getGamepad(0);
+        for(int i=0;i<numberOfGamepads;i++)
+        {
+			ofxGamepad* pad = ofxGamepadHandler::get()->getGamepad(i);
 			ofAddListener(pad->onAxisChanged, this, &ofApp::axisChanged);
 			ofAddListener(pad->onButtonPressed, this, &ofApp::buttonPressed);
 			ofAddListener(pad->onButtonReleased, this, &ofApp::buttonReleased);
+        }
 	}
 	std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
     ////////////////////////////////////////
