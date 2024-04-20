@@ -46,8 +46,6 @@ void ofApp::setup(){
     }
     particlesBuffer.allocate(particles,GL_DYNAMIC_DRAW);
 
-    scalingFactor = 1.0;
-
     simulationParameters.resize(NUMBER_OF_USED_POINTS);
     simulationParametersBuffer.allocate(simulationParameters,GL_DYNAMIC_DRAW);
     simulationParametersBuffer.bindBase(GL_SHADER_STORAGE_BUFFER, 5);
@@ -499,13 +497,6 @@ void ofApp::keyPressed(int key){
     }
 
     paramsUpdate();
-}
-
-template<class valueType>
-void ofApp::updateParamTowardsMatrixValue(valueType& value, int matrixColumnIndex, int typeIndex)
-{
-    float lerper = pow(currentTransitionProgress(),1.5);
-    value = ofLerp(value,ParametersMatrix[typeIndex][matrixColumnIndex],lerper);
 }
 
 void ofApp::paramsUpdate()

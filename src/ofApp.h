@@ -21,13 +21,7 @@ public:
     void update();
     void draw();
 
-    double scalingFactor;
-    void setSimulationParamsToSomeDefault(int setIndex);
-
-    template<class valueType>
-    void updateParamTowardsMatrixValue(valueType& value, int matrixColumnIndex, int typeIndex);
     bool activeTransition();
-
     void setSimulationParams(int setIndex, int typeIndex);
     void paramsUpdate();
 
