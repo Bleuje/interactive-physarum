@@ -12,7 +12,7 @@ License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported Licen
 #### Crediting:
 Work derived from mxsage's 36 points (https://www.sagejenson.com/36points/) but with a different implementation.
 Before studying mxsage's code I already had a physarum simulation implementation. I modified my implementation to use the most important features of their algorithm.
-I'm using atomic counters on pixels and this is different. No fragment or vertex shader, only compute shader. I'm using the set of parameters from 36 Points. Some work well, some don't, I had to tune stuff. Currently, I'm using 19 points that seem to work quite well.
+I'm using atomic counters on pixels and this is different. No fragment or vertex shader, only compute shader. I'm using the set of parameters from 36 Points. Some work well, some don't, I had to tune stuff. Currently, I'm using 20 points that seem to work quite well.
 
 The license from 36 points is reproduced here.
 
