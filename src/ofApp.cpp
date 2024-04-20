@@ -229,6 +229,22 @@ void ofApp::actionChangeColorMode()
     colorModeType = (colorModeType + 1) % NUMBER_OF_COLOR_MODES;
 }
 
+void ofApp::actionTriggerWave()
+{
+    waveXarray[currentWaveIndex] = curActionX;
+    waveYarray[currentWaveIndex] = curActionY;
+    waveTriggerTimes[currentWaveIndex] = getTime();
+
+    currentWaveIndex = (currentWaveIndex + 1) % MAX_NUMBER_OF_WAVES;
+
+    waveActionAreaSizeSigma = getActionAreaSizeSigma();
+}
+
+void ofApp::actionChangeDisplayType()
+{
+    displayType = (displayType + 1) % 2;
+}
+
 void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
 {
 	//cout << "BUTTON " << e.button << " PRESSED" << endl;
@@ -243,17 +259,11 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     }
     if(buttonId == 2)
     {
-        waveXarray[currentWaveIndex] = curActionX;
-        waveYarray[currentWaveIndex] = curActionY;
-        waveTriggerTimes[currentWaveIndex] = getTime();
-
-        currentWaveIndex = (currentWaveIndex + 1) % MAX_NUMBER_OF_WAVES;
-
-        waveActionAreaSizeSigma = getActionAreaSizeSigma();
+        actionTriggerWave();
     }
     if(buttonId == 3)
     {
-        displayType = (displayType + 1) % 2;
+        actionChangeDisplayType();
     }
     if(buttonId == 4)
     {
@@ -282,6 +292,11 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     }
 
     paramsUpdate();
+}
+
+void ofApp::actionChangeSelectionIndex(int dir)
+{
+    pointsDataManager.changeSelectionIndex(-1);
 }
 
 void ofApp::axisChanged(ofxGamepadAxisEvent& e)

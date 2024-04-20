@@ -36,6 +36,10 @@ public:
     void actionSwapParams();
     void actionRandomParams();
     void actionChangeColorMode();
+    void actionTriggerWave();
+    void actionChangeDisplayType();
+    void actionChangeSelectionIndex(int dir);
+
 
     float actionAreaSizeSigma = 0.3;
     int sigmaCount = 2;
