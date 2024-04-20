@@ -49,14 +49,20 @@ struct PointsDataManager
 
   PointsDataManager()
   {
+    mean = {};
     for(int i=0;i<NumberOfBasePoints;i++)
     {
       PointData dataToAdd;
       for(int j=0;j<PARAMS_DIMENSION;j++)
       {
         dataToAdd[j] = ParametersMatrix[i][j];
+        mean[j] += ParametersMatrix[i][j];
       }
       currentPointsData.push_back(dataToAdd);
+    }
+    for(int j=0;j<PARAMS_DIMENSION;j++)
+    {
+      mean[j] /= NumberOfBasePoints;
     }
 
     for(int k=0;k<NUMBER_OF_USED_POINTS;k++)
@@ -165,7 +171,7 @@ struct PointsDataManager
 
   std::string getPointName(int selectionIndex)
   {
-      std::string ret = "params ";
+      std::string ret = "Point ";
       ret.push_back(char('A' + selectedIndices[selectionIndex]));
       return ret;
   }
@@ -183,4 +189,68 @@ struct PointsDataManager
   PointData currentPointValues[NUMBER_OF_USED_POINTS];
 
   std::vector<PointData> currentPointsData;
+
+  PointData mean;
+
+  float getValue(int settingIndex)
+  {
+    PointData point = currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]];
+
+    int index = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex+1);
+
+    return point[index];
+  }
+
+  std::string getSettingName(int settingIndex)
+  {
+    switch (settingIndex) {
+        case 0:
+            return "Scaling factor";
+        case 1:
+            return "Sensor Distance 0";
+        case 2:
+            return "SD exponent";
+        case 3:
+            return "SD amplitude";
+        case 4:
+            return "Sensor Angle 0";
+        case 5:
+            return "SA exponent";
+        case 6:
+            return "SA amplitude";
+        case 7:
+            return "Rotation Angle 0";
+        case 8:
+            return "RA exponent";
+        case 9:
+            return "RA amplitude";
+        case 10:
+            return "Move Distance 0";
+        case 11:
+            return "MD exponent";
+        case 12:
+            return "MD amplitude";
+        case 13:
+            return "SensorBias1";
+        case 14:
+            return "SensorBias2";
+        default:
+            return "Unknown";
+    }
+  }
+
+  void changeValue(int settingIndex,int dir)
+  {
+    int index = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex+1);
+    PointData& point = currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]];
+/*
+    float step = 0.05;
+    point[index] += mean[index]*step * dir;
+*/
+    float fStep = 1.04;
+    point[index] *= pow(fStep, dir);
+
+    usedPointsTargets[0] = currentPointsData[selectedPoints[selectedIndices[0]]];
+    usedPointsTargets[1] = currentPointsData[selectedPoints[selectedIndices[1]]];
+  }
 };

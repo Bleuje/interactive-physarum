@@ -16,6 +16,7 @@
 #define PEN_FADE_DURATION 1.0
 #define SPAWN_FRACTION 0.1
 #define ACTIVATE_PEN_FADE false
+#define SETTINGS_SIZE 15
 
 class ofApp : public ofBaseApp{
 
@@ -70,6 +71,8 @@ public:
     float waveActionAreaSizeSigma = 0.001;
     float penMoveLatestTime = -12345;
     int particlesSpawn = 0;
+    int settingsChangeMode = 0;
+    int settingsChangeIndex = 0;
 
     ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
     ofShader setterShader,moveShader,depositShader,blurShader;

@@ -296,7 +296,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     }
     if(buttonId == 6)
     {
-        //actionChange2D3D();
+        settingsChangeMode = (settingsChangeMode + 1) % 2;
     }
     if(buttonId == 7)
     {
@@ -323,19 +323,31 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     float value = e.value;
     if(axisType==6 && e.value>0.5)
     {
-        actionChangeParams(1);
+        if(settingsChangeMode == 0)
+            actionChangeParams(1);
+        else
+            pointsDataManager.changeValue(settingsChangeIndex,1);
     }
     if(axisType==6 && e.value<-0.5)
     {
-        actionChangeParams(-1);
+        if(settingsChangeMode == 0)
+            actionChangeParams(-1);
+        else
+            pointsDataManager.changeValue(settingsChangeIndex,-1);
     }
     if(axisType==7 && e.value>0.5)
     {
-        actionChangeSelectionIndex(-1);
+        if(settingsChangeMode == 0)
+            pointsDataManager.changeSelectionIndex(-1);
+        else
+            settingsChangeIndex = (settingsChangeIndex + 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
     }
     if(axisType==7 && e.value<-0.5)
     {
-        actionChangeSelectionIndex(1);
+        if(settingsChangeMode == 0)
+            pointsDataManager.changeSelectionIndex(1);
+        else
+            settingsChangeIndex = (settingsChangeIndex - 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
     }
     if(axisType==0 || axisType==1)
     {
@@ -469,6 +481,86 @@ void ofApp::draw(){
         ofPushMatrix();
         pBoldOrNotFont->drawString(setString,0,0);
         ofPopMatrix();
+        ofPopMatrix();
+    }
+
+    if(settingsChangeMode == 1)
+    {
+        ofPushMatrix();
+        ofTranslate(50*u,180*u);
+
+        std::string pointName = pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings:";
+
+        ofPushMatrix();
+        ofSetColor(col,110);
+        ofTranslate(-10*u,-32*u);
+        ofDrawRectangle(0,0,20*u + myFont.stringWidth(pointName),41*u);
+        ofPopMatrix();
+
+        ofSetColor(255-col);
+        ofPushMatrix();
+        myFont.drawString(pointName,0,0);
+        ofPopMatrix();
+
+
+        ofScale(0.8);
+
+        ofTranslate(0,25*u);
+
+        for(int i=0;i<SETTINGS_SIZE;i++)
+        {
+            ofTranslate(0,44*u);
+
+            ofTrueTypeFont * pBoldOrNotFont = i==settingsChangeIndex ? &myFontBold : &myFont;
+
+            std::string settingValueString = pointsDataManager.getSettingName(i) + " : "
+                + std::to_string(pointsDataManager.getValue(i))
+                + (i==settingsChangeIndex ? " <" : "");;
+
+            ofPushMatrix();
+            ofSetColor(col,110);
+            ofTranslate(-10*u,-32*u);
+            ofDrawRectangle(0,0,20*u + pBoldOrNotFont->stringWidth(settingValueString),41*u);
+            ofPopMatrix();
+
+            ofSetColor(255-col);
+            ofPushMatrix();
+            pBoldOrNotFont->drawString(settingValueString,0,0);
+            ofPopMatrix();
+        }
+
+
+        ofTranslate(0,80*u);
+
+        std::string pressA = "Press A to reset " + pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings";
+
+        ofPushMatrix();
+        ofSetColor(col,110);
+        ofTranslate(-10*u,-32*u);
+        ofDrawRectangle(0,0,20*u + myFontBold.stringWidth(pressA),41*u);
+        ofPopMatrix();
+
+        ofSetColor(255-col);
+        ofPushMatrix();
+        myFontBold.drawString(pressA,0,0);
+        ofPopMatrix();
+
+
+        ofTranslate(0,44*u);
+
+        std::string pressB = "Press B to reset settings of all points";
+
+        ofPushMatrix();
+        ofSetColor(col,110);
+        ofTranslate(-10*u,-32*u);
+        ofDrawRectangle(0,0,20*u + myFontBold.stringWidth(pressB),41*u);
+        ofPopMatrix();
+
+        ofSetColor(255-col);
+        ofPushMatrix();
+        myFontBold.drawString(pressB,0,0);
+        ofPopMatrix();
+
         ofPopMatrix();
     }
 
