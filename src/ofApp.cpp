@@ -84,6 +84,9 @@ void ofApp::setup(){
 	std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
     ////////////////////////////////////////
 
+
+    std::cout << "Number of points : " << pointsDataManager.getNumberOfPoints() << std::endl;
+
     paramsUpdate();
 }
 
@@ -245,6 +248,11 @@ void ofApp::actionChangeDisplayType()
     displayType = (displayType + 1) % 2;
 }
 
+void ofApp::actionChangeSelectionIndex(int dir)
+{
+    pointsDataManager.changeSelectionIndex(dir);
+}
+
 void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
 {
 	//cout << "BUTTON " << e.button << " PRESSED" << endl;
@@ -294,11 +302,6 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     paramsUpdate();
 }
 
-void ofApp::actionChangeSelectionIndex(int dir)
-{
-    pointsDataManager.changeSelectionIndex(-1);
-}
-
 void ofApp::axisChanged(ofxGamepadAxisEvent& e)
 {
 	//cout << "AXIS " << e.axis << " VALUE " << ofToString(e.value) << endl;
@@ -315,11 +318,11 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     }
     if(axisType==7 && e.value>0.5)
     {
-        pointsDataManager.changeSelectionIndex(-1);
+        actionChangeSelectionIndex(-1);
     }
     if(axisType==7 && e.value<-0.5)
     {
-        pointsDataManager.changeSelectionIndex(1);
+        actionChangeSelectionIndex(1);
     }
     if(axisType==0 || axisType==1)
     {

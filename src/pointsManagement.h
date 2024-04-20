@@ -45,6 +45,8 @@ struct PointsDataManager
 {
   using PointData = std::array<float,PARAMS_DIMENSION>;
 
+  std::vector<int> selectedPoints = {0,1,2,4,5,6,7,11,13,14,15,19,21,27,30,34,37,40,32,36};
+
   PointsDataManager()
   {
     for(int i=0;i<NumberOfBasePoints;i++)
@@ -168,7 +170,12 @@ struct PointsDataManager
       return ret;
   }
 
-  std::vector<int> selectedPoints = {0,1,2,4,5,6,7,11,13,14,15,19,21,27,30,34,37,40,32,36};
+  int getNumberOfPoints()
+  {
+    return selectedPoints.size();
+  }
+
+
   int currentSelectionIndex = 0;
 
   PointData usedPointsTargets[NUMBER_OF_USED_POINTS];
