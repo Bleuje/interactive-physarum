@@ -21,15 +21,8 @@ public:
     void update();
     void draw();
 
+    PointsDataManager pointsDataManager; // loading initial stuff with PointsDataManager::PointsDataManager()
     void paramsUpdate();
-
-    float actionAreaSizeSigma = 0.3;
-    int sigmaCount = 2;
-    int sigmaCountModulo = 6;
-    float maxActionSize = 0.85;
-    float getActionAreaSizeSigma();
-    int displayType = 1;
-    int colorModeType = 1;
 
     void drawCustomCircle(ofVec2f pos,float R,float r);
     void drawPad(float col, float alpha);
@@ -44,6 +37,14 @@ public:
     void actionRandomParams();
     void actionChangeColorMode();
 
+    float actionAreaSizeSigma = 0.3;
+    int sigmaCount = 2;
+    int sigmaCountModulo = 6;
+    float maxActionSize = 0.85;
+    float getActionAreaSizeSigma();
+
+    int displayType = 1;
+    int colorModeType = 1;
     float curTranslationAxis1 = 0;
     float curTranslationAxis2 = 0;
     float curMoveBiasActionX = 0;
@@ -66,15 +67,13 @@ public:
 
     std::vector<uint32_t> counter;
     ofBufferObject counterBuffer;
-
-    // int numFrames = 4000;
-
+    std::vector<PointSettings> simulationParameters;
+    ofBufferObject simulationParametersBuffer;
     struct Particle{
         glm::vec4 data;
         glm::vec4 data2;
     };
-
-    vector<Particle> particles;
+    std::vector<Particle> particles;
     ofBufferObject particlesBuffer;
 
     void keyPressed(int key);
@@ -97,8 +96,5 @@ public:
 
     ofTrueTypeFont myFont, myFontBold;
 
-    PointsDataManager pointsDataManager;
-
-    std::vector<PointSettings> simulationParameters;
-    ofBufferObject simulationParametersBuffer;
+    // int numFrames = 4000;
 };
