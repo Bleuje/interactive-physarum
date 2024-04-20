@@ -21,14 +21,7 @@ public:
     void update();
     void draw();
 
-    bool activeTransition();
-    void setSimulationParams(int setIndex, int typeIndex);
     void paramsUpdate();
-
-    void switchToOtherType(int typeIndex);
-    std::array<int,NUMBER_OF_USED_POINTS> targetParamsIndex = {};
-    int currentSelectedSet = 0;
-    void drawPad(float col, float alpha);
 
     float actionAreaSizeSigma = 0.3;
     int sigmaCount = 2;
@@ -37,10 +30,13 @@ public:
     float getActionAreaSizeSigma();
     int displayType = 1;
     int colorModeType = 1;
+
     void drawCustomCircle(ofVec2f pos,float R,float r);
+    void drawPad(float col, float alpha);
 
     float getTime();
     float currentTransitionProgress();
+    bool activeTransition();
 
     void actionChangeSigmaCount(int dir);
     void actionChangeParams(int dir);
