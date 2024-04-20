@@ -87,24 +87,16 @@ void ofApp::setup(){
     paramsUpdate();
 }
 
-float ofApp::getActionAreaSizeSigma()
+void ofApp::paramsUpdate()
 {
-    return ofMap(sigmaCount,0,sigmaCountModulo,0.15,maxActionSize);
-}
+    pointsDataManager.updateCurrentValuesFromTransitionProgress(currentTransitionProgress());
 
-float ofApp::getTime()
-{
-    return 1.0*ofGetFrameNum()/FRAME_RATE;
-}
+    for(int k=0;k<NUMBER_OF_USED_POINTS;k++)
+    {
+        simulationParameters[k] = pointsDataManager.getPointsParamsFromArray(pointsDataManager.currentPointValues[k]);
+    }
 
-float ofApp::currentTransitionProgress()
-{
-    return ofMap(getTime() - transitionTriggerTime, 0, TRANSITION_DURATION, 0., 1., true);
-}
-
-bool ofApp::activeTransition()
-{
-    return (getTime() - transitionTriggerTime) <= TRANSITION_DURATION;
+    simulationParametersBuffer.updateData(simulationParameters);
 }
 
 //--------------------------------------------------------------
@@ -200,6 +192,11 @@ void ofApp::update(){
     ofSetWindowTitle(strm.str());
 
 }
+
+
+
+
+// INTERACTION
 
 void ofApp::actionChangeSigmaCount(int dir)
 {
@@ -352,34 +349,28 @@ void ofApp::buttonReleased(ofxGamepadButtonEvent& e)
 	//cout << "BUTTON " << e.button << " RELEASED" << endl;
 }
 
-void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
-{
-	int mCircle = 14;
-    float r2 = ofMap(R,0,700,0.5*r,1.5*r)*1.0;
-
-    float time2 = getTime()*6;
-
-    for(int i=0;i<mCircle;i++)
+void ofApp::keyPressed(int key){
+    switch(key)
     {
-        float rot = 0.3*sin(PI*time2*0.03) + ofMap(i,0,mCircle,0,TWO_PI);
-
-        ofPushMatrix();
-        ofTranslate(pos.x, pos.y);
-        ofRotateRad(rot);
-        ofTranslate(R, 0);
-
-        ofFill();
-        ofSetRectMode(OF_RECTMODE_CENTER);
-        ofSetColor(255,120);
-        ofDrawRectangle(ofVec2f(0,0),r2+3,r2*6+3);
-        ofSetColor(0,190);
-        ofDrawRectangle(ofVec2f(0,0),r2,r2*6);
-        ofSetRectMode(OF_RECTMODE_CORNER);
-        ofPopMatrix();
+        case OF_KEY_DOWN:
+            actionChangeParams(1);
+            break;
+        case OF_KEY_UP:
+            actionChangeParams(-1);
+            break;
+        case ' ':
+            pointsDataManager.changeSelectionIndex(1);
+            break;
     }
+
+    paramsUpdate();
 }
 
-//--------------------------------------------------------------
+
+
+
+// DRAW
+
 void ofApp::draw(){
     ofPushMatrix();
 
@@ -481,34 +472,31 @@ void ofApp::draw(){
     ofPopMatrix();
 }
 
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-    switch(key)
-    {
-        case OF_KEY_DOWN:
-            actionChangeParams(1);
-            break;
-        case OF_KEY_UP:
-            actionChangeParams(-1);
-            break;
-        case ' ':
-            pointsDataManager.changeSelectionIndex(1);
-            break;
-    }
-
-    paramsUpdate();
-}
-
-void ofApp::paramsUpdate()
+void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
 {
-    pointsDataManager.updateCurrentValuesFromTransitionProgress(currentTransitionProgress());
+	int mCircle = 14;
+    float r2 = ofMap(R,0,700,0.5*r,1.5*r)*1.0;
 
-    for(int k=0;k<NUMBER_OF_USED_POINTS;k++)
+    float time2 = getTime()*6;
+
+    for(int i=0;i<mCircle;i++)
     {
-        simulationParameters[k] = pointsDataManager.getPointsParamsFromArray(pointsDataManager.currentPointValues[k]);
-    }
+        float rot = 0.3*sin(PI*time2*0.03) + ofMap(i,0,mCircle,0,TWO_PI);
 
-    simulationParametersBuffer.updateData(simulationParameters);
+        ofPushMatrix();
+        ofTranslate(pos.x, pos.y);
+        ofRotateRad(rot);
+        ofTranslate(R, 0);
+
+        ofFill();
+        ofSetRectMode(OF_RECTMODE_CENTER);
+        ofSetColor(255,120);
+        ofDrawRectangle(ofVec2f(0,0),r2+3,r2*6+3);
+        ofSetColor(0,190);
+        ofDrawRectangle(ofVec2f(0,0),r2,r2*6);
+        ofSetRectMode(OF_RECTMODE_CORNER);
+        ofPopMatrix();
+    }
 }
 
 // draw pad with arrows when explaining controls
@@ -533,6 +521,33 @@ void ofApp::drawPad(float col, float alpha)
     }
     ofPopMatrix();
 }
+
+
+
+
+// OTHER
+
+float ofApp::getActionAreaSizeSigma()
+{
+    return ofMap(sigmaCount,0,sigmaCountModulo,0.15,maxActionSize);
+}
+
+float ofApp::getTime()
+{
+    return 1.0*ofGetFrameNum()/FRAME_RATE;
+}
+
+float ofApp::currentTransitionProgress()
+{
+    return ofMap(getTime() - transitionTriggerTime, 0, TRANSITION_DURATION, 0., 1., true);
+}
+
+bool ofApp::activeTransition()
+{
+    return (getTime() - transitionTriggerTime) <= TRANSITION_DURATION;
+}
+
+
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
