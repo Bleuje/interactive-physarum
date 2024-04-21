@@ -15,6 +15,7 @@
 #define TRANSITION_DURATION 0.5
 #define PEN_FADE_DURATION 1.0
 #define SPAWN_FRACTION 0.1
+#define ACTIVATE_PEN_FADE false
 
 class ofApp : public ofBaseApp{
 

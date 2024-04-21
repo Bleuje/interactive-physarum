@@ -512,13 +512,15 @@ void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
 	int mCircle = 14;
     float r2 = ofMap(R,0,700,0.5*r,1.5*r)*1.0;
 
-    float time2 = getTime()*6;
-
-    float alphaFactor = ofMap(getTime() - penMoveLatestTime, 0, PEN_FADE_DURATION, 1, 0, true);
+    float alphaFactor = 1.0;
+    if(ACTIVATE_PEN_FADE) 
+    {
+        alphaFactor = ofMap(getTime() - penMoveLatestTime, 0, PEN_FADE_DURATION, 1, 0, true);
+    }
 
     for(int i=0;i<mCircle;i++)
     {
-        float rot = 0.3*sin(PI*time2*0.03) + ofMap(i,0,mCircle,0,TWO_PI);
+        float rot = 0.3*sin(PI*getTime()*0.18) + ofMap(i,0,mCircle,0,TWO_PI);
 
         ofPushMatrix();
         ofTranslate(pos.x, pos.y);

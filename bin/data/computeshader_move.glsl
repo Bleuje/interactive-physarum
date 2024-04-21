@@ -281,7 +281,7 @@ void main(){
 			float theta = randForTheta * 3.141592 * 2.0;
 			float r1;
 			if(spawnParticles==1) r1 = actionAreaSizeSigma * 0.55 * (0.95 + 0.1*randForRadius);
-			if(spawnParticles==2) r1 = actionAreaSizeSigma * 1.2 * pow(randForRadius,1.7);
+			if(spawnParticles==2) r1 = actionAreaSizeSigma * 1.0 * pow(randForRadius,1.5);
 
 			float sx1 = r1*cos(theta);
 			float sy1 = r1*sin(theta);
