@@ -222,9 +222,25 @@ struct PointsDataManager
   {
     PointData point = currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]];
 
-    int index = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex+1);
+    int matrixIndex = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex-1);
 
-    return point[index];
+    return point[matrixIndex];
+  }
+
+  void changeValue(int settingIndex,int dir)
+  {
+    int matrixIndex = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex-1);
+    PointData& point = currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]];
+
+    float step = 0.025;
+    point[matrixIndex] += mean[matrixIndex]*step * dir;
+    point[matrixIndex] = max(0.f,point[matrixIndex]);
+
+    // float fStep = 1.04;
+    // point[index] *= pow(fStep, dir);
+
+    usedPointsTargets[0] = currentPointsData[selectedPoints[selectedIndices[0]]];
+    usedPointsTargets[1] = currentPointsData[selectedPoints[selectedIndices[1]]];
   }
 
   std::string getSettingName(int settingIndex)
@@ -263,20 +279,5 @@ struct PointsDataManager
         default:
             return "Unknown";
     }
-  }
-
-  void changeValue(int settingIndex,int dir)
-  {
-    int index = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex+1);
-    PointData& point = currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]];
-/*
-    float step = 0.05;
-    point[index] += mean[index]*step * dir;
-*/
-    float fStep = 1.04;
-    point[index] *= pow(fStep, dir);
-
-    usedPointsTargets[0] = currentPointsData[selectedPoints[selectedIndices[0]]];
-    usedPointsTargets[1] = currentPointsData[selectedPoints[selectedIndices[1]]];
   }
 };
