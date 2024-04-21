@@ -46,6 +46,7 @@ struct PointsDataManager
   using PointData = std::array<float,PARAMS_DIMENSION>;
 
   std::vector<int> selectedPoints = {0,1,2,4,5,6,7,11,13,14,15,19,21,27,30,34,37,40,32,36};
+  std::map<int,int> matrixLineToCurrentDataLine;
 
   int currentSelectionIndex = 0;
   PointData usedPointsTargets[NUMBER_OF_USED_POINTS];
@@ -79,35 +80,41 @@ struct PointsDataManager
       currentPointValues[k] = currentPointsData[0];
       selectedIndices[k] = 0;
     }
+
+    for(int i=0;i<int(selectedPoints.size());i++)
+    {
+      matrixLineToCurrentDataLine[selectedPoints[i]] = i;
+    }
+  }
+
+  void reloadUsedPointsTargets()
+  {
+    for(int i=0;i<NUMBER_OF_USED_POINTS;i++)
+    {
+      usedPointsTargets[i] = currentPointsData[selectedPoints[selectedIndices[i]]];
+    }
   }
 
   void resetCurrentPoint()
   {
+    int chosenPoint = selectedIndices[currentSelectionIndex];
     for(int j=0;j<PARAMS_DIMENSION;j++)
     {
-      currentPointsData[selectedIndices[currentSelectionIndex]][j] = ParametersMatrix[selectedIndices[currentSelectionIndex]][j];
+      currentPointsData[selectedPoints[chosenPoint]][j] = ParametersMatrix[selectedPoints[chosenPoint]][j];
     }
-    usedPointsTargets[currentSelectionIndex] = currentPointsData[selectedIndices[currentSelectionIndex]];
-    for(int i=0;i<NUMBER_OF_USED_POINTS;i++)
-    {
-      if(selectedIndices[currentSelectionIndex] == selectedIndices[i])
-        usedPointsTargets[i] = currentPointsData[selectedIndices[i]];
-    }
+    reloadUsedPointsTargets();
   }
 
   void resetAllPoints()
   {
-    for(int i=0;i<NumberOfBasePoints;i++)
+    for(int i=0;i<int(selectedPoints.size());i++)
     {
       for(int j=0;j<PARAMS_DIMENSION;j++)
       {
-        currentPointsData[i][j] = ParametersMatrix[i][j];
+        currentPointsData[selectedPoints[i]][j] = ParametersMatrix[selectedPoints[i]][j];
       }
     }
-    for(int i=0;i<NUMBER_OF_USED_POINTS;i++)
-    {
-      usedPointsTargets[i] = currentPointsData[selectedIndices[i]];
-    }
+    reloadUsedPointsTargets();
   }
 
   PointSettings getPointsParamsFromArray(PointData pointData)
@@ -239,8 +246,8 @@ struct PointsDataManager
     // float fStep = 1.04;
     // point[index] *= pow(fStep, dir);
 
-    usedPointsTargets[0] = currentPointsData[selectedPoints[selectedIndices[0]]];
-    usedPointsTargets[1] = currentPointsData[selectedPoints[selectedIndices[1]]];
+    if(selectedPoints[selectedIndices[currentSelectionIndex]] == selectedPoints[selectedIndices[0]]) usedPointsTargets[0] = point;
+    if(selectedPoints[selectedIndices[currentSelectionIndex]] == selectedPoints[selectedIndices[1]]) usedPointsTargets[1] = point;
   }
 
   std::string getSettingName(int settingIndex)
