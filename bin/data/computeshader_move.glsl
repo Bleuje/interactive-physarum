@@ -24,6 +24,9 @@ uniform float waveTriggerTimes[MAX_NUMBER_OF_WAVES];
 uniform float mouseXchange;
 uniform float L2Action;
 
+uniform int spawnParticles;
+uniform float spawnFraction;
+
 struct Particle{
 	vec4 data;
 	vec4 data2;
@@ -117,6 +120,11 @@ float noise (vec3 st) {
 float gn(in vec2 coordinate, in float seed)
 {
 	return abs(fract(123.654*sin(distance(coordinate*(seed+0.118446744073709551614), vec2(0.118446744073709551614, 0.314159265358979323846264)))*0.141421356237309504880169));
+}
+
+vec2 getRandomPos(vec2 particlePos)
+{
+	return vec2(width*gn(particlePos*13.436515/width,14.365475),height*gn(particlePos*12.765177/width+vec2(353.647,958.6515),35.6198849));
 }
 
 float propagatedWaveFunction(float x)
@@ -263,6 +271,28 @@ void main(){
 	float px = mix(px1,px2,moveStyleLerper);
 	float py = mix(py1,py2,moveStyleLerper);
 
+	if(spawnParticles >= 1)
+	{
+		float randForChoice = gn(particlePos*53.146515/width,13.955475);
+		if(randForChoice < spawnFraction)
+		{
+			float randForRadius = gn(particlePos*22.698515/width,33.265475);
+			float randForTheta = gn(particlePos*8.129515/width,17.622475);
+			float theta = randForTheta * 3.141592 * 2.0;
+			float r1;
+			if(spawnParticles==1) r1 = actionAreaSizeSigma * 0.55 * (0.95 + 0.1*randForRadius);
+			if(spawnParticles==2) r1 = actionAreaSizeSigma * 1.2 * pow(randForRadius,1.7);
+
+			float sx1 = r1*cos(theta);
+			float sy1 = r1*sin(theta);
+			vec2 spos1 = vec2(sx1,sy1);
+			//spos1.x *= float(width)/height;
+			spos1 *= height;
+			px = actionX + spos1.x;
+			py = actionY + spos1.y;
+		}
+	}
+
 	vec2 nextPos = vec2(mod(px + float(width),float(width)),mod(py + float(height),float(height)));
 	
 	uint depositAmount = uint(1);
@@ -273,7 +303,7 @@ void main(){
 	float curA = pInput.z;
 	if (curA<reinitSegment)
 	{
-		nextPos = vec2(width*gn(particlePos*13.436515/width,14.365475),height*gn(particlePos*12.765177/width+vec2(353.647,958.6515),35.6198849));
+		nextPos = getRandomPos(particlePos);
   }
 	float nextA = fract(curA+reinitSegment);
 

@@ -157,6 +157,9 @@ void ofApp::update(){
     moveShader.setUniform1f("mouseXchange",1.0*ofGetMouseX()/ofGetWidth());
     moveShader.setUniform1f("L2Action",ofMap(curL2,-1,1,0,1.0,true));
 
+    moveShader.setUniform1i("spawnParticles", int(particlesSpawn));
+    moveShader.setUniform1f("spawnFraction",SPAWN_FRACTION);
+
     moveShader.dispatchCompute(particles.size()/128,1,1);
     moveShader.end();
 
@@ -189,6 +192,8 @@ void ofApp::update(){
     trailReadBuffer.begin();
     trailWriteBuffer.draw(0,0);
     trailReadBuffer.end();
+
+    if(particlesSpawn) particlesSpawn = 0;
 
     std::stringstream strm;
     strm << "fps: " << ofGetFrameRate();
@@ -254,6 +259,11 @@ void ofApp::actionChangeSelectionIndex(int dir)
     pointsDataManager.changeSelectionIndex(dir);
 }
 
+void ofApp::actionSpawnParticles(int spawnType)
+{
+    particlesSpawn = spawnType;
+}
+
 void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
 {
 	//cout << "BUTTON " << e.button << " PRESSED" << endl;
@@ -268,11 +278,13 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     }
     if(buttonId == 2)
     {
-        actionTriggerWave();
+        //actionTriggerWave();
+        actionSpawnParticles(2);
     }
     if(buttonId == 3)
     {
-        actionChangeDisplayType();
+        //actionChangeDisplayType();
+        actionSpawnParticles(1);
     }
     if(buttonId == 4)
     {

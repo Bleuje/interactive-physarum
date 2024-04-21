@@ -14,6 +14,7 @@
 #define MAX_NUMBER_OF_WAVES 5
 #define TRANSITION_DURATION 0.5
 #define PEN_FADE_DURATION 1.0
+#define SPAWN_FRACTION 0.1
 
 class ofApp : public ofBaseApp{
 
@@ -40,6 +41,7 @@ public:
     void actionTriggerWave();
     void actionChangeDisplayType();
     void actionChangeSelectionIndex(int dir);
+    void actionSpawnParticles(int spawnType);
 
 
     float actionAreaSizeSigma = 0.3;
@@ -66,6 +68,7 @@ public:
     float transitionTriggerTime = -12345;
     float waveActionAreaSizeSigma = 0.001;
     float penMoveLatestTime = -12345;
+    int particlesSpawn = 0;
 
     ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
     ofShader setterShader,moveShader,depositShader,blurShader;
