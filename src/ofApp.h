@@ -16,6 +16,8 @@
 #define PEN_FADE_DURATION 1.0
 #define SPAWN_FRACTION 0.1
 #define ACTIVATE_PEN_FADE false
+#define SETTINGS_SIZE 15
+#define SETTINGS_DISAPPEAR_DURATION 10
 
 class ofApp : public ofBaseApp{
 
@@ -29,6 +31,7 @@ public:
 
     void drawCustomCircle(ofVec2f pos,float R,float r);
     void drawPad(float col, float alpha);
+    void drawTextBox(float u, const std::string& stringToShow, ofTrueTypeFont* pFont, float col, float alpha);
 
     float getTime();
     float currentTransitionProgress();
@@ -70,6 +73,9 @@ public:
     float waveActionAreaSizeSigma = 0.001;
     float penMoveLatestTime = -12345;
     int particlesSpawn = 0;
+    int settingsChangeMode = 0;
+    int settingsChangeIndex = 0;
+    float latestPointSettingsActionTime = -12345;
 
     ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
     ofShader setterShader,moveShader,depositShader,blurShader;

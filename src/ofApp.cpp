@@ -111,6 +111,11 @@ void ofApp::update(){
         paramsUpdate();
     }
 
+    if((getTime() - latestPointSettingsActionTime) >= SETTINGS_DISAPPEAR_DURATION)
+    {
+        settingsChangeMode = 0;
+    }
+
     curActionX += curTranslationAxis1*translationStep;
     curActionY += curTranslationAxis2*translationStep;
 /*
@@ -270,11 +275,21 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     int buttonId = e.button;
     if(buttonId == 0)
     {
-        actionRandomParams();
+        if(settingsChangeMode == 0)
+            actionRandomParams();
+        else
+        {
+            pointsDataManager.resetCurrentPoint();
+        }
     }
     if(buttonId == 1)
     {
-        actionSwapParams();
+        if(settingsChangeMode == 0)
+            actionSwapParams();
+        else
+        {
+            pointsDataManager.resetAllPoints();
+        }
     }
     if(buttonId == 2)
     {
@@ -296,7 +311,8 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     }
     if(buttonId == 6)
     {
-        //actionChange2D3D();
+        settingsChangeMode = (settingsChangeMode + 1) % 2;
+        latestPointSettingsActionTime = getTime();
     }
     if(buttonId == 7)
     {
@@ -323,19 +339,43 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
     float value = e.value;
     if(axisType==6 && e.value>0.5)
     {
-        actionChangeParams(1);
+        if(settingsChangeMode == 0)
+            actionChangeParams(1);
+        else
+        {
+            pointsDataManager.changeValue(settingsChangeIndex,1);
+            latestPointSettingsActionTime = getTime();
+        }
     }
     if(axisType==6 && e.value<-0.5)
     {
-        actionChangeParams(-1);
+        if(settingsChangeMode == 0)
+            actionChangeParams(-1);
+        else
+        {
+            pointsDataManager.changeValue(settingsChangeIndex,-1);
+            latestPointSettingsActionTime = getTime();
+        }
     }
     if(axisType==7 && e.value>0.5)
     {
-        actionChangeSelectionIndex(-1);
+        if(settingsChangeMode == 0)
+            pointsDataManager.changeSelectionIndex(-1);
+        else
+        {
+            settingsChangeIndex = (settingsChangeIndex + 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
+            latestPointSettingsActionTime = getTime();
+        }
     }
     if(axisType==7 && e.value<-0.5)
     {
-        actionChangeSelectionIndex(1);
+        if(settingsChangeMode == 0)
+            pointsDataManager.changeSelectionIndex(1);
+        else
+        {
+            settingsChangeIndex = (settingsChangeIndex - 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
+            latestPointSettingsActionTime = getTime();
+        }
     }
     if(axisType==0 || axisType==1)
     {
@@ -458,17 +498,47 @@ void ofApp::draw(){
         + (setIndex==pointsDataManager.getSelectionIndex() ? " <" : "");
 
         ofTrueTypeFont * pBoldOrNotFont = setIndex==pointsDataManager.getSelectionIndex() ? &myFontBold : &myFont;
+        drawTextBox(u, setString, pBoldOrNotFont, col, 255);
 
-        ofPushMatrix();
-        ofSetColor(col);
-        ofTranslate(-10*u,-32*u);
-        ofDrawRectangle(0,0,20*u + pBoldOrNotFont->stringWidth(setString),41*u);
         ofPopMatrix();
+    }
 
-        ofSetColor(255-col);
+    if(settingsChangeMode == 1)
+    {
         ofPushMatrix();
-        pBoldOrNotFont->drawString(setString,0,0);
-        ofPopMatrix();
+        ofTranslate(50*u,180*u);
+
+        std::string pointName = pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings tuning:";
+        drawTextBox(u, pointName, &myFont, col, 255);
+
+
+        ofScale(0.8);
+
+        ofTranslate(0,25*u);
+
+        for(int i=0;i<SETTINGS_SIZE;i++)
+        {
+            ofTranslate(0,44*u);
+
+            ofTrueTypeFont * pBoldOrNotFont = i==settingsChangeIndex ? &myFontBold : &myFont;
+
+            std::string settingValueString = pointsDataManager.getSettingName(i) + " : "
+                + std::to_string(pointsDataManager.getValue(i))
+                + (i==settingsChangeIndex ? " <" : "");;
+
+            drawTextBox(u, settingValueString, pBoldOrNotFont, col, 110);
+        }
+
+
+        ofTranslate(0,80*u);
+        std::string pressA = "Press A to reset " + pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings";
+        drawTextBox(u, pressA, &myFontBold, col, 110);
+
+
+        ofTranslate(0,44*u);
+        std::string pressB = "Press B to reset settings of all points";
+        drawTextBox(u, pressB, &myFontBold, col, 110);
+
         ofPopMatrix();
     }
 
@@ -480,7 +550,7 @@ void ofApp::draw(){
     ofPushMatrix();
     ofSetColor(col,150);
     ofTranslate(-10*u,-32*u);
-    ofDrawRectangle(0,0,20*u+myFont.stringWidth(creditString),41*u);
+    ofDrawRectangle(0,0,20*u + myFont.stringWidth(creditString),41*u);
     ofPopMatrix();
 
     ofSetColor(255-col);
@@ -504,6 +574,20 @@ void ofApp::draw(){
     }
 */
 
+    ofPopMatrix();
+}
+
+void ofApp::drawTextBox(float u, const std::string& stringToShow, ofTrueTypeFont* pFont, float col, float alpha)
+{
+    ofPushMatrix();
+    ofSetColor(col,150);
+    ofTranslate(-10*u,-32*u);
+    ofDrawRectangle(0,0,20*u + pFont->stringWidth(stringToShow),41*u);
+    ofPopMatrix();
+
+    ofSetColor(255-col);
+    ofPushMatrix();
+    pFont->drawString(stringToShow,0,0);
     ofPopMatrix();
 }
 
