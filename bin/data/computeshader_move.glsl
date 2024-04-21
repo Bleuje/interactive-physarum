@@ -164,7 +164,7 @@ void main(){
 	// float lerper = particlePos.x/width;
 	vec2 relDiff = relPos - relActionPos;
 	relDiff.x *= float(width)/height;
-	float distanceNoiseFactor = (0.8 + 0.4*noise(vec3(relPos3.x,relPos3.t,0.8*time)));
+	float distanceNoiseFactor = (0.9 + 0.2*noise(vec3(relPos3.x,relPos3.t,0.6*time)));
 	float diffDist = distance(relDiff,vec2(0))*distanceNoiseFactor;
 	float lerper = exp(-diffDist*diffDist/actionAreaSizeSigma/actionAreaSizeSigma);
 
