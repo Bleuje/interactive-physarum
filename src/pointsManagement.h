@@ -190,8 +190,7 @@ struct PointsDataManager
     selectedIndices[0] = rand() % sz;
     selectedIndices[1] = rand() % sz;
 
-    usedPointsTargets[0] = currentPointsData[selectedPoints[selectedIndices[0]]];
-    usedPointsTargets[1] = currentPointsData[selectedPoints[selectedIndices[1]]];
+    reloadUsedPointsTargets();
   }
 
   void changeSelectionIndex(int dir)
@@ -229,25 +228,27 @@ struct PointsDataManager
   {
     PointData point = currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]];
 
-    int matrixIndex = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex-1);
+    int matrixColumnIndex = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex-1);
 
-    return point[matrixIndex];
+    return point[matrixColumnIndex];
   }
 
   void changeValue(int settingIndex,int dir)
   {
-    int matrixIndex = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex-1);
+    int matrixColumnIndex = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex-1);
     PointData& point = currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]];
 
     float step = 0.025;
-    point[matrixIndex] += mean[matrixIndex]*step * dir;
-    point[matrixIndex] = max(0.f,point[matrixIndex]);
+    point[matrixColumnIndex] += mean[matrixColumnIndex]*step * dir;
+    point[matrixColumnIndex] = max(0.f,point[matrixColumnIndex]);
 
     // float fStep = 1.04;
     // point[index] *= pow(fStep, dir);
 
-    if(selectedPoints[selectedIndices[currentSelectionIndex]] == selectedPoints[selectedIndices[0]]) usedPointsTargets[0] = point;
-    if(selectedPoints[selectedIndices[currentSelectionIndex]] == selectedPoints[selectedIndices[1]]) usedPointsTargets[1] = point;
+    for(int i=0;i<NUMBER_OF_USED_POINTS;i++)
+    {
+      if(selectedPoints[selectedIndices[currentSelectionIndex]] == selectedPoints[selectedIndices[i]]) usedPointsTargets[i] = point;
+    }
   }
 
   std::string getSettingName(int settingIndex)
