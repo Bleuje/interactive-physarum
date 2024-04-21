@@ -111,6 +111,11 @@ void ofApp::update(){
         paramsUpdate();
     }
 
+    if((getTime() - latestPointSettingsActionTime) >= SETTINGS_DISAPPEAR_DURATION)
+    {
+        settingsChangeMode = 0;
+    }
+
     curActionX += curTranslationAxis1*translationStep;
     curActionY += curTranslationAxis2*translationStep;
 /*
@@ -270,11 +275,21 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     int buttonId = e.button;
     if(buttonId == 0)
     {
-        actionRandomParams();
+        if(settingsChangeMode == 0)
+            actionRandomParams();
+        else
+        {
+            pointsDataManager.resetCurrentPoint();
+        }
     }
     if(buttonId == 1)
     {
-        actionSwapParams();
+        if(settingsChangeMode == 0)
+            actionSwapParams();
+        else
+        {
+            pointsDataManager.resetAllPoints();
+        }
     }
     if(buttonId == 2)
     {
@@ -297,6 +312,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     if(buttonId == 6)
     {
         settingsChangeMode = (settingsChangeMode + 1) % 2;
+        latestPointSettingsActionTime = getTime();
     }
     if(buttonId == 7)
     {
@@ -326,28 +342,40 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
         if(settingsChangeMode == 0)
             actionChangeParams(1);
         else
+        {
             pointsDataManager.changeValue(settingsChangeIndex,1);
+            latestPointSettingsActionTime = getTime();
+        }
     }
     if(axisType==6 && e.value<-0.5)
     {
         if(settingsChangeMode == 0)
             actionChangeParams(-1);
         else
+        {
             pointsDataManager.changeValue(settingsChangeIndex,-1);
+            latestPointSettingsActionTime = getTime();
+        }
     }
     if(axisType==7 && e.value>0.5)
     {
         if(settingsChangeMode == 0)
             pointsDataManager.changeSelectionIndex(-1);
         else
+        {
             settingsChangeIndex = (settingsChangeIndex + 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
+            latestPointSettingsActionTime = getTime();
+        }
     }
     if(axisType==7 && e.value<-0.5)
     {
         if(settingsChangeMode == 0)
             pointsDataManager.changeSelectionIndex(1);
         else
+        {
             settingsChangeIndex = (settingsChangeIndex - 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
+            latestPointSettingsActionTime = getTime();
+        }
     }
     if(axisType==0 || axisType==1)
     {
@@ -489,7 +517,7 @@ void ofApp::draw(){
         ofPushMatrix();
         ofTranslate(50*u,180*u);
 
-        std::string pointName = pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings:";
+        std::string pointName = pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings tuning:";
 
         ofPushMatrix();
         ofSetColor(col,110);

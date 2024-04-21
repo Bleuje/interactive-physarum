@@ -17,6 +17,7 @@
 #define SPAWN_FRACTION 0.1
 #define ACTIVATE_PEN_FADE false
 #define SETTINGS_SIZE 15
+#define SETTINGS_DISAPPEAR_DURATION 10
 
 class ofApp : public ofBaseApp{
 
@@ -73,6 +74,7 @@ public:
     int particlesSpawn = 0;
     int settingsChangeMode = 0;
     int settingsChangeIndex = 0;
+    float latestPointSettingsActionTime = -12345;
 
     ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
     ofShader setterShader,moveShader,depositShader,blurShader;
