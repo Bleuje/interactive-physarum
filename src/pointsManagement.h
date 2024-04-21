@@ -226,7 +226,8 @@ struct PointsDataManager
 
   float getValue(int settingIndex)
   {
-    PointData point = currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]];
+    int lineIndex = selectedPoints[selectedIndices[currentSelectionIndex]];
+    PointData point = currentPointsData[lineIndex];
 
     int matrixColumnIndex = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex-1);
 
@@ -236,10 +237,11 @@ struct PointsDataManager
   void changeValue(int settingIndex,int dir)
   {
     int matrixColumnIndex = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex-1);
-    PointData& point = currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]];
+    int lineIndex = selectedPoints[selectedIndices[currentSelectionIndex]];
+    PointData& point = currentPointsData[lineIndex];
 
     float meanStep = 0.025 * mean[matrixColumnIndex];
-    float defaultValue = ParametersMatrix[selectedPoints[selectedIndices[currentSelectionIndex]]][matrixColumnIndex];
+    float defaultValue = ParametersMatrix[lineIndex][matrixColumnIndex];
     float defaultValueStep = (defaultValue < 0.0000001 ? meanStep/2 : 0.05 * defaultValue);
     float step = min(meanStep,defaultValueStep);
     point[matrixColumnIndex] += step * dir;
@@ -250,7 +252,7 @@ struct PointsDataManager
 
     for(int i=0;i<NUMBER_OF_USED_POINTS;i++)
     {
-      if(selectedPoints[selectedIndices[currentSelectionIndex]] == selectedPoints[selectedIndices[i]]) usedPointsTargets[i] = point;
+      if(lineIndex == selectedPoints[selectedIndices[i]]) usedPointsTargets[i] = point;
     }
   }
 
