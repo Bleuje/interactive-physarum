@@ -309,7 +309,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     }
     if(buttonId == 9)
     {
-        //actionResetTranslations();
+        actionChangeDisplayType();
     }
 
     paramsUpdate();
