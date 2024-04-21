@@ -31,6 +31,7 @@ public:
 
     void drawCustomCircle(ofVec2f pos,float R,float r);
     void drawPad(float col, float alpha);
+    void drawTextBox(float u, const std::string& stringToShow, ofTrueTypeFont* pFont, float col, float alpha);
 
     float getTime();
     float currentTransitionProgress();

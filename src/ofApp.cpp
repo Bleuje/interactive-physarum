@@ -498,17 +498,8 @@ void ofApp::draw(){
         + (setIndex==pointsDataManager.getSelectionIndex() ? " <" : "");
 
         ofTrueTypeFont * pBoldOrNotFont = setIndex==pointsDataManager.getSelectionIndex() ? &myFontBold : &myFont;
+        drawTextBox(u, setString, pBoldOrNotFont, col, 255);
 
-        ofPushMatrix();
-        ofSetColor(col);
-        ofTranslate(-10*u,-32*u);
-        ofDrawRectangle(0,0,20*u + pBoldOrNotFont->stringWidth(setString),41*u);
-        ofPopMatrix();
-
-        ofSetColor(255-col);
-        ofPushMatrix();
-        pBoldOrNotFont->drawString(setString,0,0);
-        ofPopMatrix();
         ofPopMatrix();
     }
 
@@ -518,17 +509,7 @@ void ofApp::draw(){
         ofTranslate(50*u,180*u);
 
         std::string pointName = pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings tuning:";
-
-        ofPushMatrix();
-        ofSetColor(col,110);
-        ofTranslate(-10*u,-32*u);
-        ofDrawRectangle(0,0,20*u + myFont.stringWidth(pointName),41*u);
-        ofPopMatrix();
-
-        ofSetColor(255-col);
-        ofPushMatrix();
-        myFont.drawString(pointName,0,0);
-        ofPopMatrix();
+        drawTextBox(u, pointName, &myFont, col, 255);
 
 
         ofScale(0.8);
@@ -545,49 +526,18 @@ void ofApp::draw(){
                 + std::to_string(pointsDataManager.getValue(i))
                 + (i==settingsChangeIndex ? " <" : "");;
 
-            ofPushMatrix();
-            ofSetColor(col,110);
-            ofTranslate(-10*u,-32*u);
-            ofDrawRectangle(0,0,20*u + pBoldOrNotFont->stringWidth(settingValueString),41*u);
-            ofPopMatrix();
-
-            ofSetColor(255-col);
-            ofPushMatrix();
-            pBoldOrNotFont->drawString(settingValueString,0,0);
-            ofPopMatrix();
+            drawTextBox(u, settingValueString, pBoldOrNotFont, col, 110);
         }
 
 
         ofTranslate(0,80*u);
-
         std::string pressA = "Press A to reset " + pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings";
-
-        ofPushMatrix();
-        ofSetColor(col,110);
-        ofTranslate(-10*u,-32*u);
-        ofDrawRectangle(0,0,20*u + myFontBold.stringWidth(pressA),41*u);
-        ofPopMatrix();
-
-        ofSetColor(255-col);
-        ofPushMatrix();
-        myFontBold.drawString(pressA,0,0);
-        ofPopMatrix();
+        drawTextBox(u, pressA, &myFontBold, col, 110);
 
 
         ofTranslate(0,44*u);
-
         std::string pressB = "Press B to reset settings of all points";
-
-        ofPushMatrix();
-        ofSetColor(col,110);
-        ofTranslate(-10*u,-32*u);
-        ofDrawRectangle(0,0,20*u + myFontBold.stringWidth(pressB),41*u);
-        ofPopMatrix();
-
-        ofSetColor(255-col);
-        ofPushMatrix();
-        myFontBold.drawString(pressB,0,0);
-        ofPopMatrix();
+        drawTextBox(u, pressB, &myFontBold, col, 110);
 
         ofPopMatrix();
     }
@@ -600,7 +550,7 @@ void ofApp::draw(){
     ofPushMatrix();
     ofSetColor(col,150);
     ofTranslate(-10*u,-32*u);
-    ofDrawRectangle(0,0,20*u+myFont.stringWidth(creditString),41*u);
+    ofDrawRectangle(0,0,20*u + myFont.stringWidth(creditString),41*u);
     ofPopMatrix();
 
     ofSetColor(255-col);
@@ -624,6 +574,20 @@ void ofApp::draw(){
     }
 */
 
+    ofPopMatrix();
+}
+
+void ofApp::drawTextBox(float u, const std::string& stringToShow, ofTrueTypeFont* pFont, float col, float alpha)
+{
+    ofPushMatrix();
+    ofSetColor(col,150);
+    ofTranslate(-10*u,-32*u);
+    ofDrawRectangle(0,0,20*u + pFont->stringWidth(stringToShow),41*u);
+    ofPopMatrix();
+
+    ofSetColor(255-col);
+    ofPushMatrix();
+    pFont->drawString(stringToShow,0,0);
     ofPopMatrix();
 }
 
