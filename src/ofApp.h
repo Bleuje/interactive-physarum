@@ -13,6 +13,7 @@
 #define NUMBER_OF_PARTICLES (512*512*22)
 #define MAX_NUMBER_OF_WAVES 5
 #define TRANSITION_DURATION 0.5
+#define PEN_FADE_DURATION 1.0
 
 class ofApp : public ofBaseApp{
 
@@ -64,6 +65,7 @@ public:
     std::array<float, MAX_NUMBER_OF_WAVES> waveTriggerTimes = {};
     float transitionTriggerTime = -12345;
     float waveActionAreaSizeSigma = 0.001;
+    float penMoveLatestTime = -12345;
 
     ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
     ofShader setterShader,moveShader,depositShader,blurShader;

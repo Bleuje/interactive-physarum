@@ -204,6 +204,7 @@ void ofApp::update(){
 void ofApp::actionChangeSigmaCount(int dir)
 {
     sigmaCount = (sigmaCount + sigmaCountModulo + dir) % sigmaCountModulo;
+    penMoveLatestTime = getTime();
 }
 
 void ofApp::actionChangeParams(int dir)
@@ -332,6 +333,8 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
         {
             if(axisType==0) curTranslationAxis1 = e.value;
             if(axisType==1) curTranslationAxis2 = e.value;
+
+            penMoveLatestTime = getTime();
         }
     }
     
@@ -344,6 +347,8 @@ void ofApp::axisChanged(ofxGamepadAxisEvent& e)
         {
             if(axisType==3) curMoveBiasActionX = e.value;
             if(axisType==4) curMoveBiasActionY = e.value;
+
+            penMoveLatestTime = getTime();
         }
     }
     
@@ -497,6 +502,8 @@ void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
 
     float time2 = getTime()*6;
 
+    float alphaFactor = ofMap(getTime() - penMoveLatestTime, 0, PEN_FADE_DURATION, 1, 0, true);
+
     for(int i=0;i<mCircle;i++)
     {
         float rot = 0.3*sin(PI*time2*0.03) + ofMap(i,0,mCircle,0,TWO_PI);
@@ -508,9 +515,9 @@ void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
 
         ofFill();
         ofSetRectMode(OF_RECTMODE_CENTER);
-        ofSetColor(255,120);
+        ofSetColor(255,120*alphaFactor);
         ofDrawRectangle(ofVec2f(0,0),r2+3,r2*6+3);
-        ofSetColor(0,190);
+        ofSetColor(0,190*alphaFactor);
         ofDrawRectangle(ofVec2f(0,0),r2,r2*6);
         ofSetRectMode(OF_RECTMODE_CORNER);
         ofPopMatrix();
