@@ -238,8 +238,11 @@ struct PointsDataManager
     int matrixColumnIndex = (settingIndex==0 ? PARAMS_DIMENSION-1 : settingIndex-1);
     PointData& point = currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]];
 
-    float step = 0.025;
-    point[matrixColumnIndex] += mean[matrixColumnIndex]*step * dir;
+    float meanStep = 0.025 * mean[matrixColumnIndex];
+    float defaultValue = ParametersMatrix[selectedPoints[selectedIndices[currentSelectionIndex]]][matrixColumnIndex];
+    float defaultValueStep = (defaultValue < 0.0000001 ? meanStep/2 : 0.05 * defaultValue);
+    float step = min(meanStep,defaultValueStep);
+    point[matrixColumnIndex] += step * dir;
     point[matrixColumnIndex] = max(0.f,point[matrixColumnIndex]);
 
     // float fStep = 1.04;
