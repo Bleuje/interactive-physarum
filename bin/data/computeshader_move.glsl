@@ -191,7 +191,6 @@ void main(){
 	}
 
 	//float addedFromWave = pow(tanh(5.0*waveSum),5.0);
-	waveSum;
 
 	waveIntensity += 0.3*waveSum;
 	//lerper = mix(lerper,0.,tanh(5.*waveSum));
