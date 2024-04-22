@@ -292,7 +292,6 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     }
     if(buttonId == 2)
     {
-        //actionTriggerWave();
         actionSpawnParticles(2);
     }
     if(buttonId == 3)
@@ -319,8 +318,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
     }
     if(buttonId == 10)
     {
-        //actionResetScales();
-        //actionResetRotations();
+        actionTriggerWave();
     }
     if(buttonId == 9)
     {

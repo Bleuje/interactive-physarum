@@ -183,16 +183,18 @@ void main(){
 			vec2 relDiffWave = relPos - relWaveCenterPos;
 			relDiffWave.x *= float(width)/height;
 			float diffDistWave = distance(relDiffWave,vec2(0));
-			float noiseVariationFactor = (0.8 + 0.4*noise(vec3(relPos2.x,relPos2.t,0.3*time)));
+			float noiseVariationFactor = (0.9 + 0.2*noise(vec3(relPos2.x,relPos2.y,0.3*time)));
 
-			float varWave = diffDistWave/0.35 * noiseVariationFactor  - (time - waveTriggerTimes[i]);
+			float varWave = diffDistWave/0.3 * noiseVariationFactor  - (time - waveTriggerTimes[i]);
 			waveSum += 0.6*propagatedWaveFunction(varWave) * max(0.,1. - 0.3*diffDistWave/waveActionAreaSizeSigma*noiseVariationFactor);
 		}
 	}
 
-	//waveIntensity += waveSum;
+	//float addedFromWave = pow(tanh(5.0*waveSum),5.0);
+	float addedFromWave = waveSum;
 
-	lerper = mix(lerper,0.,tanh(5.*waveSum));
+	waveIntensity += 0.3*addedFromWave;
+	//lerper = mix(lerper,0.,tanh(5.*waveSum));
 	
 
 	float tunedSensorScaler_mix = mix(tunedSensorScaler_1, tunedSensorScaler_2, lerper);
@@ -266,7 +268,7 @@ void main(){
 	float px2 = particlePos.x + dt*vx + moveBias.x;
 	float py2 = particlePos.y + dt*vy + moveBias.y;
 
-	float moveStyleLerper = 0.6*L2Action;
+	float moveStyleLerper = 0.6*L2Action + 0.8*addedFromWave;
 
 	float px = mix(px1,px2,moveStyleLerper);
 	float py = mix(py1,py2,moveStyleLerper);
