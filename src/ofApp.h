@@ -19,6 +19,7 @@
 #define SETTINGS_SIZE 15
 #define SETTINGS_DISAPPEAR_DURATION 10
 #define ACTION_SIGMA_CHANGE_DURATION 0.26
+#define DIGITS_PRECISION 3
 
 class ofApp : public ofBaseApp{
 

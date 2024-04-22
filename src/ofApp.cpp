@@ -594,7 +594,7 @@ std::string ofApp::roundedString(float value)
 {
     std::stringstream stream;
     // Set fixed-point notation and round to three decimal places
-    stream << std::fixed << std::setprecision(3) << value;
+    stream << std::fixed << std::setprecision(DIGITS_PRECISION) << value;
     std::string result = stream.str();
     return result;
 }
