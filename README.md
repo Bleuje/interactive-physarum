@@ -45,9 +45,12 @@ It's designed for xbox gamepad.
 - simulation parameters of pen and background areas can be chosen with pad controls, there are currently 19 kinds of settings.
 - button to set random settings
 - button to swap the settings of pen and background
-- button to trigger a wave of background parameters, from the pen location
-- button to display or not the pen
+- button for center particles spawning
+- button for circular particles spawning
 - button to decrease the pen size
 - button to increase the pen size
+- joystick click to display or not the pen
+- joystick click to create wave (speed + sensing intensity)
 - button for color style change
+- button for points parameters tuning
 - left trigger: control the use of inertia in movement (speed updates instead of position updates)
