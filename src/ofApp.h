@@ -18,6 +18,7 @@
 #define ACTIVATE_PEN_FADE false
 #define SETTINGS_SIZE 15
 #define SETTINGS_DISAPPEAR_DURATION 10
+#define ACTION_SIGMA_CHANGE_DURATION 0.26
 
 class ofApp : public ofBaseApp{
 
@@ -32,6 +33,7 @@ public:
     void drawCustomCircle(ofVec2f pos,float R,float r);
     void drawPad(float col, float alpha);
     void drawTextBox(float u, const std::string& stringToShow, ofTrueTypeFont* pFont, float col, float alpha);
+    std::string roundedString(float value);
 
     float getTime();
     float currentTransitionProgress();
@@ -52,7 +54,9 @@ public:
     int sigmaCount = 2;
     int sigmaCountModulo = 6;
     float maxActionSize = 0.85;
-    float getActionAreaSizeSigma();
+    float currentActionAreaSizeSigma = 0.5;
+    float latestSigmaChangeTime = -12345;
+    void updateActionAreaSizeSigma();
 
     int displayType = 1;
     int colorModeType = 1;

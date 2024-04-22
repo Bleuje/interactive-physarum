@@ -106,10 +106,8 @@ void ofApp::paramsUpdate()
 void ofApp::update(){
     float time = getTime();
 
-    if(activeTransition())
-    {
-        paramsUpdate();
-    }
+    paramsUpdate();
+    updateActionAreaSizeSigma();
 
     if((getTime() - latestPointSettingsActionTime) >= SETTINGS_DISAPPEAR_DURATION)
     {
@@ -142,7 +140,7 @@ void ofApp::update(){
     moveShader.setUniform1i("height",trailReadBuffer.getHeight());
     moveShader.setUniform1f("time",time);
 
-    moveShader.setUniform1f("actionAreaSizeSigma",getActionAreaSizeSigma());
+    moveShader.setUniform1f("actionAreaSizeSigma",currentActionAreaSizeSigma);
     moveShader.setUniform1f("waveActionAreaSizeSigma",waveActionAreaSizeSigma);
 
     /*
@@ -215,6 +213,7 @@ void ofApp::actionChangeSigmaCount(int dir)
 {
     sigmaCount = (sigmaCount + sigmaCountModulo + dir) % sigmaCountModulo;
     penMoveLatestTime = getTime();
+    latestSigmaChangeTime = getTime();
 }
 
 void ofApp::actionChangeParams(int dir)
@@ -251,7 +250,7 @@ void ofApp::actionTriggerWave()
 
     currentWaveIndex = (currentWaveIndex + 1) % MAX_NUMBER_OF_WAVES;
 
-    waveActionAreaSizeSigma = getActionAreaSizeSigma();
+    waveActionAreaSizeSigma = currentActionAreaSizeSigma;
 }
 
 void ofApp::actionChangeDisplayType()
@@ -461,7 +460,7 @@ void ofApp::draw(){
         
         float time2 = getTime()*6;
 
-        float R = getActionAreaSizeSigma()*600*(1.0 + 0.08*sin(0.4f*time2));
+        float R = currentActionAreaSizeSigma*600*(1.0 + 0.08*sin(0.4f*time2));
 
         float cx = ofMap(curActionX,0,WIDTH,0,ofGetWidth());
         float cy = ofMap(curActionY,0,HEIGHT,0,ofGetHeight());
@@ -523,7 +522,7 @@ void ofApp::draw(){
             ofTrueTypeFont * pBoldOrNotFont = i==settingsChangeIndex ? &myFontBold : &myFont;
 
             std::string settingValueString = pointsDataManager.getSettingName(i) + " : "
-                + std::to_string(pointsDataManager.getValue(i))
+                + roundedString(pointsDataManager.getValue(i))
                 + (i==settingsChangeIndex ? " <" : "");;
 
             drawTextBox(u, settingValueString, pBoldOrNotFont, col, 110);
@@ -591,6 +590,15 @@ void ofApp::drawTextBox(float u, const std::string& stringToShow, ofTrueTypeFont
     ofPopMatrix();
 }
 
+std::string ofApp::roundedString(float value)
+{
+    std::stringstream stream;
+    // Set fixed-point notation and round to three decimal places
+    stream << std::fixed << std::setprecision(3) << value;
+    std::string result = stream.str();
+    return result;
+}
+
 void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
 {
 	int mCircle = 14;
@@ -650,9 +658,11 @@ void ofApp::drawPad(float col, float alpha)
 
 // OTHER
 
-float ofApp::getActionAreaSizeSigma()
+void ofApp::updateActionAreaSizeSigma()
 {
-    return ofMap(sigmaCount,0,sigmaCountModulo,0.15,maxActionSize);
+    float target = ofMap(sigmaCount,0,sigmaCountModulo,0.15,maxActionSize);
+    float lerper = pow(ofMap(getTime() - latestSigmaChangeTime, 0, ACTION_SIGMA_CHANGE_DURATION, 0, 1, true),1.7);
+    currentActionAreaSizeSigma = ofLerp(currentActionAreaSizeSigma, target, lerper);
 }
 
 float ofApp::getTime()
