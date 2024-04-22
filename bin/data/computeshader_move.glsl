@@ -191,9 +191,9 @@ void main(){
 	}
 
 	//float addedFromWave = pow(tanh(5.0*waveSum),5.0);
-	float addedFromWave = waveSum;
+	waveSum;
 
-	waveIntensity += 0.3*addedFromWave;
+	waveIntensity += 0.3*waveSum;
 	//lerper = mix(lerper,0.,tanh(5.*waveSum));
 	
 
@@ -268,7 +268,7 @@ void main(){
 	float px2 = particlePos.x + dt*vx + moveBias.x;
 	float py2 = particlePos.y + dt*vy + moveBias.y;
 
-	float moveStyleLerper = 0.6*L2Action + 0.8*addedFromWave;
+	float moveStyleLerper = 0.6*L2Action + 0.8*waveSum;
 
 	float px = mix(px1,px2,moveStyleLerper);
 	float py = mix(py1,py2,moveStyleLerper);
@@ -288,7 +288,6 @@ void main(){
 			float sx1 = r1*cos(theta);
 			float sy1 = r1*sin(theta);
 			vec2 spos1 = vec2(sx1,sy1);
-			//spos1.x *= float(width)/height;
 			spos1 *= height;
 			px = actionX + spos1.x;
 			py = actionY + spos1.y;
