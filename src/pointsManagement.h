@@ -242,7 +242,7 @@ struct PointsDataManager
 
     float meanStep = 0.025 * mean[matrixColumnIndex];
     float defaultValue = ParametersMatrix[lineIndex][matrixColumnIndex];
-    float defaultValueStep = (defaultValue < 0.0000001 ? meanStep/2 : 0.05 * defaultValue);
+    float defaultValueStep = (defaultValue < 0.00001 ? meanStep/2 : 0.05 * defaultValue);
     float step = min(meanStep,defaultValueStep);
     point[matrixColumnIndex] += step * dir;
     point[matrixColumnIndex] = max(0.f,point[matrixColumnIndex]);
@@ -260,7 +260,7 @@ struct PointsDataManager
   {
     switch (settingIndex) {
         case 0:
-            return "Scaling factor";
+            return "Sensing factor";
         case 1:
             return "Sensor Distance 0";
         case 2:
