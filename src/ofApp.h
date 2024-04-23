@@ -20,6 +20,7 @@
 #define SETTINGS_DISAPPEAR_DURATION 10
 #define ACTION_SIGMA_CHANGE_DURATION 0.26
 #define DIGITS_PRECISION 3
+#define MAX_NUMBER_OF_RANDOM_SPAWN 5
 
 class ofApp : public ofBaseApp{
 
@@ -82,6 +83,10 @@ public:
     int settingsChangeMode = 0;
     int settingsChangeIndex = 0;
     float latestPointSettingsActionTime = -12345;
+    std::array<float, MAX_NUMBER_OF_RANDOM_SPAWN> randomSpawnXarray = {};
+    std::array<float, MAX_NUMBER_OF_RANDOM_SPAWN> randomSpawnYarray = {};
+    int randomSpawnNumber = 0;
+    void setRandomSpawn();
 
     ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
     ofShader setterShader,moveShader,depositShader,blurShader;

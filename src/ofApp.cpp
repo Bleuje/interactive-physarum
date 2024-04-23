@@ -69,6 +69,12 @@ void ofApp::setup(){
         waveSavedSigmas[i] = 0.5;
     }
 
+    for(int i=0;i<MAX_NUMBER_OF_RANDOM_SPAWN;i++)
+    {
+        randomSpawnXarray[i] = WIDTH/2;
+        randomSpawnYarray[i] = HEIGHT/2;
+    }
+
     ////////////////////////////////////////
     // check if there is a gamepad connected
     numberOfGamepads = ofxGamepadHandler::get()->getNumPads();
@@ -163,6 +169,9 @@ void ofApp::update(){
 
     moveShader.setUniform1i("spawnParticles", int(particlesSpawn));
     moveShader.setUniform1f("spawnFraction",SPAWN_FRACTION);
+    moveShader.setUniform1i("randomSpawnNumber",randomSpawnNumber);
+    moveShader.setUniform1fv("randomSpawnXarray", randomSpawnXarray.data(), randomSpawnXarray.size());
+    moveShader.setUniform1fv("randomSpawnYarray", randomSpawnYarray.data(), randomSpawnYarray.size());
 
     moveShader.dispatchCompute(particles.size()/128,1,1);
     moveShader.end();
@@ -270,6 +279,10 @@ void ofApp::actionChangeSelectionIndex(int dir)
 void ofApp::actionSpawnParticles(int spawnType)
 {
     particlesSpawn = spawnType;
+    if(spawnType == 2)
+    {
+        setRandomSpawn();
+    }
 }
 
 void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
@@ -667,6 +680,22 @@ void ofApp::updateActionAreaSizeSigma()
     float target = ofMap(sigmaCount,0,sigmaCountModulo,0.15,maxActionSize);
     float lerper = pow(ofMap(getTime() - latestSigmaChangeTime, 0, ACTION_SIGMA_CHANGE_DURATION, 0, 1, true),1.7);
     currentActionAreaSizeSigma = ofLerp(currentActionAreaSizeSigma, target, lerper);
+}
+
+void ofApp::setRandomSpawn()
+{
+    //randomSpawnNumber = floor(ofRandom(MAX_NUMBER_OF_RANDOM_SPAWN/2,MAX_NUMBER_OF_RANDOM_SPAWN));
+    randomSpawnNumber = MAX_NUMBER_OF_RANDOM_SPAWN;
+
+    for(int i=0;i<randomSpawnNumber;i++)
+    {
+        float theta = ofRandom(0,TWO_PI);
+        float r = pow(ofRandom(0,1),0.5);
+        float x = r*cos(theta);
+        float y = r*sin(theta);
+        randomSpawnXarray[i] = x;
+        randomSpawnYarray[i] = y;
+    }
 }
 
 float ofApp::getTime()

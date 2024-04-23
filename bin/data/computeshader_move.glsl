@@ -1,7 +1,8 @@
 #version 440
 
-// warning: must match c++ code
+// warning: must be compatible c++ code
 #define MAX_NUMBER_OF_WAVES 5
+#define MAX_NUMBER_OF_RANDOM_SPAWN 7
 
 uniform int width;
 uniform int height;
@@ -26,6 +27,9 @@ uniform float L2Action;
 
 uniform int spawnParticles;
 uniform float spawnFraction;
+uniform int randomSpawnNumber;
+uniform float randomSpawnXarray[MAX_NUMBER_OF_WAVES];
+uniform float randomSpawnYarray[MAX_NUMBER_OF_WAVES];
 
 struct Particle{
 	vec4 data;
@@ -281,18 +285,29 @@ void main(){
 		if(randForChoice < spawnFraction)
 		{
 			float randForRadius = gn(particlePos*22.698515/width,33.265475);
-			float randForTheta = gn(particlePos*8.129515/width,17.622475);
-			float theta = randForTheta * 3.141592 * 2.0;
-			float r1;
-			if(spawnParticles==1) r1 = actionAreaSizeSigma * 0.55 * (0.95 + 0.1*randForRadius);
-			if(spawnParticles==2) r1 = actionAreaSizeSigma * 1.0 * pow(randForRadius,1.5);
 
-			float sx1 = r1*cos(theta);
-			float sy1 = r1*sin(theta);
-			vec2 spos1 = vec2(sx1,sy1);
-			spos1 *= height;
-			px = actionX + spos1.x;
-			py = actionY + spos1.y;
+			if(spawnParticles==1)
+			{
+				float randForTheta = gn(particlePos*8.129515/width,17.622475);
+				float theta = randForTheta * 3.141592 * 2.0;
+				float r1 = actionAreaSizeSigma * 0.55 * (0.95 + 0.1*randForRadius);
+				float sx = r1*cos(theta);
+				float sy = r1*sin(theta);
+				vec2 spos = vec2(sx,sy);
+				spos *= height;
+				px = actionX + spos.x;
+				py = actionY + spos.y;
+			}
+			if(spawnParticles==2)
+			{
+				int randForSpawnIndex = int(floor(randomSpawnNumber * gn(particlePos*28.218515/width,35.435475)));
+				float sx = randomSpawnXarray[randForSpawnIndex];
+				float sy = randomSpawnYarray[randForSpawnIndex];
+				vec2 spos = 0.65 * actionAreaSizeSigma * vec2(sx,sy) * (0.9 + 0.1*randForRadius);
+				spos *= height;
+				px = actionX + spos.x;
+				py = actionY + spos.y;
+			}
 		}
 	}
 
