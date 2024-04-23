@@ -45,7 +45,7 @@ struct PointsDataManager
 {
   using PointData = std::array<float,PARAMS_DIMENSION>;
 
-  std::vector<int> selectedPoints = {0,1,2,4,5,6,7,11,13,14,15,19,21,27,30,34,37,40,32,36};
+  std::vector<int> selectedPoints = {0,7,2,36,5,6,11,1,13,14,15,21,27,30,34,37,40,32}; // 19?
   std::map<int,int> matrixLineToCurrentDataLine;
 
   int currentSelectionIndex = 0;
