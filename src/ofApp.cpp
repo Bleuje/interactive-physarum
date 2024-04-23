@@ -66,6 +66,7 @@ void ofApp::setup(){
         waveXarray[i] = WIDTH/2;
         waveYarray[i] = HEIGHT/2;
         waveTriggerTimes[i] = -12345;
+        waveSavedSigmas[i] = 0.5;
     }
 
     ////////////////////////////////////////
@@ -141,7 +142,6 @@ void ofApp::update(){
     moveShader.setUniform1f("time",time);
 
     moveShader.setUniform1f("actionAreaSizeSigma",currentActionAreaSizeSigma);
-    moveShader.setUniform1f("waveActionAreaSizeSigma",waveActionAreaSizeSigma);
 
     /*
     moveShader.setUniform1f("actionX",ofGetMouseX());
@@ -156,6 +156,7 @@ void ofApp::update(){
     moveShader.setUniform1fv("waveXarray", waveXarray.data(), waveXarray.size());
     moveShader.setUniform1fv("waveYarray", waveYarray.data(), waveYarray.size());
     moveShader.setUniform1fv("waveTriggerTimes", waveTriggerTimes.data(), waveTriggerTimes.size());
+    moveShader.setUniform1fv("waveSavedSigmas", waveSavedSigmas.data(), waveSavedSigmas.size());
 
     moveShader.setUniform1f("mouseXchange",1.0*ofGetMouseX()/ofGetWidth());
     moveShader.setUniform1f("L2Action",ofMap(curL2,-1,1,0,1.0,true));
@@ -247,10 +248,13 @@ void ofApp::actionTriggerWave()
     waveXarray[currentWaveIndex] = curActionX;
     waveYarray[currentWaveIndex] = curActionY;
     waveTriggerTimes[currentWaveIndex] = getTime();
+    waveSavedSigmas[currentWaveIndex] = currentActionAreaSizeSigma;
 
     currentWaveIndex = (currentWaveIndex + 1) % MAX_NUMBER_OF_WAVES;
 
     waveActionAreaSizeSigma = currentActionAreaSizeSigma;
+
+
 }
 
 void ofApp::actionChangeDisplayType()

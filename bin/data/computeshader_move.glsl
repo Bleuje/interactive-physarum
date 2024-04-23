@@ -9,7 +9,6 @@ uniform int height;
 uniform float time;
 
 uniform float actionAreaSizeSigma;
-uniform float waveActionAreaSizeSigma;
 
 uniform float actionX;
 uniform float actionY;
@@ -20,6 +19,7 @@ uniform float moveBiasActionY;
 uniform float waveXarray[MAX_NUMBER_OF_WAVES];
 uniform float waveYarray[MAX_NUMBER_OF_WAVES];
 uniform float waveTriggerTimes[MAX_NUMBER_OF_WAVES];
+uniform float waveSavedSigmas[MAX_NUMBER_OF_WAVES];
 
 uniform float mouseXchange;
 uniform float L2Action;
@@ -127,11 +127,11 @@ vec2 getRandomPos(vec2 particlePos)
 	return vec2(width*gn(particlePos*13.436515/width,14.365475),height*gn(particlePos*12.765177/width+vec2(353.647,958.6515),35.6198849));
 }
 
-float propagatedWaveFunction(float x)
+float propagatedWaveFunction(float x,float sigma)
 {
 	//float waveSigma = 0.5*(0.4 + 0.8*waveActionAreaSizeSigma);
-	float waveSigma = 0.3;
-	return float(x >= 0.)*exp(-x*x/waveSigma/waveSigma);
+	float waveSigma = 0.2 + 0.5*sigma;
+	return float(x <= 0.)*exp(-x*x/waveSigma/waveSigma);
 }
 
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
@@ -186,8 +186,8 @@ void main(){
 			float noiseVariationFactor = (0.9 + 0.2*noise(vec3(relPos2.x,relPos2.y,0.3*time)));
 
 			float varWave = diffDistWave/0.3 * noiseVariationFactor  - (time - waveTriggerTimes[i]);
-			float sigmaVariation = pow(waveActionAreaSizeSigma,0.75);
-			waveSum += 0.6*propagatedWaveFunction(varWave) * max(0.,1. - 0.3*diffDistWave/sigmaVariation*noiseVariationFactor);
+			float sigmaVariation = pow(waveSavedSigmas[i],0.75);
+			waveSum += 0.6*propagatedWaveFunction(varWave,waveSavedSigmas[i]) * max(0.,1. - 0.3*diffDistWave/sigmaVariation*noiseVariationFactor);
 		}
 	}
 

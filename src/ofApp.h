@@ -74,6 +74,7 @@ public:
     std::array<float, MAX_NUMBER_OF_WAVES> waveXarray = {};
     std::array<float, MAX_NUMBER_OF_WAVES> waveYarray = {};
     std::array<float, MAX_NUMBER_OF_WAVES> waveTriggerTimes = {};
+    std::array<float, MAX_NUMBER_OF_WAVES> waveSavedSigmas = {};
     float transitionTriggerTime = -12345;
     float waveActionAreaSizeSigma = 0.001;
     float penMoveLatestTime = -12345;
