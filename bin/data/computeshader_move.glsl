@@ -183,7 +183,7 @@ void main(){
 			vec2 relDiffWave = relPos - relWaveCenterPos;
 			relDiffWave.x *= float(width)/height;
 			float diffDistWave = distance(relDiffWave,vec2(0));
-			float noiseVariationFactor = (0.9 + 0.2*noise(vec3(relPos2.x,relPos2.y,0.3*time)));
+			float noiseVariationFactor = (0.95 + 0.1*noise(vec3(relPos2.x,relPos2.y,0.3*time)));
 
 			float varWave = diffDistWave/0.3 * noiseVariationFactor  - (time - waveTriggerTimes[i]);
 			float sigmaVariation = pow(waveSavedSigmas[i],0.75);
