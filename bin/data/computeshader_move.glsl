@@ -129,8 +129,9 @@ vec2 getRandomPos(vec2 particlePos)
 
 float propagatedWaveFunction(float x)
 {
-	float sigmaWave = 0.5 * waveActionAreaSizeSigma;
-	return exp(-x*x/sigmaWave/sigmaWave);
+	//float waveSigma = 0.5*(0.4 + 0.8*waveActionAreaSizeSigma);
+	float waveSigma = 0.3;
+	return float(x >= 0.)*exp(-x*x/waveSigma/waveSigma);
 }
 
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
@@ -171,7 +172,6 @@ void main(){
 
 
 	float waveIntensity = 1.0;
-
 	float waveSum = 0.;
 	
 	for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
@@ -186,11 +186,13 @@ void main(){
 			float noiseVariationFactor = (0.9 + 0.2*noise(vec3(relPos2.x,relPos2.y,0.3*time)));
 
 			float varWave = diffDistWave/0.3 * noiseVariationFactor  - (time - waveTriggerTimes[i]);
-			waveSum += 0.6*propagatedWaveFunction(varWave) * max(0.,1. - 0.3*diffDistWave/waveActionAreaSizeSigma*noiseVariationFactor);
+			float sigmaVariation = pow(waveActionAreaSizeSigma,0.75);
+			waveSum += 0.6*propagatedWaveFunction(varWave) * max(0.,1. - 0.3*diffDistWave/sigmaVariation*noiseVariationFactor);
 		}
 	}
 
 	//float addedFromWave = pow(tanh(5.0*waveSum),5.0);
+	waveSum = 1.7*tanh(waveSum/1.7) + 0.4*tanh(4.*waveSum);
 
 	waveIntensity += 0.3*waveSum;
 	//lerper = mix(lerper,0.,tanh(5.*waveSum));
@@ -275,6 +277,7 @@ void main(){
 	if(spawnParticles >= 1)
 	{
 		float randForChoice = gn(particlePos*53.146515/width,13.955475);
+
 		if(randForChoice < spawnFraction)
 		{
 			float randForRadius = gn(particlePos*22.698515/width,33.265475);
