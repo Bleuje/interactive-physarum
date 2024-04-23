@@ -196,7 +196,7 @@ void ofApp::update(){
     blurShader.setUniform1i("width",trailReadBuffer.getWidth());
     blurShader.setUniform1i("height",trailReadBuffer.getHeight());
     blurShader.setUniform1f("PI",PI);
-    blurShader.setUniform1f("decayFactor",0.75);
+    blurShader.setUniform1f("decayFactor",DECAY_FACTOR);
     blurShader.setUniform1f("time",time);
     blurShader.dispatchCompute(trailReadBuffer.getWidth()/32,trailReadBuffer.getHeight()/32,1);
     blurShader.end();

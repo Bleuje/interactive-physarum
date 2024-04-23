@@ -21,6 +21,7 @@
 #define ACTION_SIGMA_CHANGE_DURATION 0.26
 #define DIGITS_PRECISION 3
 #define MAX_NUMBER_OF_RANDOM_SPAWN 5
+#define DECAY_FACTOR 0.75
 
 class ofApp : public ofBaseApp{
 
