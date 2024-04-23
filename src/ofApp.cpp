@@ -8,8 +8,12 @@ void ofApp::setup(){
 
     ofEnableAntiAliasing();
 
-    myFont.load("fonts/Raleway-Regular.ttf",floor(15.0*ofGetHeight()/HEIGHT));
-    myFontBold.load("fonts/Raleway-Bold.ttf",floor(15.0*ofGetHeight()/HEIGHT));
+    float correcter = float(736)/1080;
+    float adaptationRatio = float(ofGetHeight())/HEIGHT;
+    u = adaptationRatio * correcter;
+
+    myFont.load("fonts/Raleway-Regular.ttf",floor(15.0 * adaptationRatio));
+    myFontBold.load("fonts/Raleway-Bold.ttf",floor(15.0 * adaptationRatio));
 
     counter.resize(WIDTH*HEIGHT);
     counterBuffer.allocate(counter, GL_DYNAMIC_DRAW);
@@ -463,6 +467,8 @@ void ofApp::keyPressed(int key){
 // DRAW
 
 void ofApp::draw(){
+    u = float(ofGetHeight())/HEIGHT * float(736)/1080;
+
     ofPushMatrix();
 
     ofPushMatrix();
@@ -494,7 +500,6 @@ void ofApp::draw(){
     ofPushMatrix();
 
     float col = 0;
-    float u = ofGetHeight()/HEIGHT;
 
     for(int setIndex=0;setIndex<NUMBER_OF_USED_POINTS;setIndex++)
     {
@@ -514,7 +519,7 @@ void ofApp::draw(){
         + (setIndex==pointsDataManager.getSelectionIndex() ? " <" : "");
 
         ofTrueTypeFont * pBoldOrNotFont = setIndex==pointsDataManager.getSelectionIndex() ? &myFontBold : &myFont;
-        drawTextBox(u, setString, pBoldOrNotFont, col, 255);
+        drawTextBox(setString, pBoldOrNotFont, col, 255);
 
         ofPopMatrix();
     }
@@ -525,7 +530,7 @@ void ofApp::draw(){
         ofTranslate(50*u,180*u);
 
         std::string pointName = pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings tuning:";
-        drawTextBox(u, pointName, &myFont, col, 255);
+        drawTextBox(pointName, &myFont, col, 255);
 
 
         ofScale(0.8);
@@ -542,18 +547,18 @@ void ofApp::draw(){
                 + roundedString(pointsDataManager.getValue(i))
                 + (i==settingsChangeIndex ? " <" : "");;
 
-            drawTextBox(u, settingValueString, pBoldOrNotFont, col, 110);
+            drawTextBox(settingValueString, pBoldOrNotFont, col, 110);
         }
 
 
         ofTranslate(0,80*u);
         std::string pressA = "Press A to reset " + pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings";
-        drawTextBox(u, pressA, &myFontBold, col, 110);
+        drawTextBox(pressA, &myFontBold, col, 110);
 
 
         ofTranslate(0,44*u);
         std::string pressB = "Press B to reset settings of all points";
-        drawTextBox(u, pressB, &myFontBold, col, 110);
+        drawTextBox(pressB, &myFontBold, col, 110);
 
         ofPopMatrix();
     }
@@ -593,7 +598,7 @@ void ofApp::draw(){
     ofPopMatrix();
 }
 
-void ofApp::drawTextBox(float u, const std::string& stringToShow, ofTrueTypeFont* pFont, float col, float alpha)
+void ofApp::drawTextBox(const std::string& stringToShow, ofTrueTypeFont* pFont, float col, float alpha)
 {
     ofPushMatrix();
     ofSetColor(col,150);
@@ -621,6 +626,10 @@ void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
 	int mCircle = 14;
     float r2 = ofMap(R,0,700,0.5*r,1.5*r)*1.0;
 
+    float u = float(ofGetHeight())/HEIGHT * float(736)/1080;
+
+    R *= u;
+
     float alphaFactor = 1.0;
     if(ACTIVATE_PEN_FADE) 
     {
@@ -635,6 +644,7 @@ void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
         ofTranslate(pos.x, pos.y);
         ofRotateRad(rot);
         ofTranslate(R, 0);
+        ofScale(u);
 
         ofFill();
         ofSetRectMode(OF_RECTMODE_CENTER);
@@ -651,6 +661,8 @@ void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
 void ofApp::drawPad(float col, float alpha)
 {
     ofPushMatrix();
+
+    ofScale(u);
     
     for(int i=0;i<4;i++)
     {

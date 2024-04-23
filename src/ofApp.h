@@ -35,8 +35,9 @@ public:
 
     void drawCustomCircle(ofVec2f pos,float R,float r);
     void drawPad(float col, float alpha);
-    void drawTextBox(float u, const std::string& stringToShow, ofTrueTypeFont* pFont, float col, float alpha);
+    void drawTextBox(const std::string& stringToShow, ofTrueTypeFont* pFont, float col, float alpha);
     std::string roundedString(float value);
+    float u = 1; // variable for screen resolution adaptation
 
     float getTime();
     float currentTransitionProgress();
