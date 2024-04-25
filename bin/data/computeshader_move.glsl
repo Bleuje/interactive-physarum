@@ -4,6 +4,8 @@
 #define MAX_NUMBER_OF_WAVES 5
 #define MAX_NUMBER_OF_RANDOM_SPAWN 7
 
+#define PI 3.141592
+
 uniform int width;
 uniform int height;
 
@@ -134,7 +136,7 @@ vec2 getRandomPos(vec2 particlePos)
 float propagatedWaveFunction(float x,float sigma)
 {
 	//float waveSigma = 0.5*(0.4 + 0.8*waveActionAreaSizeSigma);
-	float waveSigma = 0.2 + 0.5*sigma;
+	float waveSigma = 0.15 + 0.4*sigma;
 	return float(x <= 0.)*exp(-x*x/waveSigma/waveSigma);
 }
 
@@ -172,6 +174,7 @@ void main(){
 	float distanceNoiseFactor = (0.9 + 0.2*noise(vec3(relPos3.x,relPos3.t,0.6*time)));
 	float diffDist = distance(relDiff,vec2(0))*distanceNoiseFactor;
 	float lerper = exp(-diffDist*diffDist/actionAreaSizeSigma/actionAreaSizeSigma);
+	//lerper = diffDist<=actionAreaSizeSigma ? 1 : 0;
 
 
 
@@ -188,8 +191,11 @@ void main(){
 			relDiffWave.x *= float(width)/height;
 			float diffDistWave = distance(relDiffWave,vec2(0));
 			float noiseVariationFactor = (0.95 + 0.1*noise(vec3(relPos2.x,relPos2.y,0.3*time)));
+			float angleToCenter = atan(relDiffWave.y,relDiffWave.x);
+			float dir = (i%2==0) ? 1. : -1.;
 
-			float varWave = diffDistWave/0.3 * noiseVariationFactor  - (time - waveTriggerTimes[i]);
+			float delay = -0.1 + diffDistWave/0.3 * noiseVariationFactor + 0.4*pow(0.5 + 0.5*cos(18.*angleToCenter + 10.0*dir*diffDistWave),0.3);
+			float varWave = delay  - (time - waveTriggerTimes[i]);
 			float sigmaVariation = pow(waveSavedSigmas[i],0.75);
 			waveSum += 0.6*propagatedWaveFunction(varWave,waveSavedSigmas[i]) * max(0.,1. - 0.3*diffDistWave/sigmaVariation*noiseVariationFactor);
 		}
