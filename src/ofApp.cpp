@@ -15,6 +15,9 @@ void ofApp::setup(){
     myFont.load("fonts/Raleway-Regular.ttf",floor(15.0 * adaptationRatio));
     myFontBold.load("fonts/Raleway-Bold.ttf",floor(15.0 * adaptationRatio));
 
+    gamepadControlsImage.load("images/xboxgamepadcontrols.png");
+    informationImage.load("images/interactive-physarum-info.png");
+
     counter.resize(WIDTH*HEIGHT);
     counterBuffer.allocate(counter, GL_DYNAMIC_DRAW);
 
@@ -469,6 +472,8 @@ void ofApp::keyPressed(int key){
 void ofApp::draw(){
     u = float(ofGetHeight())/HEIGHT * float(736)/1080;
 
+    float R2action = ofMap(curR2,-1,0.3,0,1,true);
+
     ofPushMatrix();
 
     ofPushMatrix();
@@ -594,6 +599,27 @@ void ofApp::draw(){
         ofSaveScreen("frames/fr"+str.str()+".png");
     }
 */
+    float infoProgress = 1-pow(1-R2action,2.0);
+
+    ofPushMatrix();
+    ofTranslate(-25*u - 1500*u*(1-infoProgress),230*u);
+    ofScale(1.5*u);
+    gamepadControlsImage.draw(0, 0);
+    ofPopMatrix();
+
+    ofPushMatrix();
+    ofTranslate(1270*u + 1000*u*(1-infoProgress),230*u);
+    ofScale(0.7*u);
+    informationImage.draw(0, 0);
+    ofPopMatrix();
+
+    ofPushMatrix();
+    ofTranslate(1300*u,25*u - 50*u*infoProgress);
+    ofScale(0.7*u);
+    std::string pressB = "Right trigger for controls and information";
+    drawTextBox(pressB, &myFontBold, col, 110);
+    ofPopMatrix();
+
 
     ofPopMatrix();
 }

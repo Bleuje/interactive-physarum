@@ -124,6 +124,7 @@ public:
     void buttonReleased(ofxGamepadButtonEvent &e);
 
     ofTrueTypeFont myFont, myFontBold;
+    ofImage gamepadControlsImage, informationImage;
 
     // int numFrames = 4000;
 };
