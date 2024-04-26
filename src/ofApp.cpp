@@ -473,6 +473,7 @@ void ofApp::draw(){
     u = float(ofGetHeight())/HEIGHT * float(736)/1080;
 
     float R2action = ofMap(curR2,-1,0.3,0,1,true);
+    if(numberOfGamepads==0) R2action = 0;
 
     ofPushMatrix();
 
