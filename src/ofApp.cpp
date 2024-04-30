@@ -8,12 +8,11 @@ void ofApp::setup(){
 
     ofEnableAntiAliasing();
 
-    float correcter = float(736)/1080;
-    float adaptationRatio = float(ofGetHeight())/HEIGHT;
-    u = adaptationRatio * correcter;
+    u = float(ofGetHeight())/1080;
+    float textSizeAdaptation = float(ofGetHeight())/736;
 
-    myFont.load("fonts/Raleway-Regular.ttf",floor(15.0 * adaptationRatio));
-    myFontBold.load("fonts/Raleway-Bold.ttf",floor(15.0 * adaptationRatio));
+    myFont.load("fonts/Raleway-Regular.ttf",floor(15.0 * textSizeAdaptation));
+    myFontBold.load("fonts/Raleway-Bold.ttf",floor(15.0 * textSizeAdaptation));
 
     gamepadControlsImage.load("images/xboxgamepadcontrols.png");
     informationImage.load("images/interactive-physarum-info.png");
@@ -470,7 +469,7 @@ void ofApp::keyPressed(int key){
 // DRAW
 
 void ofApp::draw(){
-    u = float(ofGetHeight())/HEIGHT * float(736)/1080;
+    u = float(ofGetHeight())/1080;
 
     float R2action = ofMap(curR2,-1,0.3,0,1,true);
     if(numberOfGamepads==0) R2action = 0;
