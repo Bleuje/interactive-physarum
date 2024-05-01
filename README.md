@@ -46,7 +46,7 @@ It's designed for xbox gamepad.
 - Have a "*pen*" with location controlled by a joystick. The area near the pen has different simulation parameters compared to *background*: linear interpolation of parameters is done between pen and background. A 2D gaussian function is used to set the interpolation parameter (1 on pen center, almost 0 far from the pen). The size of the pen is the sigma of the gaussian function, and the user can control it.
 - The other joystick can displace particles near the pen area. Some noise is used for better looking displacement.
 - simulation parameters of pen and background areas can be chosen with pad controls, there are currently 17 default points.
-- button to set random points
+- button to set random points choice
 - button to swap the points of pen and background
 - button for spawning of particles in few locations near pen
 - button for circular particles spawning
