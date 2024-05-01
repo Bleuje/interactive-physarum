@@ -1,6 +1,6 @@
 #version 440
 
-// warning: must be compatible c++ code
+// warning: must be compatible with the c++ code
 #define MAX_NUMBER_OF_WAVES 5
 #define MAX_NUMBER_OF_RANDOM_SPAWN 7
 
@@ -328,7 +328,7 @@ void main(){
 	if (curA<reinitSegment)
 	{
 		nextPos = getRandomPos(particlePos);
-  }
+	}
 	float nextA = fract(curA+reinitSegment);
 
 	particlesArray[gl_GlobalInvocationID.x].data = vec4(nextPos.x,nextPos.y,nextA,newHeading);
