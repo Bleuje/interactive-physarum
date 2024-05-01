@@ -60,3 +60,6 @@ It's designed for xbox gamepad.
 - right trigger: information display
 
 ![screenshot with information display](/doc/information-screenshot.png)
+
+Advanced settings to be able to tune points and have different patterns than default ones:
+![screenshot with advanced settings display](/doc/advanced-settings.png)
