@@ -12,7 +12,7 @@ License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported Licen
 #### Crediting:
 Work derived from mxsage's 36 points (https://www.sagejenson.com/36points/) but with a different implementation.
 Before studying mxsage's code I already had a physarum simulation implementation. I modified my implementation to use the most important features of their algorithm.
-I'm using atomic counters on pixels and this is different. No fragment or vertex shader, only compute shader. I'm using the set of parameters from 36 Points. Some work well, some don't, I had to tune stuff. Currently, I'm using 20 points that seem to work quite well.
+I'm using atomic counters on pixels and this is different. No fragment or vertex shader, only compute shader. I'm using the set of parameters from 36 Points. Some work well, some don't, I had to tune stuff. Currently, 17 points that seem to work quite well are used.
 
 The license from 36 points is reproduced here.
 
@@ -20,10 +20,13 @@ In the current version, some text for crediting is displayed all the time on scr
 
 ### Screenshots
 
-Some screenshots to give a little taste of the project, as of April 10 2024.
+Some screenshots to give a little taste of the project, as of May 1, 2024.
 
-![Screenshot 10 April 2024, 1](/doc/screenshot-10-april-2024-1.png)
-![Screenshot 10 April 2024, 2](/doc/screenshot-10-april-2024-2.png)
+![Screenshot 1 May, 2024, 1](/doc/screenshot-1-may-2024-1.png)
+![Screenshot 1 May, 2024, 2](/doc/screenshot-1-may-2024-2.png)
+![Screenshot 1 May, 2024, 3](/doc/screenshot-1-may-2024-3.png)
+![Screenshot 1 May, 2024, 5](/doc/screenshot-1-may-2024-5.png)
+![Screenshot 1 May, 2024, 4bis](/doc/screenshot-1-may-2024-4-bis.png)
 
 ### How to compile
 
@@ -40,17 +43,20 @@ Sage Jenson's approach is to control the original physarum simulation parameters
 
 It's designed for xbox gamepad.
 
-- Have a "*pen*" with location controlled by a joystick. The area near the pen has different simulation parameters compared to *background*, and linear interpolation (with a gaussian function) is done between pen and background.
+- Have a "*pen*" with location controlled by a joystick. The area near the pen has different simulation parameters compared to *background*: linear interpolation of parameters is done between pen and background. A 2D gaussian function is used to set the interpolation parameter (1 on pen center, almost 0 far from the pen). The size of the pen is the sigma of the gaussian function, and the user can control it.
 - The other joystick can displace particles near the pen area. Some noise is used for better looking displacement.
-- simulation parameters of pen and background areas can be chosen with pad controls, there are currently 20 kinds of settings.
-- button to set random settings
-- button to swap the settings of pen and background
-- button for center particles spawning
+- simulation parameters of pen and background areas can be chosen with pad controls, there are currently 17 kinds of settings.
+- button to set random points
+- button to swap the points of pen and background
+- button for spawning of particles in few locations near pen
 - button for circular particles spawning
 - button to decrease the pen size
 - button to increase the pen size
 - joystick click to display or not the pen
 - joystick click to create wave (speed + sensing intensity)
 - button for color style change
-- button for points parameters tuning
+- button for points parameters tuning (advanced settings)
 - left trigger: control the use of inertia in movement (speed updates instead of position updates)
+- right trigger: information display
+
+![screenshot with information display](/doc/information-screenshot.png)
