@@ -63,3 +63,7 @@ It's designed for xbox gamepad.
 
 Advanced settings to be able to tune points and have different patterns than default ones:
 ![screenshot with advanced settings display](/doc/advanced-settings.png)
+
+Different color modes (many hues and black and white are available):
+![Screenshot 1 May, 2024, 6](/doc/screenshot-1-may-2024-6.png)
+![Screenshot 1 May, 2024, 7](/doc/screenshot-1-may-2024-7.png)
