@@ -16,7 +16,7 @@ I'm using atomic counters on pixels and this is different. No fragment or vertex
 
 The license from 36 points is reproduced here.
 
-In the current version, some text for crediting is displayed all the time on screen (bottom left corner). More crediting is done when displaying more information with a trigger of the gamepad.
+In the current version, some text for crediting is displayed all the time on screen (bottom left corner). More crediting is shown when pressing the trigger of the gamepad that shows more information.
 
 ### Screenshots
 
