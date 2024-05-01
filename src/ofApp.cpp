@@ -652,8 +652,6 @@ void ofApp::drawCustomCircle(ofVec2f pos,float R,float r)
 	int mCircle = 14;
     float r2 = ofMap(R,0,700,0.5*r,1.5*r)*1.0;
 
-    float u = float(ofGetHeight())/HEIGHT * float(736)/1080;
-
     R *= u;
 
     float alphaFactor = 1.0;
