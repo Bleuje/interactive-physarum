@@ -237,9 +237,9 @@ struct PointsDataManager
     float meanStep = 0.025 * mean[matrixColumnIndex];
     float defaultValue = ParametersMatrix[lineIndex][matrixColumnIndex];
     float defaultValueStep = (defaultValue < 0.00001 ? meanStep/2 : 0.05 * defaultValue);
-    float step = min(meanStep,defaultValueStep);
+    float step = std::min(meanStep,defaultValueStep);
     point[matrixColumnIndex] += step * dir;
-    point[matrixColumnIndex] = max(0.f,point[matrixColumnIndex]);
+    point[matrixColumnIndex] = std::max(0.f,point[matrixColumnIndex]);
 
     // float fStep = 1.04;
     // point[index] *= pow(fStep, dir);
