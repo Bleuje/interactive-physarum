@@ -497,6 +497,21 @@ void ofApp::keyPressed(int key){
     paramsUpdate();
 }
 
+void ofApp::mousePressed(int x, int y, int button){
+    switch(button)
+    {
+        case 0:
+            actionSpawnParticles(2);
+            break;
+        case 2:
+            actionSpawnParticles(1);
+            break;
+        case 1:
+            actionTriggerWave();
+            break;
+    }
+}
+
 
 
 
@@ -797,11 +812,6 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
 
 }
 
