@@ -13,7 +13,6 @@ struct PointSettings{
     int typeIndex;
 
     float defaultScalingFactor;
-    int scalingFactorCount;
 
     float SensorDistance0;
     float SD_exponent;
@@ -130,8 +129,6 @@ struct PointsDataManager
     ret.MD_amplitude = pointData[11];
     ret.SensorBias1 = pointData[12];
     ret.SensorBias2 = pointData[13];
-
-    ret.scalingFactorCount = 0;
 
     return ret;
   }

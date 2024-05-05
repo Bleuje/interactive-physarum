@@ -42,7 +42,6 @@ struct PointSettings{
 	int typeIndex;
 
 	float defaultScalingFactor;
-	int scalingFactorCount;
 
 	float SensorDistance0;
 	float SD_exponent;
@@ -146,8 +145,8 @@ void main(){
 	PointSettings currentParams_1 = params[1];
 	PointSettings currentParams_2 = params[0];
 
-	float tunedSensorScaler_1 = currentParams_1.defaultScalingFactor * pow(1.05, currentParams_1.scalingFactorCount);
-	float tunedSensorScaler_2 = currentParams_2.defaultScalingFactor * pow(1.05, currentParams_2.scalingFactorCount);
+	float tunedSensorScaler_1 = currentParams_1.defaultScalingFactor;
+	float tunedSensorScaler_2 = currentParams_2.defaultScalingFactor;
 
 	vec4 pInput = particlesArray[gl_GlobalInvocationID.x].data;
 	vec4 pInput2 = particlesArray[gl_GlobalInvocationID.x].data2;
