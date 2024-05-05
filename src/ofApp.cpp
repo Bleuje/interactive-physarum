@@ -16,12 +16,12 @@ void ofApp::setup(){
     gamepadControlsImage.load("images/xboxgamepadcontrols.png");
     informationImage.load("images/interactive-physarum-info.png");
 
-    counter.resize(WIDTH*HEIGHT);
+    counter.resize(SIMULATION_WIDTH*SIMULATION_HEIGHT);
     counterBuffer.allocate(counter, GL_DYNAMIC_DRAW);
 
-    trailReadBuffer.allocate(WIDTH, HEIGHT, GL_RGBA32F);
-    trailWriteBuffer.allocate(WIDTH, HEIGHT, GL_RGBA32F);
-    fboDisplay.allocate(WIDTH, HEIGHT, GL_RGBA32F);
+    trailReadBuffer.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RGBA32F);
+    trailWriteBuffer.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RGBA32F);
+    fboDisplay.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RGBA32F);
 
     setterShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_setter.glsl");
     setterShader.linkProgram();
@@ -40,8 +40,8 @@ void ofApp::setup(){
     float marginy = 3;
 
     for(auto & p: particles){
-        p.data.x = ofRandom(marginx,WIDTH-marginx);
-        p.data.y = ofRandom(marginy,HEIGHT-marginy);
+        p.data.x = ofRandom(marginx,SIMULATION_WIDTH-marginx);
+        p.data.y = ofRandom(marginy,SIMULATION_HEIGHT-marginy);
         p.data.z = ofRandom(1);
         p.data.w = ofRandom(0,TWO_PI);
         p.data2.x = 0;
@@ -63,16 +63,16 @@ void ofApp::setup(){
 
     for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
     {
-        waveXarray[i] = WIDTH/2;
-        waveYarray[i] = HEIGHT/2;
+        waveXarray[i] = SIMULATION_WIDTH/2;
+        waveYarray[i] = SIMULATION_HEIGHT/2;
         waveTriggerTimes[i] = -12345;
         waveSavedSigmas[i] = 0.5;
     }
 
     for(int i=0;i<MAX_NUMBER_OF_RANDOM_SPAWN;i++)
     {
-        randomSpawnXarray[i] = WIDTH/2;
-        randomSpawnYarray[i] = HEIGHT/2;
+        randomSpawnXarray[i] = SIMULATION_WIDTH/2;
+        randomSpawnYarray[i] = SIMULATION_HEIGHT/2;
     }
 
     ////////////////////////////////////////
@@ -123,8 +123,8 @@ void ofApp::update(){
 
     if(numberOfGamepads == 0)
     {
-        curActionX = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, WIDTH, true);
-        curActionY = ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, HEIGHT, true);
+        curActionX = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, SIMULATION_WIDTH, true);
+        curActionY = ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, SIMULATION_HEIGHT, true);
     }
     else
     {
@@ -133,13 +133,13 @@ void ofApp::update(){
 
         if(LOOP_PEN_POSITION)
         {
-            curActionX = fmod(curActionX + WIDTH, WIDTH);
-            curActionY = fmod(curActionY + HEIGHT, HEIGHT);
+            curActionX = fmod(curActionX + SIMULATION_WIDTH, SIMULATION_WIDTH);
+            curActionY = fmod(curActionY + SIMULATION_HEIGHT, SIMULATION_HEIGHT);
         }
         else
         {
-            curActionX = ofClamp(curActionX, 0, WIDTH);
-            curActionY = ofClamp(curActionY, 0, HEIGHT);
+            curActionX = ofClamp(curActionX, 0, SIMULATION_WIDTH);
+            curActionY = ofClamp(curActionY, 0, SIMULATION_HEIGHT);
         }
     }
 
@@ -152,7 +152,7 @@ void ofApp::update(){
     setterShader.setUniform1i("width",trailReadBuffer.getWidth());
     setterShader.setUniform1i("height",trailReadBuffer.getHeight());
     setterShader.setUniform1i("value",0);
-    setterShader.dispatchCompute(WIDTH / 32, HEIGHT / 32, 1);
+    setterShader.dispatchCompute(SIMULATION_WIDTH / 32, SIMULATION_HEIGHT / 32, 1);
     setterShader.end();
 
 
@@ -194,7 +194,7 @@ void ofApp::update(){
     depositShader.setUniform1f("depositFactor",0.003);
     depositShader.setUniform1i("colorModeType",colorModeType);
     depositShader.setUniform1i("numberOfColorModes",NUMBER_OF_COLOR_MODES);
-    depositShader.dispatchCompute(WIDTH / 32, HEIGHT / 32, 1);
+    depositShader.dispatchCompute(SIMULATION_WIDTH / 32, SIMULATION_HEIGHT / 32, 1);
     depositShader.end();
 
     trailReadBuffer.begin();
@@ -494,8 +494,8 @@ void ofApp::draw(){
 
         float R = currentActionAreaSizeSigma*600*(1.0 + 0.08*sin(0.4f*time2));
 
-        float cx = ofMap(curActionX,0,WIDTH,0,ofGetWidth());
-        float cy = ofMap(curActionY,0,HEIGHT,0,ofGetHeight());
+        float cx = ofMap(curActionX,0,SIMULATION_WIDTH,0,ofGetWidth());
+        float cy = ofMap(curActionY,0,SIMULATION_HEIGHT,0,ofGetHeight());
 
         ofSetCircleResolution(100);
 
