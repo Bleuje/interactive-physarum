@@ -60,11 +60,6 @@ void ofApp::setup(){
     particlesBuffer.bindBase(GL_SHADER_STORAGE_BUFFER, 2);
     counterBuffer.bindBase(GL_SHADER_STORAGE_BUFFER, 3);
     fboDisplay.getTexture().bindAsImage(4,GL_WRITE_ONLY);
-    
-
-    trailReadBuffer.begin();
-
-    trailReadBuffer.end();
 
     for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
     {
@@ -84,15 +79,15 @@ void ofApp::setup(){
     // check if there is a gamepad connected
     numberOfGamepads = ofxGamepadHandler::get()->getNumPads();
 
-	if(numberOfGamepads>0){
+    if(numberOfGamepads>0){
         for(int i=0;i<numberOfGamepads;i++)
         {
-			ofxGamepad* pad = ofxGamepadHandler::get()->getGamepad(i);
-			ofAddListener(pad->onAxisChanged, this, &ofApp::axisChanged);
-			ofAddListener(pad->onButtonPressed, this, &ofApp::buttonPressed);
-			ofAddListener(pad->onButtonReleased, this, &ofApp::buttonReleased);
+            ofxGamepad* pad = ofxGamepadHandler::get()->getGamepad(i);
+            ofAddListener(pad->onAxisChanged, this, &ofApp::axisChanged);
+            ofAddListener(pad->onButtonPressed, this, &ofApp::buttonPressed);
+            ofAddListener(pad->onButtonReleased, this, &ofApp::buttonReleased);
         }
-	}
+    }
 	std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
     ////////////////////////////////////////
 
