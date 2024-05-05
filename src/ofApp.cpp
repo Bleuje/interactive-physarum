@@ -121,18 +121,26 @@ void ofApp::update(){
         settingsChangeMode = 0;
     }
 
-    curActionX += curTranslationAxis1*translationStep;
-    curActionY += curTranslationAxis2*translationStep;
-
-    if(LOOP_PEN_POSITION)
+    if(numberOfGamepads == 0)
     {
-        curActionX = fmod(curActionX + WIDTH, WIDTH);
-        curActionY = fmod(curActionY + HEIGHT, HEIGHT);
+        curActionX = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, WIDTH, true);
+        curActionY = ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, HEIGHT, true);
     }
     else
     {
-        curActionX = ofClamp(curActionX, 0, WIDTH);
-        curActionY = ofClamp(curActionY, 0, HEIGHT);
+        curActionX += curTranslationAxis1*translationStep;
+        curActionY += curTranslationAxis2*translationStep;
+
+        if(LOOP_PEN_POSITION)
+        {
+            curActionX = fmod(curActionX + WIDTH, WIDTH);
+            curActionY = fmod(curActionY + HEIGHT, HEIGHT);
+        }
+        else
+        {
+            curActionX = ofClamp(curActionX, 0, WIDTH);
+            curActionY = ofClamp(curActionY, 0, HEIGHT);
+        }
     }
 
 
@@ -155,10 +163,6 @@ void ofApp::update(){
 
     moveShader.setUniform1f("actionAreaSizeSigma",currentActionAreaSizeSigma);
 
-    /*
-    moveShader.setUniform1f("actionX",ofGetMouseX());
-    moveShader.setUniform1f("actionY",ofGetMouseY());
-    */
     moveShader.setUniform1f("actionX",curActionX);
     moveShader.setUniform1f("actionY",curActionY);
 
