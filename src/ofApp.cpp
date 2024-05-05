@@ -9,10 +9,9 @@ void ofApp::setup(){
     ofEnableAntiAliasing();
 
     u = float(ofGetHeight())/1080;
-    float textSizeAdaptation = float(ofGetHeight())/736;
 
-    myFont.load("fonts/Raleway-Regular.ttf",floor(15.0 * textSizeAdaptation));
-    myFontBold.load("fonts/Raleway-Bold.ttf",floor(15.0 * textSizeAdaptation));
+    myFont.load("fonts/Raleway-Regular.ttf",floor(22.0 * u));
+    myFontBold.load("fonts/Raleway-Bold.ttf",floor(22.0 * u));
 
     gamepadControlsImage.load("images/xboxgamepadcontrols.png");
     informationImage.load("images/interactive-physarum-info.png");
