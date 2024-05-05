@@ -92,7 +92,6 @@ public:
 
     ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
     ofShader setterShader,moveShader,depositShader,blurShader;
-    ofVbo vbo;
 
     std::vector<uint32_t> counter;
     ofBufferObject counterBuffer;
