@@ -8,9 +8,9 @@
 
 namespace GlobalSettings
 {
-    constexpr int SIMULATION_WIDTH = 1280;
-    constexpr int SIMULATION_HEIGHT = 736;
-    constexpr size_t NUMBER_OF_PARTICLES = 512 * 512 * 22;
+    constexpr int SIMULATION_WIDTH = 1024;
+    constexpr int SIMULATION_HEIGHT = 576;
+    constexpr size_t NUMBER_OF_PARTICLES = 512 * 512 * 14;
     constexpr int PARTICLE_PARAMETERS_COUNT = 6;
     constexpr int WORK_GROUP_SIZE = 32;
     constexpr int PARTICLE_WORK_GROUPS = 128;
