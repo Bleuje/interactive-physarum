@@ -453,14 +453,44 @@ void ofApp::buttonReleased(ofxGamepadButtonEvent& e)
 void ofApp::keyPressed(int key){
     switch(key)
     {
-        case OF_KEY_DOWN:
+        case OF_KEY_RIGHT:
             actionChangeParams(1);
             break;
-        case OF_KEY_UP:
+        case OF_KEY_LEFT:
             actionChangeParams(-1);
             break;
-        case ' ':
+        case OF_KEY_UP:
             pointsDataManager.changeSelectionIndex(1);
+            break;
+        case OF_KEY_DOWN:
+            pointsDataManager.changeSelectionIndex(-1);
+            break;
+        case ' ':
+            actionRandomParams();
+            break;
+        case 'r':
+            actionRandomParams();
+            break;
+        case 's':
+            actionSwapParams();
+            break;
+        case 'd':
+            actionSpawnParticles(2);
+            break;
+        case 'f':
+            actionSpawnParticles(1);
+            break;
+        case 'x':
+            actionChangeSigmaCount(-1);
+            break;
+        case 'c':
+            actionChangeSigmaCount(1);
+            break;
+        case 'p':
+            actionChangeDisplayType();
+            break;
+        case 'w':
+            actionTriggerWave();
             break;
     }
 
