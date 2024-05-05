@@ -123,12 +123,18 @@ void ofApp::update(){
 
     curActionX += curTranslationAxis1*translationStep;
     curActionY += curTranslationAxis2*translationStep;
-/*
-    curActionX = fmod(curActionX + WIDTH, WIDTH);
-    curActionY = fmod(curActionY + HEIGHT, HEIGHT);
-*/
-    curActionX = ofClamp(curActionX, 0, WIDTH);
-    curActionY = ofClamp(curActionY, 0, HEIGHT);
+
+    if(LOOP_PEN_POSITION)
+    {
+        curActionX = fmod(curActionX + WIDTH, WIDTH);
+        curActionY = fmod(curActionY + HEIGHT, HEIGHT);
+    }
+    else
+    {
+        curActionX = ofClamp(curActionX, 0, WIDTH);
+        curActionY = ofClamp(curActionY, 0, HEIGHT);
+    }
+
 
     trailWriteBuffer.begin();
     trailReadBuffer.draw(0,0);
