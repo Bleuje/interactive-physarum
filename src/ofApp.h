@@ -7,9 +7,9 @@
 #include "utils.h"
 #include "points_management.h"
 
-#define SIMULATION_WIDTH 1280
-#define SIMULATION_HEIGHT 736
-#define NUMBER_OF_PARTICLES (512*512*22)
+#define SIMULATION_WIDTH 1024
+#define SIMULATION_HEIGHT 576
+#define NUMBER_OF_PARTICLES (512*512*14)
 #define PARTICLE_PARAMETERS_COUNT 6
 #define DECAY_FACTOR 0.75
 #define DEPOSIT_FACTOR 0.003
