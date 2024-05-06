@@ -40,6 +40,19 @@ The simulation algorithm is a more advanced version of the physarum simulation a
 
 Sage Jenson's approach is to control the original physarum simulation parameters of a particle based on some current sensed value. The original physarum simulation parameters are sensor distance, sensing angle, rotation angle and move distance. Particles also respawn at a random place after some time.
 
+______________
+
+The compute shader code of my implementation is in bin/data/
+
+**computeshader_move.glsl** : Main shader: updates particles, increases a counter on the particle's pixel position.
+
+**computeshader_deposit.glsl** : Add trail from particle counter on pixel. Also gives the displayed image, from trail image and count on pixel.
+
+**computeshader_blur.glsl** : Blur step on trail map (diffusion).
+
+**computeshader_setter.glsl** : Just used to reset the counters of the pixels to 0 at each iteration.
+
+
 ### Interaction with gamepad
 
 It's designed for xbox gamepad.
