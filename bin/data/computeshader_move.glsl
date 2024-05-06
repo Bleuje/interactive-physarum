@@ -165,7 +165,7 @@ void main(){
 
 	vec2 normalizedPosition = vec2(particlePos.x/width,particlePos.y/height);
 	vec2 normalizedActionPosition = vec2(actionX/width,actionY/height);
-	
+
 
 	vec2 positionForNoise1 = normalizedPosition;
 	positionForNoise1.x *= float(width)/height;
@@ -238,17 +238,25 @@ void main(){
 	float SensorBias1_mix = mix(currentParams_1.SensorBias1, currentParams_2.SensorBias1, lerper);
 	float SensorBias2_mix = mix(currentParams_1.SensorBias2, currentParams_2.SensorBias2, lerper);
 
+
+
 	float currentSensedValue = getGridValue(particlePos + SensorBias2_mix * direction + vec2(0.,SensorBias1_mix)) * tunedSensorScaler_mix;
 	currentSensedValue = clamp(currentSensedValue, 0.000000001, 1.0);
+
+
 
 	float sensorDistance = SensorDistance0_mix + SD_amplitude_mix * pow(currentSensedValue, SD_exponent_mix) * pixelScaleFactor;
 	float moveDistance = MoveDistance0_mix + MD_amplitude_mix * pow(currentSensedValue, MD_exponent_mix) * pixelScaleFactor;
 	float sensorAngle = SensorAngle0_mix + SA_amplitude_mix * pow(currentSensedValue, SA_exponent_mix);
 	float rotationAngle = RotationAngle0_mix + RA_amplitude_mix * pow(currentSensedValue, RA_exponent_mix);
 	
+
+
 	float sensedLeft = senseFromAngle(-sensorAngle, particlePos, heading, sensorDistance);
 	float sensedMiddle = senseFromAngle(0, particlePos, heading, sensorDistance);
 	float sensedRight = senseFromAngle(sensorAngle, particlePos, heading, sensorDistance);
+
+
 
 	float newHeading = heading;
 
@@ -270,30 +278,33 @@ void main(){
 
 
 	float noiseValue = noise(vec3(positionForNoise1.x,positionForNoise1.y,0.8*time));
-
 	float moveBiasFactor = 5 * lerper * noiseValue;
 	vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX,moveBiasActionY);
 
-	float velBias = 0.2*L2Action;
 
-	float px1 = particlePos.x + moveDistance*cos(newHeading) + moveBias.x;
-	float py1 = particlePos.y + moveDistance*sin(newHeading) + moveBias.y;
+
+	float classicNewPositionX = particlePos.x + moveDistance*cos(newHeading) + moveBias.x;
+	float classicNewPositionY = particlePos.y + moveDistance*sin(newHeading) + moveBias.y;
 	
+
 	vel *= 0.98;
 	float vf = 1.0;
+	float velBias = 0.2*L2Action;
 	float vx = vel.x + vf*cos(newHeading) + velBias*moveBias.x;
 	float vy = vel.y + vf*sin(newHeading) + velBias*moveBias.y;
 
 	//float dt = 0.05*moveDistance;
 	float dt = 0.07*pow(moveDistance,1.4);
 
-	float px2 = particlePos.x + dt*vx + moveBias.x;
-	float py2 = particlePos.y + dt*vy + moveBias.y;
+	float inertiaNewPositionX = particlePos.x + dt*vx + moveBias.x;
+	float inertiaNewPositionY = particlePos.y + dt*vy + moveBias.y;
+
 
 	float moveStyleLerper = 0.6*L2Action + 0.8*waveSum;
 
-	float px = mix(px1,px2,moveStyleLerper);
-	float py = mix(py1,py2,moveStyleLerper);
+	float px = mix(classicNewPositionX, inertiaNewPositionX, moveStyleLerper);
+	float py = mix(classicNewPositionY, inertiaNewPositionY, moveStyleLerper);
+
 
 
 
