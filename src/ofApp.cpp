@@ -191,7 +191,7 @@ void ofApp::update(){
     depositShader.begin();
     depositShader.setUniform1i("width",trailReadBuffer.getWidth());
     depositShader.setUniform1i("height",trailReadBuffer.getHeight());
-    depositShader.setUniform1f("depositFactor",0.003);
+    depositShader.setUniform1f("depositFactor",DEPOSIT_FACTOR);
     depositShader.setUniform1i("colorModeType",colorModeType);
     depositShader.setUniform1i("numberOfColorModes",NUMBER_OF_COLOR_MODES);
     depositShader.dispatchCompute(SIMULATION_WIDTH / 32, SIMULATION_HEIGHT / 32, 1);
