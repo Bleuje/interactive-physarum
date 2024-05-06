@@ -42,12 +42,14 @@ layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 void main(){
 	vec4 prevColor = imageLoad(trailRead,ivec2(gl_GlobalInvocationID.xy));
 	uint limit = 100;
-	float cnt = float(particlesCounter[ gl_GlobalInvocationID.x * height + gl_GlobalInvocationID.y ]);
-	float deposit = pow((cnt<float(limit)?cnt:float(limit)),0.5)*depositFactor;
-	float val = prevColor.x + deposit;
+	float count = float(particlesCounter[ gl_GlobalInvocationID.x * height + gl_GlobalInvocationID.y ]);
+	float limitedCount = count<float(limit)?count:float(limit);
+	float addedDeposit = pow(limitedCount,0.5)*depositFactor;
+	float val = prevColor.x + addedDeposit;
 	imageStore(trailWrite,ivec2(gl_GlobalInvocationID.xy),vec4(val,val,prevColor.z,1.0));
 
-	float countColorValue = pow(tanh(7.5*pow(max(0.,(cnt-1)/1000.0),0.3)),8.5)*1.05;
+
+	float countColorValue = pow(tanh(7.5*pow(max(0.,(count-1)/1000.0),0.3)),8.5)*1.05;
 	countColorValue = min(1.0,countColorValue);
 	//float colorValue2 = pow(tanh(7.5*pow(max(0.,(250*val-1)/1000.0),0.3)),8.5)*1.05;
 	vec4 outputColor = vec4(0.,1.,0.,1.);
