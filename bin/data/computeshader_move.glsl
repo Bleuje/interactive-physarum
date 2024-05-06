@@ -163,23 +163,24 @@ void main(){
 	vec2 direction = vec2(cos(heading), sin(heading));
 	vec2 vel = vec2(pInput2.x,pInput2.y);
 
-	vec2 relPos = vec2(particlePos.x/width,particlePos.y/height);
-	vec2 relActionPos = vec2(actionX/width,actionY/height);
+	vec2 normalizedPosition = vec2(particlePos.x/width,particlePos.y/height);
+	vec2 normalizedActionPosition = vec2(actionX/width,actionY/height);
 
-	vec2 relPos2 = relPos;
-	relPos2.x *= float(width)/height;
-	vec2 relPos3 = relPos2;
+	vec2 positionForNoise1 = normalizedPosition;
+	positionForNoise1.x *= float(width)/height;
+	vec2 positionForNoise2 = positionForNoise1;
+
 	float noiseScale = 20.0;
-	relPos2 *= noiseScale;
+	positionForNoise1 *= noiseScale;
 	float noiseScale2 = 6.0;
-	relPos3 *= noiseScale2;
+	positionForNoise2 *= noiseScale2;
 
 
-	vec2 relDiff = relPos - relActionPos;
-	relDiff.x *= float(width)/height;
-	float distanceNoiseFactor = (0.9 + 0.2*noise(vec3(relPos3.x,relPos3.t,0.6*time)));
-	float diffDist = distance(relDiff,vec2(0))*distanceNoiseFactor;
-	float lerper = exp(-diffDist*diffDist/actionAreaSizeSigma/actionAreaSizeSigma);
+	vec2 positionFromAction = normalizedPosition - normalizedActionPosition;
+	positionFromAction.x *= float(width)/height;
+	float distanceNoiseFactor = (0.9 + 0.2*noise(vec3(positionForNoise2.x,positionForNoise2.t,0.6*time)));
+	float distanceFromAction = distance(positionFromAction,vec2(0))*distanceNoiseFactor;
+	float lerper = exp(-distanceFromAction*distanceFromAction/actionAreaSizeSigma/actionAreaSizeSigma);
 	//lerper = diffDist<=actionAreaSizeSigma ? 1 : 0;
 	//lerper = particlePos.x/width;
 
@@ -191,11 +192,11 @@ void main(){
 		int maxWaveTime = 5; // in seconds
 		if((time - waveTriggerTimes[i]) <= maxWaveTime)
 		{
-			vec2 relWaveCenterPos = vec2(waveXarray[i]/width,waveYarray[i]/height);
-			vec2 relDiffWave = relPos - relWaveCenterPos;
+			vec2 normalizedWaveCenterPosition = vec2(waveXarray[i]/width,waveYarray[i]/height);
+			vec2 relDiffWave = normalizedPosition - normalizedWaveCenterPosition;
 			relDiffWave.x *= float(width)/height;
 			float diffDistWave = distance(relDiffWave,vec2(0));
-			float noiseVariationFactor = (0.95 + 0.1*noise(vec3(relPos2.x,relPos2.y,0.3*time)));
+			float noiseVariationFactor = (0.95 + 0.1*noise(vec3(positionForNoise1.x,positionForNoise1.y,0.3*time)));
 			float angleToCenter = atan(relDiffWave.y,relDiffWave.x);
 			float dir = (i%2==0) ? 1. : -1.;
 
@@ -261,7 +262,7 @@ void main(){
 		newHeading = heading + rotationAngle;
 	}
 
-	float noiseValue = noise(vec3(relPos2.x,relPos2.t,0.8*time));
+	float noiseValue = noise(vec3(positionForNoise1.x,positionForNoise1.y,0.8*time));
 
 	float moveBiasFactor = 5 * lerper * noiseValue;
 	vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX,moveBiasActionY);
