@@ -145,9 +145,6 @@ void main(){
 	PointSettings currentParams_1 = params[1];
 	PointSettings currentParams_2 = params[0];
 
-	float tunedSensorScaler_1 = currentParams_1.defaultScalingFactor;
-	float tunedSensorScaler_2 = currentParams_2.defaultScalingFactor;
-
 	vec4 pInput = particlesArray[gl_GlobalInvocationID.x].data;
 	vec4 pInput2 = particlesArray[gl_GlobalInvocationID.x].data2;
 
@@ -167,17 +164,16 @@ void main(){
 	float noiseScale2 = 6.0;
 	relPos3 *= noiseScale2;
 
-	// float lerper = particlePos.x/width;
+
 	vec2 relDiff = relPos - relActionPos;
 	relDiff.x *= float(width)/height;
 	float distanceNoiseFactor = (0.9 + 0.2*noise(vec3(relPos3.x,relPos3.t,0.6*time)));
 	float diffDist = distance(relDiff,vec2(0))*distanceNoiseFactor;
 	float lerper = exp(-diffDist*diffDist/actionAreaSizeSigma/actionAreaSizeSigma);
 	//lerper = diffDist<=actionAreaSizeSigma ? 1 : 0;
+	//lerper = particlePos.x/width;
 
 
-
-	float waveIntensity = 1.0;
 	float waveSum = 0.;
 	
 	for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
@@ -200,15 +196,13 @@ void main(){
 		}
 	}
 
-	//float addedFromWave = pow(tanh(5.0*waveSum),5.0);
 	waveSum = 1.7*tanh(waveSum/1.7) + 0.4*tanh(4.*waveSum);
-
-	waveIntensity += 0.3*waveSum;
 	//lerper = mix(lerper,0.,tanh(5.*waveSum));
-	
 
+	float tunedSensorScaler_1 = currentParams_1.defaultScalingFactor;
+	float tunedSensorScaler_2 = currentParams_2.defaultScalingFactor;
 	float tunedSensorScaler_mix = mix(tunedSensorScaler_1, tunedSensorScaler_2, lerper);
-	tunedSensorScaler_mix *= waveIntensity;
+	tunedSensorScaler_mix *= 1.0 + 0.3*waveSum;
 
 	float SensorDistance0_mix = mix(currentParams_1.SensorDistance0, currentParams_2.SensorDistance0, lerper);
 	float SD_amplitude_mix = mix(currentParams_1.SD_amplitude, currentParams_2.SD_amplitude, lerper);
