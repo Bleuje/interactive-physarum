@@ -165,15 +165,16 @@ void main(){
 
 	vec2 normalizedPosition = vec2(particlePos.x/width,particlePos.y/height);
 	vec2 normalizedActionPosition = vec2(actionX/width,actionY/height);
+	
 
 	vec2 positionForNoise1 = normalizedPosition;
 	positionForNoise1.x *= float(width)/height;
 	vec2 positionForNoise2 = positionForNoise1;
-
 	float noiseScale = 20.0;
 	positionForNoise1 *= noiseScale;
 	float noiseScale2 = 6.0;
 	positionForNoise2 *= noiseScale2;
+
 
 
 	vec2 positionFromAction = normalizedPosition - normalizedActionPosition;
@@ -183,6 +184,7 @@ void main(){
 	float lerper = exp(-distanceFromAction*distanceFromAction/actionAreaSizeSigma/actionAreaSizeSigma);
 	//lerper = diffDist<=actionAreaSizeSigma ? 1 : 0;
 	//lerper = particlePos.x/width;
+
 
 
 	float waveSum = 0.;
@@ -210,6 +212,8 @@ void main(){
 	waveSum = 1.7*tanh(waveSum/1.7) + 0.4*tanh(4.*waveSum);
 	//lerper = mix(lerper,0.,tanh(5.*waveSum));
 
+
+
 	float tunedSensorScaler_1 = currentParams_1.defaultScalingFactor;
 	float tunedSensorScaler_2 = currentParams_2.defaultScalingFactor;
 	float tunedSensorScaler_mix = mix(tunedSensorScaler_1, tunedSensorScaler_2, lerper);
@@ -235,7 +239,7 @@ void main(){
 	float SensorBias2_mix = mix(currentParams_1.SensorBias2, currentParams_2.SensorBias2, lerper);
 
 	float currentSensedValue = getGridValue(particlePos + SensorBias2_mix * direction + vec2(0.,SensorBias1_mix)) * tunedSensorScaler_mix;
-	currentSensedValue = min(1.0,max(currentSensedValue, 0.000000001));
+	currentSensedValue = clamp(currentSensedValue, 0.000000001, 1.0);
 
 	float sensorDistance = SensorDistance0_mix + SD_amplitude_mix * pow(currentSensedValue, SD_exponent_mix) * pixelScaleFactor;
 	float moveDistance = MoveDistance0_mix + MD_amplitude_mix * pow(currentSensedValue, MD_exponent_mix) * pixelScaleFactor;
@@ -248,10 +252,10 @@ void main(){
 
 	float newHeading = heading;
 
-	if(sensedMiddle > sensedLeft&&sensedMiddle>sensedRight)
+	if(sensedMiddle > sensedLeft && sensedMiddle > sensedRight)
 	{
 		;
-	} else if(sensedMiddle < sensedLeft&&sensedMiddle<sensedRight)
+	} else if(sensedMiddle < sensedLeft && sensedMiddle < sensedRight)
 	{
 		newHeading = (random(particlePos)< 0.5 ? heading - rotationAngle : heading + rotationAngle);
 	} else if(sensedRight < sensedLeft)
@@ -261,6 +265,9 @@ void main(){
 	{
 		newHeading = heading + rotationAngle;
 	}
+
+
+
 
 	float noiseValue = noise(vec3(positionForNoise1.x,positionForNoise1.y,0.8*time));
 
@@ -288,6 +295,8 @@ void main(){
 	float px = mix(px1,px2,moveStyleLerper);
 	float py = mix(py1,py2,moveStyleLerper);
 
+
+
 	if(spawnParticles >= 1)
 	{
 		float randForChoice = gn(particlePos*53.146515/width,13.955475);
@@ -296,7 +305,7 @@ void main(){
 		{
 			float randForRadius = gn(particlePos*22.698515/width,33.265475);
 
-			if(spawnParticles==1)
+			if(spawnParticles == 1)
 			{
 				float randForTheta = gn(particlePos*8.129515/width,17.622475);
 				float theta = randForTheta * PI * 2.0;
@@ -308,7 +317,7 @@ void main(){
 				px = actionX + spos.x;
 				py = actionY + spos.y;
 			}
-			if(spawnParticles==2)
+			if(spawnParticles == 2)
 			{
 				int randForSpawnIndex = int(floor(randomSpawnNumber * gn(particlePos*28.218515/width,35.435475)));
 				float sx = randomSpawnXarray[randForSpawnIndex];
@@ -321,19 +330,25 @@ void main(){
 		}
 	}
 
+
+
 	vec2 nextPos = vec2(mod(px + float(width),float(width)),mod(py + float(height),float(height)));
 	
 	uint depositAmount = uint(1);
-	atomicAdd(particlesCounter[ int(round(nextPos.x))*height + int(round(nextPos.y))],depositAmount);
+	atomicAdd(particlesCounter[int(round(nextPos.x))*height + int(round(nextPos.y))], depositAmount);
+
+
 
 	const float reinitSegment=0.0010;
 
 	float curA = pInput.z;
-	if (curA<reinitSegment)
+	if (curA < reinitSegment)
 	{
 		nextPos = getRandomPos(particlePos);
 	}
 	float nextA = fract(curA+reinitSegment);
+
+
 
 	particlesArray[gl_GlobalInvocationID.x].data = vec4(nextPos.x,nextPos.y,nextA,newHeading);
 	particlesArray[gl_GlobalInvocationID.x].data2 = vec4(vx,vy,0,0);
