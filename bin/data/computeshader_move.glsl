@@ -81,15 +81,8 @@ layout(std140, binding=2) buffer particle{
     Particle particlesArray[];
 };
 
-float getGridValue(vec2 pos)
-{
-	return imageLoad(src,ivec2(mod(pos.x + 0.5 + float(width),float(width)),mod(pos.y + 0.5 + float(height),float(height)))).x;
-}
 
-float senseFromAngle(float angle,vec2 pos,float heading,float so)
-{
-    return getGridValue(vec2(pos.x + so*cos(heading + angle),pos.y + so*sin(heading + angle)));
-}
+
 
 float random(vec2 st) {
     return fract(0.5+0.5*sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);
@@ -129,9 +122,22 @@ float gn(in vec2 coordinate, in float seed)
 	return abs(fract(123.654*sin(distance(coordinate*(seed+0.118446744073709551614), vec2(0.118446744073709551614, 0.314159265358979323846264)))*0.141421356237309504880169));
 }
 
+
+
+
 vec2 getRandomPos(vec2 particlePos)
 {
 	return vec2(width*gn(particlePos*13.436515/width,14.365475),height*gn(particlePos*12.765177/width+vec2(353.647,958.6515),35.6198849));
+}
+
+float getGridValue(vec2 pos)
+{
+	return imageLoad(src,ivec2(mod(pos.x + 0.5 + float(width),float(width)),mod(pos.y + 0.5 + float(height),float(height)))).x;
+}
+
+float senseFromAngle(float angle,vec2 pos,float heading,float so)
+{
+    return getGridValue(vec2(pos.x + so*cos(heading + angle),pos.y + so*sin(heading + angle)));
 }
 
 float propagatedWaveFunction(float x,float sigma)
@@ -140,6 +146,8 @@ float propagatedWaveFunction(float x,float sigma)
 	float waveSigma = 0.15 + 0.4*sigma;
 	return float(x <= 0.)*exp(-x*x/waveSigma/waveSigma);
 }
+
+
 
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main(){
