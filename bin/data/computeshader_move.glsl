@@ -70,8 +70,7 @@ layout(std430,binding=5) buffer parameters
 	PointSettings params[];
 };
 
-layout(rgba32f,binding=0) uniform readonly image2D src;
-layout(rgba32f,binding=1) uniform writeonly image2D dst;
+layout(rgba32f,binding=0) uniform readonly image2D trailRead;
 layout(std430,binding=3) buffer mutex
 {
 	uint particlesCounter[];
@@ -83,20 +82,13 @@ layout(std140, binding=2) buffer particle{
 
 
 
-
-float random(vec2 st) {
-    return fract(0.5+0.5*sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);
-}
-
-float random2 (vec3 st) {
-    return fract(sin(dot(st.xyz,
-                         vec3(12.9898,78.233, 151.7182)))
-                 * 43758.5453123);
-}
+float gn(in vec2 coordinate, in float seed) { return abs(fract(123.654*sin(distance(coordinate*(seed+0.118446744073709551614), vec2(0.118446744073709551614, 0.314159265358979323846264)))*0.141421356237309504880169));}
+float random(vec2 st) {return fract(0.5+0.5*sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);}
+float random2 (vec3 st) {return fract(sin(dot(st.xyz,vec3(12.9898,78.233, 151.7182))) * 43758.5453123);}
 
 float noise (vec3 st) {
     vec3 i = floor(st);
-    vec3 f = fract(st);
+    vec3 F = fract(st);
 
     // Calculate the eight corners of the cube
     float a = random2(i);
@@ -104,22 +96,17 @@ float noise (vec3 st) {
     float c = random2(i + vec3(0.0, 1.0, 0.0));
     float d = random2(i + vec3(1.0, 1.0, 0.0));
     float e = random2(i + vec3(0.0, 0.0, 1.0));
-    float f_ = random2(i + vec3(1.0, 0.0, 1.0));
+    float f = random2(i + vec3(1.0, 0.0, 1.0));
     float g = random2(i + vec3(0.0, 1.0, 1.0));
     float h = random2(i + vec3(1.0, 1.0, 1.0));
 
     // Smoothly interpolate the noise value
-    vec3 u = f * f * (3.0 - 2.0 * f);
+    vec3 u = F * F * (3.0 - 2.0 * F);
 
     return mix(mix(mix( a, b, u.x),
                    mix( c, d, u.x), u.y),
-               mix(mix( e, f_, u.x),
+               mix(mix( e, f, u.x),
                    mix( g, h, u.x), u.y), u.z);
-}
-
-float gn(in vec2 coordinate, in float seed)
-{
-	return abs(fract(123.654*sin(distance(coordinate*(seed+0.118446744073709551614), vec2(0.118446744073709551614, 0.314159265358979323846264)))*0.141421356237309504880169));
 }
 
 
@@ -132,7 +119,7 @@ vec2 getRandomPos(vec2 particlePos)
 
 float getGridValue(vec2 pos)
 {
-	return imageLoad(src,ivec2(mod(pos.x + 0.5 + float(width),float(width)),mod(pos.y + 0.5 + float(height),float(height)))).x;
+	return imageLoad(trailRead, ivec2(mod(pos.x + 0.5 + float(width),float(width)),mod(pos.y + 0.5 + float(height),float(height)))).x;
 }
 
 float senseFromAngle(float angle,vec2 pos,float heading,float so)
