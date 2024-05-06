@@ -183,6 +183,8 @@ void ofApp::update(){
     moveShader.setUniform1fv("randomSpawnXarray", randomSpawnXarray.data(), randomSpawnXarray.size());
     moveShader.setUniform1fv("randomSpawnYarray", randomSpawnYarray.data(), randomSpawnYarray.size());
 
+    moveShader.setUniform1f("pixelScaleFactor",PIXEL_SCALE_FACTOR);
+
     moveShader.dispatchCompute(particles.size()/128,1,1);
     moveShader.end();
 

@@ -33,6 +33,8 @@ uniform int randomSpawnNumber;
 uniform float randomSpawnXarray[MAX_NUMBER_OF_WAVES];
 uniform float randomSpawnYarray[MAX_NUMBER_OF_WAVES];
 
+uniform float pixelScaleFactor;
+
 struct Particle{
 	vec4 data;
 	vec4 data2;
@@ -226,8 +228,8 @@ void main(){
 	float currentSensedValue = getGridValue(particlePos + SensorBias2_mix * direction + vec2(0.,SensorBias1_mix)) * tunedSensorScaler_mix;
 	currentSensedValue = min(1.0,max(currentSensedValue, 0.000000001));
 
-	float sensorDistance = SensorDistance0_mix + SD_amplitude_mix * pow(currentSensedValue, SD_exponent_mix) * 250.0;
-	float moveDistance = MoveDistance0_mix + MD_amplitude_mix * pow(currentSensedValue, MD_exponent_mix) * 250.0;
+	float sensorDistance = SensorDistance0_mix + SD_amplitude_mix * pow(currentSensedValue, SD_exponent_mix) * pixelScaleFactor;
+	float moveDistance = MoveDistance0_mix + MD_amplitude_mix * pow(currentSensedValue, MD_exponent_mix) * pixelScaleFactor;
 	float sensorAngle = SensorAngle0_mix + SA_amplitude_mix * pow(currentSensedValue, SA_exponent_mix);
 	float rotationAngle = RotationAngle0_mix + RA_amplitude_mix * pow(currentSensedValue, RA_exponent_mix);
 	
