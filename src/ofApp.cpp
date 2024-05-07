@@ -494,6 +494,9 @@ void ofApp::keyPressed(int key){
         case 'w':
             actionTriggerWave();
             break;
+        case 'h':
+            actionChangeDisplayType();
+            break;
     }
 
     paramsUpdate();

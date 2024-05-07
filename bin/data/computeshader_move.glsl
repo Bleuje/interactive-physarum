@@ -139,8 +139,8 @@ float propagatedWaveFunction(float x,float sigma)
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main(){
 
-	PointSettings currentParams_1 = params[1];
-	PointSettings currentParams_2 = params[0];
+	PointSettings currentParams_1 = params[1]; // "Background Point" parameters
+	PointSettings currentParams_2 = params[0]; // "Pen Point" parameters
 
 	vec4 pInput = particlesArray[gl_GlobalInvocationID.x].data;
 	vec4 pInput2 = particlesArray[gl_GlobalInvocationID.x].data2;
