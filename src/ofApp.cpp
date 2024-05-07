@@ -497,6 +497,9 @@ void ofApp::keyPressed(int key){
         case 'h':
             actionChangeDisplayType();
             break;
+        case 'a':
+            actionChangeColorMode();
+            break;
     }
 
     paramsUpdate();
