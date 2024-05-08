@@ -4,7 +4,7 @@ Interactive physarum/organic simulations, for an installation with gamepad contr
 
 It is implemented with openFrameworks and the simulations run on GPU with compute shaders.
 
-Please check out 36 Points by Sage Jenson first: https://www.sagejenson.com/36points/
+Please check out 36 Points by Sage Jenson (mxsage) first: https://www.sagejenson.com/36points/
 Press 0-9, A-Z for different Points (different simulation parameters).
 
 ### License:
