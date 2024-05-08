@@ -5,17 +5,18 @@
 // by Etienne Jacob
 
 // Crediting:
-// Work derived from mxsage's 36 points but with a different implementations
-// Before studying mxsage's I already had a physarum implementation
-// I modified my implementation to use their technique
-// I'm using counters on pixels and this is different
-// I'm using the set of parameters from 36 Points, some work well, some don't, I had to tune stuff
-// This is also introducing interaction with gamepad
+// Work derived 36 Points by Sage Jenson (mxsage) but with a different implementation.
+// Before studying mxsage's code I already had a physarum implementation (already inspired by their work),
+// I modified it to use the most important aspects of their algorithm in 36 Points.
+
+// This project is using counters on pixels and this is different.
+// It's using the set of parameters from 36 Points, some points work well, some don't, I had to tune stuff and I kept what worked.
+// It's introducing spatial interpolation between points and a lot of interaction features.
 
 
 //========================================================================
 int main( ){
-    // this example uses compute shaders which are only supported since
+    // Uses compute shaders which are only supported since
     // openGL 4.3
     ofGLWindowSettings settings;
     settings.setGLVersion(4,3);
@@ -23,10 +24,5 @@ int main( ){
     settings.windowMode = OF_FULLSCREEN;
     ofCreateWindow(settings);
 
-
-    // this kicks off the running of my app
-    // can be OF_WINDOW or OF_FULLSCREEN
-    // pass in width and height too:
     ofRunApp(new ofApp());
-
 }
