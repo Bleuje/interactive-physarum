@@ -80,4 +80,5 @@ Advanced settings to be able to tune points and have different patterns than def
 
 Different color modes (many hues and black and white are available):
 ![Screenshot 1 May, 2024, 6](/doc/screenshot-1-may-2024-6.png)
-![Screenshot 1 May, 2024, 7](/doc/screenshot-1-may-2024-7.png)
+![Screenshot 8 May, 2024, 1](/doc/screenshot-8-may-2024-1.png)
+![Screenshot 8 May, 2024, 2](/doc/screenshot-8-may-2024-2.png)
