@@ -14,9 +14,6 @@ void ofApp::setup()
     myFont.load("fonts/Raleway-Regular.ttf", floor(22.0 * u));
     myFontBold.load("fonts/Raleway-Bold.ttf", floor(22.0 * u));
 
-    gamepadControlsImage.load("images/xboxgamepadcontrols.png");
-    informationImage.load("images/interactive-physarum-info.png");
-
     counter.resize(GlobalSettings::SIMULATION_WIDTH * GlobalSettings::SIMULATION_HEIGHT);
     counterBuffer.allocate(counter, GL_DYNAMIC_DRAW);
 
@@ -78,22 +75,7 @@ void ofApp::setup()
         randomSpawnYarray[i] = GlobalSettings::SIMULATION_HEIGHT / 2;
     }
 
-    ////////////////////////////////////////
-    // check if there is a gamepad connected
-    numberOfGamepads = ofxGamepadHandler::get()->getNumPads();
-
-    if (numberOfGamepads > 0)
-    {
-        for (int i = 0; i < numberOfGamepads; i++)
-        {
-            ofxGamepad *pad = ofxGamepadHandler::get()->getGamepad(i);
-            ofAddListener(pad->onAxisChanged, this, &ofApp::axisChanged);
-            ofAddListener(pad->onButtonPressed, this, &ofApp::buttonPressed);
-            ofAddListener(pad->onButtonReleased, this, &ofApp::buttonReleased);
-        }
-    }
-    std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
-    ////////////////////////////////////////
+    numberOfGamepads = 0;
 
     std::cout << "Number of points : " << pointsDataManager.getNumberOfPoints() << std::endl;
 
@@ -352,26 +334,6 @@ void ofApp::draw()
             ofSaveScreen("frames/fr"+str.str()+".png");
         }
     */
-    float infoProgress = 1 - pow(1 - R2action, 2.0);
-
-    ofPushMatrix();
-    ofTranslate(-25 * u - 1500 * u * (1 - infoProgress), 230 * u);
-    ofScale(1.5 * u);
-    gamepadControlsImage.draw(0, 0);
-    ofPopMatrix();
-
-    ofPushMatrix();
-    ofTranslate(1270 * u + 1000 * u * (1 - infoProgress), 230 * u);
-    ofScale(0.7 * u);
-    informationImage.draw(0, 0);
-    ofPopMatrix();
-
-    ofPushMatrix();
-    ofTranslate(1300 * u, 25 * u - 50 * u * infoProgress);
-    ofScale(0.7 * u);
-    std::string pressB = "Right trigger for controls and information";
-    drawTextBox(pressB, &myFontBold, col, 110);
-    ofPopMatrix();
 
     ofPopMatrix();
 }
