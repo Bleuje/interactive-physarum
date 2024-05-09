@@ -3,7 +3,6 @@
 // by Etienne Jacob, see license and crediting in main.cpp
 
 #include "ofMain.h"
-#include "ofxGamepadHandler.h"
 #include "pointsManagement.h"
 
 #define SIMULATION_WIDTH 1280
@@ -121,14 +120,9 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
-    // gamepad events
     int numberOfGamepads;
-    void axisChanged(ofxGamepadAxisEvent &e);
-    void buttonPressed(ofxGamepadButtonEvent &e);
-    void buttonReleased(ofxGamepadButtonEvent &e);
 
     ofTrueTypeFont myFont, myFontBold;
-    ofImage gamepadControlsImage, informationImage;
 
     // int numFrames = 4000;
 };
