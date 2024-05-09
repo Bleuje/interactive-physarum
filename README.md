@@ -7,12 +7,14 @@ It is implemented with openFrameworks and the simulations run on GPU with comput
 Please check out 36 Points by Sage Jenson (mxsage) first: https://www.sagejenson.com/36points/
 Press 0-9, A-Z for different Points (different simulation parameters).
 
+It runs at 60 fps on a RTX 2060 GPU, with more than 5M particles.
+
 ### License:
 License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
 
 #### Crediting:
 Work derived from mxsage's 36 points (https://www.sagejenson.com/36points/) but with a different implementation.
-Before studying mxsage's code I already had a physarum simulation implementation. I modified my implementation to use the most important features of their algorithm.
+Before studying mxsage's code I already had a physarum simulation implementation (already inspired by mxsage's work). I modified my implementation to use the most important features of their algorithm.
 I am using atomic counters on pixels and this is different. No fragment or vertex shader, only compute shader. I am using the set of parameters from 36 Points. Some work well, some don't, I had to tune stuff. Currently, 17 points that seem to work quite well are used.
 
 The license from 36 points is reproduced here.
@@ -101,3 +103,12 @@ It also has interaction without connected gamepad
 - **P** or **H**: hide/show pen
 - **W**: trigger wave
 - **A**: change color mode
+
+### Versions with less computation
+
+I made a branch that uses less particles and has smaller simualtion canvas, for lighter computation:
+https://github.com/Bleuje/interactive-physarum/tree/light-compute
+
+It seems that the number of particles could be reduced even more while keeping a similar look by changing the simulation parameters: increasing a factor on the sensed value to compensate for having less particles.
+
+I really haven't put much thought on making optimal choices for number of particles, simulation canvas size and parameters of compute shader parallelization.
