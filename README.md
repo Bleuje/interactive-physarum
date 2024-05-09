@@ -35,11 +35,6 @@ Some screenshots to give a little taste of the project, as of May 1, 2024.
 
 ▶️ [**Demo video on YouTube**](https://www.youtube.com/watch?v=4hLtjlaVzsk) ✨
 
-### How to compile
-
-[ofxGamepad](https://github.com/Bleuje/ofxGamepad) addon is used (it seems that you should use my fork because of a fix, or maybe just to have same version as me).
-I'm only testing on Linux, and I bet that if there's a problem on other platforms it would be because of this gamepad code. Maybe a version with keyboard interaction should be done to have this project without dependency on this addon.
-
 ### Some context to understand the technique
 
 The simulation algorithm is a more advanced version of the physarum simulation algorithm described by Jeff Jones in [this paper](https://uwe-repository.worktribe.com/output/980579/characteristics-of-pattern-formation-and-evolution-in-approximations-of-physarum-transport-networks).
@@ -58,6 +53,14 @@ The compute shader code of my implementation is in bin/data/
 
 **computeshader_setter.glsl** : Just used to reset the counters of the pixels to 0 at each iteration.
 
+### How to compile
+
+[ofxGamepad](https://github.com/Bleuje/ofxGamepad) addon is used (it seems that you should use my fork because of a fix, or maybe just to have same version as me).
+I'm only testing on Linux, and I bet that if there's a problem on other platforms it would be because of this gamepad code.
+
+Here is a branch without gamepad code:
+https://github.com/Bleuje/interactive-physarum/tree/no-gamepad
+It's not perfect. Right now it keeps using some amount of "inertia" (something that can be triggered with gamepad). I'm keeping it like this because I think it looks quite cool. Mouse and keyboard interaction is explained later below.
 
 ### Interaction with gamepad
 
