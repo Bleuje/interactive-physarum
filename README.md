@@ -43,6 +43,18 @@ Sage Jenson's approach is to control the original physarum simulation parameters
 
 ______________
 
+I'm introducing many things on top of this simulation algorithm:
+
+- Mainly spatial interpolation between the parameters of 2 Points. That introduces a lot of possibilities of interaction, and new patterns.
+- interaction to move particles
+- interaction to spawn particles
+- particles keeping their inertia
+- possibility to tune the parmameters of each point
+- color experiments
+
+The way particles add trail is different compared to 36 points and it can result in different patterns.
+______________
+
 The compute shader code of my implementation is in bin/data/
 
 **computeshader_move.glsl** : Main shader: updates particles, increases a counter on the particle's pixel position.
