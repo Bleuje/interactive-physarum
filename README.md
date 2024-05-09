@@ -13,7 +13,7 @@ License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported Licen
 #### Crediting:
 Work derived from mxsage's 36 points (https://www.sagejenson.com/36points/) but with a different implementation.
 Before studying mxsage's code I already had a physarum simulation implementation. I modified my implementation to use the most important features of their algorithm.
-I'm using atomic counters on pixels and this is different. No fragment or vertex shader, only compute shader. I'm using the set of parameters from 36 Points. Some work well, some don't, I had to tune stuff. Currently, 17 points that seem to work quite well are used.
+I am using atomic counters on pixels and this is different. No fragment or vertex shader, only compute shader. I am using the set of parameters from 36 Points. Some work well, some don't, I had to tune stuff. Currently, 17 points that seem to work quite well are used.
 
 The license from 36 points is reproduced here.
 
@@ -82,3 +82,18 @@ Different color modes (many hues and black and white are available):
 ![Screenshot 1 May, 2024, 6](/doc/screenshot-1-may-2024-6.png)
 ![Screenshot 8 May, 2024, 1](/doc/screenshot-8-may-2024-1.png)
 ![Screenshot 8 May, 2024, 2](/doc/screenshot-8-may-2024-2.png)
+
+### Interaction with keyboard and mouse
+
+It also has interaction without connected gamepad
+
+- Pen location with mouse position
+- particles spawning with mouse clicks, waves triggered with middle click
+- keyboard **arrows**: points choice navigation
+- **R** or **Spacebar**: set random points
+- **S**: swap pen/background points
+- **D**/**F**: paricles spawning
+- **X**/**C**: change pen size
+- **P** or **H**: hide/show pen
+- **W**: trigger wave
+- **A**: change color mode
