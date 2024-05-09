@@ -29,6 +29,10 @@ Some screenshots to give a little taste of the project, as of May 1, 2024.
 ![Screenshot 1 May, 2024, 5](/doc/screenshot-1-may-2024-5.png)
 ![Screenshot 1 May, 2024, 4bis](/doc/screenshot-1-may-2024-4-bis.png)
 
+### Video
+
+▶️ [**Demo video on YouTube**](https://www.youtube.com/watch?v=4hLtjlaVzsk) ✨
+
 ### How to compile
 
 [ofxGamepad](https://github.com/Bleuje/ofxGamepad) addon is used (it seems that you should use my fork because of a fix, or maybe just to have same version as me).
