@@ -13,9 +13,6 @@ void ofApp::setup(){
     myFont.load("fonts/Raleway-Regular.ttf",floor(22.0 * u));
     myFontBold.load("fonts/Raleway-Bold.ttf",floor(22.0 * u));
 
-    gamepadControlsImage.load("images/xboxgamepadcontrols.png");
-    informationImage.load("images/interactive-physarum-info.png");
-
     counter.resize(SIMULATION_WIDTH*SIMULATION_HEIGHT);
     counterBuffer.allocate(counter, GL_DYNAMIC_DRAW);
 
@@ -75,22 +72,8 @@ void ofApp::setup(){
         randomSpawnYarray[i] = SIMULATION_HEIGHT/2;
     }
 
-    ////////////////////////////////////////
-    // check if there is a gamepad connected
-    numberOfGamepads = ofxGamepadHandler::get()->getNumPads();
 
-    if(numberOfGamepads>0){
-        for(int i=0;i<numberOfGamepads;i++)
-        {
-            ofxGamepad* pad = ofxGamepadHandler::get()->getGamepad(i);
-            ofAddListener(pad->onAxisChanged, this, &ofApp::axisChanged);
-            ofAddListener(pad->onButtonPressed, this, &ofApp::buttonPressed);
-            ofAddListener(pad->onButtonReleased, this, &ofApp::buttonReleased);
-        }
-    }
-	std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
-    ////////////////////////////////////////
-
+    numberOfGamepads = 0;
 
     std::cout << "Number of points : " << pointsDataManager.getNumberOfPoints() << std::endl;
 
@@ -297,161 +280,6 @@ void ofApp::actionSpawnParticles(int spawnType)
     }
 }
 
-void ofApp::buttonPressed(ofxGamepadButtonEvent& e)
-{
-	//cout << "BUTTON " << e.button << " PRESSED" << endl;
-    int buttonId = e.button;
-    if(buttonId == 0)
-    {
-        if(settingsChangeMode == 0)
-            actionRandomParams();
-        else
-        {
-            pointsDataManager.resetCurrentPoint();
-        }
-    }
-    if(buttonId == 1)
-    {
-        if(settingsChangeMode == 0)
-            actionSwapParams();
-        else
-        {
-            pointsDataManager.resetAllPoints();
-        }
-    }
-    if(buttonId == 2)
-    {
-        //actionTriggerWave();
-        actionSpawnParticles(2);
-    }
-    if(buttonId == 3)
-    {
-        //actionChangeDisplayType();
-        actionSpawnParticles(1);
-    }
-    if(buttonId == 4)
-    {
-        actionChangeSigmaCount(1);
-    }
-    if(buttonId == 5)
-    {
-        actionChangeSigmaCount(-1);
-    }
-    if(buttonId == 6)
-    {
-        settingsChangeMode = (settingsChangeMode + 1) % 2;
-        latestPointSettingsActionTime = getTime();
-    }
-    if(buttonId == 7)
-    {
-        actionChangeColorMode();
-    }
-    if(buttonId == 10)
-    {
-        actionTriggerWave();
-        //actionSpawnParticles(2);
-    }
-    if(buttonId == 9)
-    {
-        actionChangeDisplayType();
-    }
-
-    paramsUpdate();
-}
-
-void ofApp::axisChanged(ofxGamepadAxisEvent& e)
-{
-	//cout << "AXIS " << e.axis << " VALUE " << ofToString(e.value) << endl;
-
-    int axisType = e.axis;
-    float value = e.value;
-    if(axisType==6 && e.value>0.5)
-    {
-        if(settingsChangeMode == 0)
-            actionChangeParams(1);
-        else
-        {
-            pointsDataManager.changeValue(settingsChangeIndex,1);
-            latestPointSettingsActionTime = getTime();
-        }
-    }
-    if(axisType==6 && e.value<-0.5)
-    {
-        if(settingsChangeMode == 0)
-            actionChangeParams(-1);
-        else
-        {
-            pointsDataManager.changeValue(settingsChangeIndex,-1);
-            latestPointSettingsActionTime = getTime();
-        }
-    }
-    if(axisType==7 && e.value>0.5)
-    {
-        if(settingsChangeMode == 0)
-            pointsDataManager.changeSelectionIndex(-1);
-        else
-        {
-            settingsChangeIndex = (settingsChangeIndex + 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
-            latestPointSettingsActionTime = getTime();
-        }
-    }
-    if(axisType==7 && e.value<-0.5)
-    {
-        if(settingsChangeMode == 0)
-            pointsDataManager.changeSelectionIndex(1);
-        else
-        {
-            settingsChangeIndex = (settingsChangeIndex - 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
-            latestPointSettingsActionTime = getTime();
-        }
-    }
-    if(axisType==0 || axisType==1)
-    {
-        if(axisType==0) curTranslationAxis1 = 0;
-        if(axisType==1) curTranslationAxis2 = 0;
-        if(abs(e.value)>0.09)
-        {
-            if(axisType==0) curTranslationAxis1 = e.value;
-            if(axisType==1) curTranslationAxis2 = e.value;
-
-            penMoveLatestTime = getTime();
-        }
-    }
-    
-    if(axisType==3 || axisType==4)
-    {
-        if(axisType==3) curMoveBiasActionX = 0;
-        if(axisType==4) curMoveBiasActionY = 0;
-
-        if(abs(e.value)>0.09)
-        {
-            if(axisType==3) curMoveBiasActionX = e.value;
-            if(axisType==4) curMoveBiasActionY = e.value;
-
-            penMoveLatestTime = getTime();
-        }
-    }
-    
-
-    
-    if(axisType==2)
-    {
-        curL2 = e.value;
-    }
-    if(axisType==5)
-    {
-        curR2 = e.value;
-    }
-    
-
-    paramsUpdate();
-}
-
-void ofApp::buttonReleased(ofxGamepadButtonEvent& e)
-{
-	//cout << "BUTTON " << e.button << " RELEASED" << endl;
-}
-
 void ofApp::keyPressed(int key){
     switch(key)
     {
@@ -656,26 +484,6 @@ void ofApp::draw(){
         ofSaveScreen("frames/fr"+str.str()+".png");
     }
 */
-    float infoProgress = 1-pow(1-R2action,2.0);
-
-    ofPushMatrix();
-    ofTranslate(-25*u - 1500*u*(1-infoProgress),230*u);
-    ofScale(1.5*u);
-    gamepadControlsImage.draw(0, 0);
-    ofPopMatrix();
-
-    ofPushMatrix();
-    ofTranslate(1270*u + 1000*u*(1-infoProgress),230*u);
-    ofScale(0.7*u);
-    informationImage.draw(0, 0);
-    ofPopMatrix();
-
-    ofPushMatrix();
-    ofTranslate(1300*u,25*u - 50*u*infoProgress);
-    ofScale(0.7*u);
-    std::string pressB = "Right trigger for controls and information";
-    drawTextBox(pressB, &myFontBold, col, 110);
-    ofPopMatrix();
 
 
     ofPopMatrix();
