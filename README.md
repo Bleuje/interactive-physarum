@@ -49,7 +49,7 @@ I'm introducing many things on top of this simulation algorithm:
 - interaction to move particles
 - interaction to spawn particles
 - particles keeping their inertia
-- possibility to tune the parmameters of each point
+- possibility to tune the parameters of each point
 - color experiments
 
 The way particles add trail is different compared to 36 points and it can result in different patterns.
