@@ -40,14 +40,14 @@ void ofApp::setup(){
     float marginy = 3;
 
     for(auto & p: particles){
-        p.data.x = ofRandom(marginx,SIMULATION_WIDTH-marginx);
-        p.data.y = ofRandom(marginy,SIMULATION_HEIGHT-marginy);
-        p.data.z = ofRandom(1);
-        p.data.w = ofRandom(0,TWO_PI);
-        p.data2.x = 0;
-        p.data2.y = 0;
-        p.data2.z = 0;
-        p.data2.w = 0;
+        p.data.x = ofRandom(marginx,SIMULATION_WIDTH-marginx); // particle position x
+        p.data.y = ofRandom(marginy,SIMULATION_HEIGHT-marginy); // particle position y
+        p.data.z = ofRandom(1); // "progress" attribute to control respawning regularly
+        p.data.w = ofRandom(0,TWO_PI); // heading
+        p.data2.x = 0; // particle speed x
+        p.data2.y = 0; // particle speed y
+        p.data2.z = 0; // unused attribute
+        p.data2.w = 0; // unused attribute
     }
     particlesBuffer.allocate(particles,GL_DYNAMIC_DRAW);
 
