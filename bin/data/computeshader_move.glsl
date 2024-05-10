@@ -220,8 +220,11 @@ void main(){
 	float SensorBias1_mix = mix(currentParams_1.SensorBias1, currentParams_2.SensorBias1, lerper);
 	float SensorBias2_mix = mix(currentParams_1.SensorBias2, currentParams_2.SensorBias2, lerper);
 
+	///////////////////////////////////////////////////////////////////////////////////
+	// Technique/formulas from Sage Jenson (mxsage)
 	float currentSensedValue = getGridValue(particlePos + SensorBias2_mix * direction + vec2(0.,SensorBias1_mix)) * tunedSensorScaler_mix;
 	currentSensedValue = clamp(currentSensedValue, 0.000000001, 1.0);
+	///////////////////////////////////////////////////////////////////////////////////
 
 
 
