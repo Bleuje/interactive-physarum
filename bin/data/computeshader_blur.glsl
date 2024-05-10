@@ -14,6 +14,8 @@ ivec2 LoopedPosition(ivec2 pos)
 	return ivec2(mod(pos.x + width,width),mod(pos.y + height,height));
 }
 
+// Blur (trail map diffusion) shader
+
 layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 void main(){
 	ivec2 pos = ivec2(gl_GlobalInvocationID.xy);
@@ -36,6 +38,7 @@ void main(){
 	
 	float decayed = c.x*decayFactor;
 	vec4 cOutput = vec4(decayed,decayed,0.8*decayed + 0.2*c.z,1.0);
+	// (It's possible to control some amount of delay with this 3rd color component, this is used for drawing of delayed trail map.)
 	
 	imageStore(trailWrite,ivec2(gl_GlobalInvocationID.xy),cOutput);
 }

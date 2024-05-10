@@ -1,6 +1,10 @@
 #version 440
 
-// warning: must be compatible with the c++ code
+// By Etienne Jacob, License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
+// Attribution to Sage Jenson's work explained in comments
+
+
+// warning: these be compatible with the c++ code
 #define MAX_NUMBER_OF_WAVES 5
 #define MAX_NUMBER_OF_RANDOM_SPAWN 7
 
@@ -134,7 +138,10 @@ float propagatedWaveFunction(float x,float sigma)
 	return float(x <= 0.)*exp(-x*x/waveSigma/waveSigma);
 }
 
-
+// This is the main shader.
+// It updates the current particle's attributes (mostly position and heading).
+// It also increases a counter on the pixel of the particle's new position, which will be used to add deposit in the deposit shader.
+// Counter increased with atomicAdd function to be able to do it with many particles in parallel.
 
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 void main(){
@@ -154,6 +161,7 @@ void main(){
 	vec2 normalizedActionPosition = vec2(actionX/width,actionY/height);
 
 
+	// some inputs for noise values used later (not important stuff)
 	vec2 positionForNoise1 = normalizedPosition;
 	positionForNoise1.x *= float(width)/height;
 	vec2 positionForNoise2 = positionForNoise1;
@@ -163,18 +171,18 @@ void main(){
 	positionForNoise2 *= noiseScale2;
 
 
-
+	// looking for "lerper" variable, the parameter for interpolation between the parameters of the 2 Points (Pen/Background)
 	vec2 positionFromAction = normalizedPosition - normalizedActionPosition;
 	positionFromAction.x *= float(width)/height;
-	float distanceNoiseFactor = (0.9 + 0.2*noise(vec3(positionForNoise2.x,positionForNoise2.t,0.6*time)));
+	float distanceNoiseFactor = (0.9 + 0.2*noise(vec3(positionForNoise2.x,positionForNoise2.t,0.6*time))); // a bit of noise distortion on distance
 	float distanceFromAction = distance(positionFromAction,vec2(0))*distanceNoiseFactor;
-	float lerper = exp(-distanceFromAction*distanceFromAction/actionAreaSizeSigma/actionAreaSizeSigma);
+	float lerper = exp(-distanceFromAction*distanceFromAction/actionAreaSizeSigma/actionAreaSizeSigma); // use of a gaussian function: 1 at the center, 0 far from the center
 	//lerper = diffDist<=actionAreaSizeSigma ? 1 : 0;
 	//lerper = particlePos.x/width;
 
 
-
-	float waveSum = 0.;
+	// Section about the "trigerred waves" interaction, really a secondary feature
+ 	float waveSum = 0.;
 	
 	for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
 	{
@@ -235,7 +243,7 @@ void main(){
 	float RA_exponent_mix = mix(currentParams_1.RA_exponent, currentParams_2.RA_exponent, lerper);
 
 
-
+	///////////////////////////////////////////////////////////////////////////////////
 	// Technique/formulas from Sage Jenson (mxsage)
 	// For a current sensed value S,
 	// physarum param = A + B * (S ^ C)
@@ -245,6 +253,7 @@ void main(){
 	float sensorAngle = SensorAngle0_mix + SA_amplitude_mix * pow(currentSensedValue, SA_exponent_mix);
 	float rotationAngle = RotationAngle0_mix + RA_amplitude_mix * pow(currentSensedValue, RA_exponent_mix);
 	// 3 * 4 = 12 parameters
+	///////////////////////////////////////////////////////////////////////////////////
 	
 
 	// sensing at 3 positions, as in the classic physarum algorithm
@@ -272,7 +281,8 @@ void main(){
 
 
 
-
+	// Forcing movement with joystick action,
+	// using noise to have more or less of this forced movement, because it looked too boring without
 	float noiseValue = noise(vec3(positionForNoise1.x,positionForNoise1.y,0.8*time));
 	float moveBiasFactor = 5 * lerper * noiseValue;
 	vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX,moveBiasActionY);
@@ -282,7 +292,8 @@ void main(){
 	float classicNewPositionX = particlePos.x + moveDistance*cos(newHeading) + moveBias.x;
 	float classicNewPositionY = particlePos.y + moveDistance*sin(newHeading) + moveBias.y;
 	
-	// intertia experimental stuff...
+	// inertia experimental stuff... actually it's a lot weirder than just modifying speed instead of position
+	// probably the weirdest stuff in the code of this project
 	velocity *= 0.98;
 	float vf = 1.0;
 	float velocityBias = 0.2*L2Action;
@@ -290,14 +301,14 @@ void main(){
 	float vy = velocity.y + vf*sin(newHeading) + velocityBias*moveBias.y;
 
 	//float dt = 0.05*moveDistance;
-	float dt = 0.07*pow(moveDistance,1.4);
+	float dt = 0.07*pow(moveDistance,1.4); // really weird thing, I thought this looked satisfying
 
 	float inertiaNewPositionX = particlePos.x + dt*vx + moveBias.x;
 	float inertiaNewPositionY = particlePos.y + dt*vy + moveBias.y;
 
+
 	float moveStyleLerper = 0.6*L2Action + 0.8*waveSum; // intensity of use of inertia
-
-
+	// the new position of the particle:
 	float px = mix(classicNewPositionX, inertiaNewPositionX, moveStyleLerper);
 	float py = mix(classicNewPositionY, inertiaNewPositionY, moveStyleLerper);
 
@@ -312,7 +323,7 @@ void main(){
 		{
 			float randForRadius = gn(particlePos*22.698515/width,33.265475);
 
-			if(spawnParticles == 1)
+			if(spawnParticles == 1) // circular spawn
 			{
 				float randForTheta = gn(particlePos*8.129515/width,17.622475);
 				float theta = randForTheta * PI * 2.0;
@@ -324,7 +335,7 @@ void main(){
 				px = actionX + spos.x;
 				py = actionY + spos.y;
 			}
-			if(spawnParticles == 2)
+			if(spawnParticles == 2) // spawn at few places near pen
 			{
 				int randForSpawnIndex = int(floor(randomSpawnNumber * gn(particlePos*28.218515/width,35.435475)));
 				float sx = randomSpawnXarray[randForSpawnIndex];
@@ -345,7 +356,7 @@ void main(){
 	// atomicAdd for increasing counter at pixel, in parallel computation
 	atomicAdd(particlesCounter[int(round(nextPos.x))*height + int(round(nextPos.y))], depositAmount);
 
-
+	///////////////////////////////////////////////////////////////////////////////////
 	// Technique/formula from Sage Jenson (mxsage)
 	// particles are regularly respawning, their progression is stored in particle data
 	const float reinitSegment=0.0010; // respawn every 1/reinitSegment iterations
@@ -355,9 +366,10 @@ void main(){
 		nextPos = getRandomPos(particlePos);
 	}
 	float nextA = fract(curA+reinitSegment);
+	///////////////////////////////////////////////////////////////////////////////////
 
 
 	// update particle data
 	particlesArray[gl_GlobalInvocationID.x].data = vec4(nextPos.x,nextPos.y,nextA,newHeading);
-	particlesArray[gl_GlobalInvocationID.x].data2 = vec4(vx,vy,0,0); // (still 2 values left for experiments :) )
+	particlesArray[gl_GlobalInvocationID.x].data2 = vec4(vx,vy,0,0); // (still 2 values left for future experiments! :) )
 }
