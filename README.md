@@ -1,6 +1,6 @@
 ## Interactive physarum
 
-Interactive physarum/organic simulations, for an installation with gamepad control.
+Interactive physarum/organic simulations, for an installation with gamepad control, but you can also try it out without gamepad.
 
 It is implemented with openFrameworks and the simulations run on GPU with compute shaders.
 
