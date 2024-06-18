@@ -1,5 +1,8 @@
 // Simulation parameters in mxsage's 36 Points
 
+// But a new parameter has been added at the end: it's some "sensing scaling factor".
+// This is some tuning to make the original parameters produce better results with the new simulation method.
+
 const int NumberOfBasePoints = 43;
 const int PARAMS_DIMENSION = 21;
 const double ParametersMatrix[NumberOfBasePoints][PARAMS_DIMENSION] = {
