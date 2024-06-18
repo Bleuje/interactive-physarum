@@ -6,6 +6,41 @@ uniform float depositFactor;
 uniform int colorModeType;
 uniform int numberOfColorModes;
 
+// uniform vec3 colors[4]; // Array of 4 colors
+
+// Function to interpolate between colors in the palette
+vec3 getColorFromPalette(float t) {
+
+    // Define the color palette directly in the function
+    vec3 colors[4] = vec3[](
+        vec3(245./255., 231./255., 178./255.),  // Reddish
+        vec3(249./255., 214./255., 137./255.),  // Greenish
+        vec3(224./255., 167./255., 94./255.),  // Blueish
+        vec3(151./255., 49./255., 49./255.)  // Yellowish
+    );
+
+/*
+	    // Define the color palette directly in the function
+    vec3 colors[4] = vec3[](
+        vec3(12./255., 24./255., 68./255.),  // Reddish
+        vec3(200./255., 0./255., 54./255.),  // Greenish
+        vec3(255./255., 105./255., 105./255.),  // Blueish
+        vec3(255./255., 245./255., 225./255.)  // Yellowish
+    );
+*/
+
+    if (t < 0.333) {
+        // Interpolate between first and second colors
+        return mix(colors[0], colors[1], t / 0.333);
+    } else if (t < 0.666) {
+        // Interpolate between second and third colors
+        return mix(colors[1], colors[2], (t - 0.333) / 0.333);
+    } else {
+        // Interpolate between third and fourth colors
+        return mix(colors[2], colors[3], (t - 0.666) / 0.334);
+    }
+}
+
 layout(std430,binding=3) buffer mutex
 {
 	uint particlesCounter[];
@@ -76,12 +111,21 @@ void main(){
 
 		// Color defined with combination of particle count (red) and trail map (green, blue)
 		vec3 rgb0 = vec3(countColorValue, trailColorValue, trailColorValue);
+		
+		float mixer = mix(countColorValue, trailColorValue, 0.35);
+		mixer = pow(mixer,0.8);
+		vec3 rgb2 = getColorFromPalette(mixer);
+
+		rgb0 = mix(rgb2,rgb0,min(1.,1.3*trailColorValue));
+
 		vec3 hsv0 = rgb2hsv(rgb0);
+		
 
 		float hueChange = float(colorModeType-1)/float(numberOfColorModes-1); // hue shift with different color modes
 		vec3 hsv = changeHue(hsv0,hueChange);
 
 		vec3 rgb = hsv2rgb(hsv);
+
 		outputColor = vec4(rgb,1.0);
 	}
 	imageStore(displayWrite,ivec2(gl_GlobalInvocationID.xy),outputColor);
