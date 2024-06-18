@@ -10,7 +10,7 @@ uniform int numberOfColorModes;
 
 // Function to interpolate between colors in the palette
 vec3 getColorFromPalette(float t) {
-
+/*
     // Define the color palette directly in the function
     vec3 colors[4] = vec3[](
         vec3(245./255., 231./255., 178./255.),  // Reddish
@@ -18,7 +18,7 @@ vec3 getColorFromPalette(float t) {
         vec3(224./255., 167./255., 94./255.),  // Blueish
         vec3(151./255., 49./255., 49./255.)  // Yellowish
     );
-
+*/
 /*
 	    // Define the color palette directly in the function
     vec3 colors[4] = vec3[](
@@ -28,6 +28,14 @@ vec3 getColorFromPalette(float t) {
         vec3(255./255., 245./255., 225./255.)  // Yellowish
     );
 */
+    // Define the color palette directly in the function
+    vec3 colors[4] = vec3[](
+		//rgb(216, 239, 211)
+        vec3(241./255., 248./255., 232./255.),  // Reddish
+        vec3(85./255., 173./255., 155./255.),  // Greenish
+        vec3(149./255., 210./255., 179./255.),  // Blueish
+        vec3(216./255., 239./255., 211./255.)  // Yellowish
+    );
 
     if (t < 0.333) {
         // Interpolate between first and second colors
@@ -110,13 +118,13 @@ void main(){
 		trailColorValue = min(1.0,trailColorValue);
 
 		// Color defined with combination of particle count (red) and trail map (green, blue)
-		vec3 rgb0 = vec3(countColorValue, trailColorValue, trailColorValue);
+		vec3 rgb0 = vec3(countColorValue, countColorValue, countColorValue);
 		
 		float mixer = mix(countColorValue, trailColorValue, 0.35);
 		mixer = pow(mixer,0.8);
 		vec3 rgb2 = getColorFromPalette(mixer);
 
-		rgb0 = mix(rgb2,rgb0,min(1.,1.3*trailColorValue));
+		rgb0 = mix(rgb2,rgb0,min(1.,1.2*trailColorValue));
 
 		vec3 hsv0 = rgb2hsv(rgb0);
 		
