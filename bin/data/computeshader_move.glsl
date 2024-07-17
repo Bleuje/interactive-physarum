@@ -34,8 +34,8 @@ uniform float L2Action;
 uniform int spawnParticles;
 uniform float spawnFraction;
 uniform int randomSpawnNumber;
-uniform float randomSpawnXarray[MAX_NUMBER_OF_WAVES];
-uniform float randomSpawnYarray[MAX_NUMBER_OF_WAVES];
+uniform float randomSpawnXarray[MAX_NUMBER_OF_RANDOM_SPAWN];
+uniform float randomSpawnYarray[MAX_NUMBER_OF_RANDOM_SPAWN];
 
 uniform float pixelScaleFactor;
 
