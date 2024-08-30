@@ -143,11 +143,6 @@ void ofApp::update(){
         }
     }
 
-
-    trailWriteBuffer.begin();
-    trailReadBuffer.draw(0,0);
-    trailWriteBuffer.end();
-
     setterShader.begin();
     setterShader.setUniform1i("width",trailReadBuffer.getWidth());
     setterShader.setUniform1i("height",trailReadBuffer.getHeight());
@@ -155,6 +150,9 @@ void ofApp::update(){
     setterShader.dispatchCompute(SIMULATION_WIDTH / 32, SIMULATION_HEIGHT / 32, 1);
     setterShader.end();
 
+
+    trailReadBuffer.getTexture().bindAsImage(0,GL_READ_ONLY);
+    trailWriteBuffer.getTexture().bindAsImage(1,GL_WRITE_ONLY);
 
     moveShader.begin();
     moveShader.setUniform1i("width",trailReadBuffer.getWidth());
@@ -199,10 +197,8 @@ void ofApp::update(){
     depositShader.dispatchCompute(SIMULATION_WIDTH / 32, SIMULATION_HEIGHT / 32, 1);
     depositShader.end();
 
-    trailReadBuffer.begin();
-    trailWriteBuffer.draw(0,0);
-    trailReadBuffer.end();
-
+    trailReadBuffer.getTexture().bindAsImage(1,GL_WRITE_ONLY);
+    trailWriteBuffer.getTexture().bindAsImage(0,GL_READ_ONLY);
 
     blurShader.begin();
     blurShader.setUniform1i("width",trailReadBuffer.getWidth());
@@ -213,10 +209,6 @@ void ofApp::update(){
     blurShader.dispatchCompute(trailReadBuffer.getWidth()/32,trailReadBuffer.getHeight()/32,1);
     blurShader.end();
 
-
-    trailReadBuffer.begin();
-    trailWriteBuffer.draw(0,0);
-    trailReadBuffer.end();
 
     if(particlesSpawn) particlesSpawn = 0;
 
