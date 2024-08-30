@@ -11,8 +11,8 @@ layout(std430,binding=3) buffer mutex
 	uint particlesCounter[];
 };
 
-layout(rgba32f,binding=0) uniform readonly image2D trailRead;
-layout(rgba32f,binding=1) uniform writeonly image2D trailWrite;
+layout(rgba16f,binding=0) uniform readonly image2D trailRead;
+layout(rgba16f,binding=1) uniform writeonly image2D trailWrite;
 layout(rgba32f,binding=4) uniform writeonly image2D displayWrite;
 
 vec3 rgb2hsv(vec3 c) {

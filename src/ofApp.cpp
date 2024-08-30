@@ -19,8 +19,8 @@ void ofApp::setup(){
     counter.resize(SIMULATION_WIDTH*SIMULATION_HEIGHT);
     counterBuffer.allocate(counter, GL_DYNAMIC_DRAW);
 
-    trailReadBuffer.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RGBA32F);
-    trailWriteBuffer.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RGBA32F);
+    trailReadBuffer.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RGBA16F);
+    trailWriteBuffer.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RGBA16F);
     fboDisplay.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RGBA32F);
 
     setterShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_setter.glsl");

@@ -6,8 +6,8 @@ uniform float decayFactor;
 uniform float PI;
 uniform float time;
 
-layout(rgba32f,binding=0) uniform readonly image2D trailRead;
-layout(rgba32f,binding=1) uniform writeonly image2D trailWrite;
+layout(rgba16f,binding=0) uniform readonly image2D trailRead;
+layout(rgba16f,binding=1) uniform writeonly image2D trailWrite;
 
 ivec2 LoopedPosition(ivec2 pos)
 {
