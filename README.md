@@ -124,6 +124,4 @@ It also has interaction without connected gamepad
 I made a branch that uses less particles and has smaller simualtion canvas, for lighter computation:
 https://github.com/Bleuje/interactive-physarum/tree/light-compute
 
-It seems that the number of particles could be reduced even more while keeping a similar look by changing the simulation parameters: increasing a factor on the sensed value to compensate for having less particles.
-
-I really haven't put much thought on making optimal choices for number of particles, simulation canvas size and parameters of compute shader parallelization.
+[@frguthmann](https://github.com/frguthmann) is giving help on optimization (but only the easiest optimizations are done so far).
