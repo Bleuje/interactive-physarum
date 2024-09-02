@@ -122,7 +122,7 @@ It also has interaction without connected gamepad
 
 ### Versions with less computation
 
-I made a branch that uses less particles and has smaller simualtion canvas, for lighter computation:
+I made a branch that uses less particles and has smaller simulation canvas, for lighter computation:
 https://github.com/Bleuje/interactive-physarum/tree/light-compute
 
 [@frguthmann](https://github.com/frguthmann) is providing help on optimization (but only the easiest optimizations are done so far).
