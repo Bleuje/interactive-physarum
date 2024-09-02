@@ -118,6 +118,7 @@ It also has interaction without connected gamepad
 - **P** or **H**: hide/show pen
 - **W**: trigger wave
 - **A**: change color mode
+- **5**: points parameters tuning (advanced settings), with arrow keys
 
 ### Versions with less computation
 
