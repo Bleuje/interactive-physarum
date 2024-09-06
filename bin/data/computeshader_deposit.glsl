@@ -11,8 +11,8 @@ layout(std430,binding=3) buffer mutex
 	uint particlesCounter[];
 };
 
-layout(rgba16f,binding=0) uniform readonly image2D trailRead;
-layout(rgba16f,binding=1) uniform writeonly image2D trailWrite;
+layout(rg16f,binding=0) uniform readonly image2D trailRead;
+layout(rg16f,binding=1) uniform writeonly image2D trailWrite;
 layout(rgba8,binding=4) uniform writeonly image2D displayWrite;
 
 vec3 rgb2hsv(vec3 c) {
@@ -43,7 +43,7 @@ vec3 hsv2rgb(vec3 c) {
 
 layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 void main(){
-	vec4 prevColor = imageLoad(trailRead,ivec2(gl_GlobalInvocationID.xy)); // Getting the trail map color on current pixel
+	vec2 prevColor = imageLoad(trailRead,ivec2(gl_GlobalInvocationID.xy)).xy; // Getting the trail map color on current pixel
 
 	float count = float(particlesCounter[ gl_GlobalInvocationID.x * height + gl_GlobalInvocationID.y ]); // number of particles on the pixel
 
@@ -55,7 +55,7 @@ void main(){
 
 	// Trail map update
 	float val = prevColor.x + addedDeposit;
-	imageStore(trailWrite,ivec2(gl_GlobalInvocationID.xy),vec4(val,val,prevColor.z,1.0)); // using the 3rd color component to keep track of the previous color, it's not easy to explain why I do this
+	imageStore(trailWrite,ivec2(gl_GlobalInvocationID.xy),vec4(val,prevColor.y, 0, 0)); // using the 3rd color component to keep track of the previous color, it's not easy to explain why I do this
 
 
 	// Mapping the count on pixel to color intensity, looks like one day I tried hard to get something satisfying with a complicated formula
@@ -71,7 +71,7 @@ void main(){
 	else
 	{
 		// Mapping the trail map intensity to some color intensity, using trail map color with a delay
-		float trailColorValue = pow(tanh(9.0*pow(max(0.,(250*prevColor.z-1)/1100.0),0.3)),8.5)*1.05;
+		float trailColorValue = pow(tanh(9.0*pow(max(0.,(250*prevColor.y-1)/1100.0),0.3)),8.5)*1.05;
 		trailColorValue = min(1.0,trailColorValue);
 
 		// Color defined with combination of particle count (red) and trail map (green, blue)
