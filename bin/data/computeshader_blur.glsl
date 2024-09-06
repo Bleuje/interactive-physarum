@@ -38,7 +38,7 @@ void main(){
 	
 	float decayed = c.x*decayFactor;
 	vec4 cOutput = vec4(decayed,0.8*decayed + 0.2*c.y, 0, 0);
-	// (It's possible to control some amount of delay with this 3rd color component, this is used for drawing of delayed trail map.)
+	// (It's possible to control some amount of delay with this second color component, this is used for drawing of delayed trail map.)
 	
 	imageStore(trailWrite,ivec2(gl_GlobalInvocationID.xy),cOutput);
 }

@@ -47,7 +47,7 @@ void main(){
 
 	float count = float(particlesCounter[ gl_GlobalInvocationID.x * height + gl_GlobalInvocationID.y ]); // number of particles on the pixel
 
-	// The following 3 lines of code are my own innovation (looks like the license requires attribution if you use this :) ),
+	// The following 3 lines of code are my own innovation (looks like with the license attribution is required if you use this :) ),
 	// a way to define an amount of added trail in function of the number of particles on the pixel
 	uint limit = 100;
 	float limitedCount = count<float(limit)?count:float(limit);
@@ -55,7 +55,7 @@ void main(){
 
 	// Trail map update
 	float val = prevColor.x + addedDeposit;
-	imageStore(trailWrite,ivec2(gl_GlobalInvocationID.xy),vec4(val,prevColor.y, 0, 0)); // using the 3rd color component to keep track of the previous color, it's not easy to explain why I do this
+	imageStore(trailWrite,ivec2(gl_GlobalInvocationID.xy),vec4(val,prevColor.y, 0, 0)); // using the second color component to keep track of the previous color, it's not easy to explain why I do this
 
 
 	// Mapping the count on pixel to color intensity, looks like one day I tried hard to get something satisfying with a complicated formula
