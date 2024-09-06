@@ -2,6 +2,11 @@
 
 #include "ofApp.h"
 
+uint16_t floatAsUint16(float x)
+{
+    return uint16_t(std::round(std::max(std::min(x, 1.0f), 0.0f) * 65535.0f));
+}
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetFrameRate(FRAME_RATE);
@@ -35,19 +40,17 @@ void ofApp::setup(){
     blurShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_blur.glsl");
     blurShader.linkProgram();
 
-    particles.resize(NUMBER_OF_PARTICLES);
+    particles.resize(NUMBER_OF_PARTICLES * PARTICLE_PARAMETERS_COUNT);
     float marginx = 3;
     float marginy = 3;
 
-    for(auto & p: particles){
-        p.data.x = ofRandom(marginx,SIMULATION_WIDTH-marginx); // particle position x
-        p.data.y = ofRandom(marginy,SIMULATION_HEIGHT-marginy); // particle position y
-        p.data.z = ofRandom(1); // "progress" attribute to control respawning regularly
-        p.data.w = ofRandom(0,TWO_PI); // heading
-        p.data2.x = 0; // particle speed x
-        p.data2.y = 0; // particle speed y
-        p.data2.z = 0; // unused attribute
-        p.data2.w = 0; // unused attribute
+    for (int i = 0; i < NUMBER_OF_PARTICLES; i++) {
+        particles[PARTICLE_PARAMETERS_COUNT * i + 0] = floatAsUint16(ofRandom(marginx, SIMULATION_WIDTH - marginx) / SIMULATION_WIDTH);
+        particles[PARTICLE_PARAMETERS_COUNT * i + 1] = floatAsUint16(ofRandom(marginy, SIMULATION_HEIGHT - marginy) / SIMULATION_HEIGHT);
+        particles[PARTICLE_PARAMETERS_COUNT * i + 2] = floatAsUint16(ofRandom(1));
+        particles[PARTICLE_PARAMETERS_COUNT * i + 3] = floatAsUint16(ofRandom(1));
+        particles[PARTICLE_PARAMETERS_COUNT * i + 4] = 0;
+        particles[PARTICLE_PARAMETERS_COUNT * i + 5] = 0;
     }
     particlesBuffer.allocate(particles,GL_DYNAMIC_DRAW);
 
@@ -183,7 +186,7 @@ void ofApp::update(){
 
     moveShader.setUniform1f("pixelScaleFactor",PIXEL_SCALE_FACTOR);
 
-    moveShader.dispatchCompute(particles.size()/128,1,1);
+    moveShader.dispatchCompute(particles.size() / (128 * PARTICLE_PARAMETERS_COUNT), 1, 1);
     moveShader.end();
 
 
