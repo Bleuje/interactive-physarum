@@ -70,7 +70,7 @@ layout(std430,binding=5) buffer parameters
 	PointSettings params[];
 };
 
-layout(rgba16f,binding=0) uniform readonly image2D trailRead;
+layout(rg16f,binding=0) uniform readonly image2D trailRead;
 layout(std430,binding=3) buffer mutex
 {
 	uint particlesCounter[];
