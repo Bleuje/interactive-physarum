@@ -39,10 +39,6 @@ uniform float randomSpawnYarray[MAX_NUMBER_OF_RANDOM_SPAWN];
 
 uniform float pixelScaleFactor;
 
-struct Particle{
-	vec4 data;
-	vec4 data2;
-};
 
 struct PointSettings{
 	int typeIndex;
@@ -80,8 +76,8 @@ layout(std430,binding=3) buffer mutex
 	uint particlesCounter[];
 };
 
-layout(std140, binding=2) buffer particle{
-    Particle particlesArray[];
+layout(std430, binding=2) buffer particle{
+    uint particlesArray[];
 };
 
 
@@ -149,13 +145,12 @@ void main(){
 	PointSettings currentParams_1 = params[1]; // "Background Point" parameters
 	PointSettings currentParams_2 = params[0]; // "Pen Point" parameters
 
-	vec4 pInput = particlesArray[gl_GlobalInvocationID.x].data;
-	vec4 pInput2 = particlesArray[gl_GlobalInvocationID.x].data2;
+	vec2 particlePos = unpackUnorm2x16(particlesArray[3 * gl_GlobalInvocationID.x]) * vec2(width, height);
+	vec2 currAHeading = unpackUnorm2x16(particlesArray[3 * gl_GlobalInvocationID.x + 1]) * vec2(1.0, 2.0 * PI);
+	vec2 velocity = unpackHalf2x16(particlesArray[3 * gl_GlobalInvocationID.x + 2]);
 
-	vec2 particlePos = vec2(pInput.x,pInput.y);
-	float heading = particlesArray[gl_GlobalInvocationID.x].data.w;
+	float heading = currAHeading.y;
 	vec2 direction = vec2(cos(heading), sin(heading));
-	vec2 velocity = vec2(pInput2.x,pInput2.y);
 
 	vec2 normalizedPosition = vec2(particlePos.x/width,particlePos.y/height);
 	vec2 normalizedActionPosition = vec2(actionX/width,actionY/height);
@@ -363,7 +358,7 @@ void main(){
 	// Technique/formula from Sage Jenson (mxsage)
 	// particles are regularly respawning, their progression is stored in particle data
 	const float reinitSegment=0.0010; // respawn every 1/reinitSegment iterations
-	float curA = pInput.z;
+	float curA = currAHeading.x;
 	if (curA < reinitSegment)
 	{
 		nextPos = getRandomPos(particlePos);
@@ -371,8 +366,12 @@ void main(){
 	float nextA = fract(curA+reinitSegment);
 	///////////////////////////////////////////////////////////////////////////////////
 
+	vec2 nextPosUV = mod(nextPos, vec2(width, height)) / vec2(width, height);
+    float newHeadingNorm = mod(newHeading, 2.0 * PI) / (2.0 * PI);
+    vec2 nextAandHeading = vec2(nextA, fract(newHeadingNorm));
 
 	// update particle data
-	particlesArray[gl_GlobalInvocationID.x].data = vec4(nextPos.x,nextPos.y,nextA,newHeading);
-	particlesArray[gl_GlobalInvocationID.x].data2 = vec4(vx,vy,0,0); // (still 2 values left for future experiments! :) )
+	particlesArray[3 * gl_GlobalInvocationID.x] = packUnorm2x16(nextPosUV);
+	particlesArray[3 * gl_GlobalInvocationID.x + 1] = packUnorm2x16(nextAandHeading);
+	particlesArray[3 * gl_GlobalInvocationID.x + 2] = packHalf2x16(vec2(vx, vy));
 }

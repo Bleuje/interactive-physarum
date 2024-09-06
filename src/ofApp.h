@@ -9,6 +9,7 @@
 #define SIMULATION_WIDTH 1280
 #define SIMULATION_HEIGHT 736
 #define NUMBER_OF_PARTICLES (512*512*22)
+#define PARTICLE_PARAMETERS_COUNT 6
 #define DECAY_FACTOR 0.75
 #define DEPOSIT_FACTOR 0.003
 #define PIXEL_SCALE_FACTOR 250.0
@@ -106,7 +107,7 @@ public:
         glm::vec4 data;
         glm::vec4 data2;
     };
-    std::vector<Particle> particles;
+    std::vector<uint16_t> particles;
     ofBufferObject particlesBuffer;
 
     void keyPressed(int key);
