@@ -146,6 +146,11 @@ void ofApp::update(){
         }
     }
 
+    if(numberOfGamepads == 0)
+    {
+        curL2 = -1; // L2 for no "inertia" effect, when using keyboard only
+    }
+
     setterShader.begin();
     setterShader.setUniform1i("width",trailReadBuffer.getWidth());
     setterShader.setUniform1i("height",trailReadBuffer.getHeight());
