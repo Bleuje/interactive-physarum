@@ -70,8 +70,8 @@ The compute shader code of my implementation is in bin/data/
 [ofxGamepad](https://github.com/Bleuje/ofxGamepad) addon is used (it seems that you should use my fork because of a fix, or maybe just to have same version as me).
 I'm only testing on Linux, and I bet that if there's a problem on other platforms it would be because of this gamepad code.
 
-Here is a branch without gamepad code:
-https://github.com/Bleuje/interactive-physarum/tree/no-gamepad
+There is a branch "no-gamepad" without gamepad code (`git checkout no-gamepad`)
+
 Mouse and keyboard interaction is explained later below.
 
 ### Interaction with gamepad
@@ -122,7 +122,6 @@ It also has interaction without connected gamepad
 
 ### Versions with less computation
 
-I made a branch that uses less particles and has smaller simulation canvas, for lighter computation:
-https://github.com/Bleuje/interactive-physarum/tree/light-compute
+I made a branch "light-compute" that uses less particles and has smaller simulation canvas, for lighter computation (`git checkout light-compute`)
 
 [@frguthmann](https://github.com/frguthmann) is providing help on optimization (but only the easiest optimizations are done so far).
