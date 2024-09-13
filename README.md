@@ -72,7 +72,7 @@ I'm only testing on Linux, and I bet that if there's a problem on other platform
 
 Here is a branch without gamepad code:
 https://github.com/Bleuje/interactive-physarum/tree/no-gamepad
-It's not perfect. Right now it keeps using some amount of "inertia" (something that can be triggered with gamepad). I'm keeping it like this because I think it looks quite cool. Mouse and keyboard interaction is explained later below.
+Mouse and keyboard interaction is explained later below.
 
 ### Interaction with gamepad
 
