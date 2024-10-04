@@ -175,6 +175,8 @@ void ofApp::update(){
     moveShader.setUniform1f("actionX",curActionX);
     moveShader.setUniform1f("actionY",curActionY);
 
+    moveShader.setUniform1iv("actionValuesArray", actionValuesArray.data(), actionValuesArray.size());
+
     moveShader.setUniform1f("moveBiasActionX",curMoveBiasActionX);
     moveShader.setUniform1f("moveBiasActionY",curMoveBiasActionY);
 
