@@ -8,7 +8,7 @@
 #define MAX_NUMBER_OF_WAVES 5
 #define MAX_NUMBER_OF_RANDOM_SPAWN 7
 #define MAX_NUMBER_OF_ACTION_VALUES 10
-#define LERP_STYLE_SIZE 5;
+#define LERP_STYLE_SIZE 6;
 
 #define PI 3.141592
 
@@ -241,6 +241,11 @@ void main(){
 		float offsetTheta = 2.*PI*time*0.04;
 		vec2 rotatedVec = vec2(cos(offsetTheta) * centeredNPos.x - sin(offsetTheta) * centeredNPos.y, sin(offsetTheta) * centeredNPos.x + cos(offsetTheta) * centeredNPos.y);
 		lerper = 0.5 + 0.5*sin(2.*PI*(time*speedFactor*lerpAction - rotatedVec.x));
+	}
+	if(lerpStyle == 5)
+	{
+		float offset = length(centeredNPos);
+		lerper = 0.5 + 0.5*sin(heading - 2.*PI*(time*speedFactor*lerpAction*0.25 - offset));
 	}
 	//lerper = diffDist<=actionAreaSizeSigma ? 1 : 0;
 	//lerper = particlePos.x/width;
