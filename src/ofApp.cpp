@@ -351,7 +351,7 @@ void ofApp::draw(){
 
             ofTrueTypeFont * pBoldOrNotFont = i==settingsChangeIndex ? &myFontBold : &myFont;
 
-            std::string settingValueString = "Value " + std::to_string(i+1) + " : "
+            std::string settingValueString = getGlobalSettingName(i) + " : "
                 + std::to_string(actionValuesArray[i])
                 + (i==settingsChangeIndex ? " <" : "");;
 
@@ -468,7 +468,33 @@ bool ofApp::activeTransition()
     return (getTime() - transitionTriggerTime) <= TRANSITION_DURATION;
 }
 
-
+std::string ofApp::getGlobalSettingName(int settingIndex)
+{
+    switch (settingIndex) {
+        case 0:
+            return "lerp style";
+        case 1:
+            return "lerp parameter";
+        case 2:
+            return "value 3";
+        case 3:
+            return "velocity effect";
+        case 4:
+            return "value 5";
+        case 5:
+            return "pixel scale";
+        case 6:
+            return "value 7";
+        case 7:
+            return "value 8";
+        case 8:
+            return "value 9";
+        case 9:
+            return "value 10";
+        default:
+            return "Unknown";
+}
+}
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
