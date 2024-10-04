@@ -8,6 +8,7 @@
 #define MAX_NUMBER_OF_WAVES 5
 #define MAX_NUMBER_OF_RANDOM_SPAWN 7
 #define MAX_NUMBER_OF_ACTION_VALUES 10
+#define LERP_STYLE_SIZE 3;
 
 #define PI 3.141592
 
@@ -192,6 +193,10 @@ void main(){
 	vec2 normalizedPosition = vec2(particlePos.x/width,particlePos.y/height);
 	vec2 normalizedActionPosition = vec2(actionX/width,actionY/height);
 
+	int lpss = LERP_STYLE_SIZE;
+	int lerpStyle = ((actionValuesArray[0] % lpss) + lpss) % lpss;
+	int lerpAction = actionValuesArray[1];
+
 
 	// some inputs for noise values used later (not important stuff)
 	vec2 positionForNoise1 = normalizedPosition;
@@ -208,7 +213,20 @@ void main(){
 	positionFromAction.x *= float(width)/height;
 	float distanceNoiseFactor = (0.9 + 0.2*noise(vec3(positionForNoise2.x,positionForNoise2.t,0.6*time))); // a bit of noise distortion on distance
 	float distanceFromAction = distance(positionFromAction,vec2(0))*distanceNoiseFactor;
-	float lerper = exp(-distanceFromAction*distanceFromAction/actionAreaSizeSigma/actionAreaSizeSigma); // use of a gaussian function: 1 at the center, 0 far from the center
+	
+	float lerper = 0;
+	if(lerpStyle == 0)
+	{
+		lerper = exp(-distanceFromAction*distanceFromAction/actionAreaSizeSigma/actionAreaSizeSigma); // use of a gaussian function: 1 at the center, 0 far from the center
+	}
+	if(lerpStyle == 1)
+	{
+		lerper = 0.5 + 0.5*sin(2.*PI*(time*0.07*lerpAction - particlePos.x/width));
+	}
+	if(lerpStyle == 2)
+	{
+		lerper = 0.5 + 0.5*sin(2.*PI*(time*0.07*lerpAction - particlePos.y/height));
+	}
 	//lerper = diffDist<=actionAreaSizeSigma ? 1 : 0;
 	//lerper = particlePos.x/width;
 
