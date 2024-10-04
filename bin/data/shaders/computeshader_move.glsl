@@ -224,26 +224,26 @@ void main(){
 	{
 		lerper = exp(-distanceFromAction*distanceFromAction/actionAreaSizeSigma/actionAreaSizeSigma); // use of a gaussian function: 1 at the center, 0 far from the center
 	}
-	if(lerpStyle == 1)
+	else if(lerpStyle == 1)
 	{
 		lerper = 0.5 + 0.5*sin(2.*PI*(time*speedFactor*lerpAction - particlePos.x/width));
 	}
-	if(lerpStyle == 2)
+	else if(lerpStyle == 2)
 	{
 		lerper = 0.5 + 0.5*sin(2.*PI*(time*speedFactor*lerpAction - particlePos.y/height));
 	}
-	if(lerpStyle == 3)
+	else if(lerpStyle == 3)
 	{
 		float offset = length(centeredNPos);
 		lerper = 0.5 + 0.5*sin(2.*PI*(time*speedFactor*lerpAction - offset));
 	}
-	if(lerpStyle == 4)
+	else if(lerpStyle == 4)
 	{
 		float offsetTheta = 2.*PI*time*0.04;
 		vec2 rotatedVec = vec2(cos(offsetTheta) * centeredNPos.x - sin(offsetTheta) * centeredNPos.y, sin(offsetTheta) * centeredNPos.x + cos(offsetTheta) * centeredNPos.y);
 		lerper = 0.5 + 0.5*sin(2.*PI*(time*speedFactor*lerpAction - rotatedVec.x));
 	}
-	if(lerpStyle == 5)
+	else if(lerpStyle == 5)
 	{
 		float offset = length(centeredNPos);
 		lerper = 0.5 + 0.5*sin(heading - 2.*PI*(time*speedFactor*lerpAction*0.25 - offset));
@@ -316,14 +316,17 @@ void main(){
 	float RA_amplitude_mix = mix(currentParams_1.RA_amplitude, currentParams_2.RA_amplitude, lerper);
 	float RA_exponent_mix = mix(currentParams_1.RA_exponent, currentParams_2.RA_exponent, lerper);
 
+	int pixelScaleFactorAction = actionValuesArray[5];
+	float pixelScaleFactorFactor = exp(0.11*pixelScaleFactorAction);
+
 
 	///////////////////////////////////////////////////////////////////////////////////
 	// Technique/formulas from Sage Jenson (mxsage)
 	// For a current sensed value S,
 	// physarum param = A + B * (S ^ C)
 	// These A,B,C parameters are part of the data of a "Point"
-	float sensorDistance = SensorDistance0_mix + SD_amplitude_mix * pow(currentSensedValue, SD_exponent_mix) * pixelScaleFactor;
-	float moveDistance = MoveDistance0_mix + MD_amplitude_mix * pow(currentSensedValue, MD_exponent_mix) * pixelScaleFactor;
+	float sensorDistance = SensorDistance0_mix + SD_amplitude_mix * pow(currentSensedValue, SD_exponent_mix) * pixelScaleFactor * pixelScaleFactorFactor;
+	float moveDistance = MoveDistance0_mix + MD_amplitude_mix * pow(currentSensedValue, MD_exponent_mix) * pixelScaleFactor * pixelScaleFactorFactor;
 	float sensorAngle = SensorAngle0_mix + SA_amplitude_mix * pow(currentSensedValue, SA_exponent_mix);
 	float rotationAngle = RotationAngle0_mix + RA_amplitude_mix * pow(currentSensedValue, RA_exponent_mix);
 	// 3 * 4 = 12 parameters
