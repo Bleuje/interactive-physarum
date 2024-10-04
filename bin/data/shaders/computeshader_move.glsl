@@ -442,7 +442,7 @@ void main(){
 
 	int autoSpawnStyle = actionValuesArray[6];
 
-	if(autoSpawnStyle==1)
+	if(autoSpawnStyle>=1)
 	{
 		int probaAmount = actionValuesArray[8];
 		float autoSpawnProba = 0.003*exp(0.15*probaAmount);

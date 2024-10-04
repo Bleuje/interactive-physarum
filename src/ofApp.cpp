@@ -460,11 +460,27 @@ void ofApp::setRandomSpawn()
 void ofApp::setRandomAutoSpawn()
 {
     autoSpawnChangeFrequency = std::max(0,actionValuesArray[7]);
+    int autoSpawnStyle = actionValuesArray[6];
+    float time = getTime();
+    float speed = actionValuesArray[9]*0.05;
 
-    if((autoSpawnChangeFrequency==0) || ((ofGetFrameNum()%autoSpawnChangeFrequency)==0))
+    if(autoSpawnStyle==1)
+    {
+        if((autoSpawnChangeFrequency==0) || ((ofGetFrameNum()%autoSpawnChangeFrequency)==0))
+        {
+            autoSpawnPosition.x = ofRandom(0,SIMULATION_WIDTH);
+            autoSpawnPosition.y = ofRandom(0,SIMULATION_HEIGHT);
+        }
+    }
+    else if(autoSpawnStyle==2)
+    {
+        autoSpawnPosition.y = ofRandom(0,SIMULATION_HEIGHT);
+        autoSpawnPosition.x = fmod(speed*time*SIMULATION_WIDTH,SIMULATION_WIDTH);
+    }
+    else if(autoSpawnStyle==3)
     {
         autoSpawnPosition.x = ofRandom(0,SIMULATION_WIDTH);
-        autoSpawnPosition.y = ofRandom(0,SIMULATION_HEIGHT);
+        autoSpawnPosition.y = fmod(speed*time*SIMULATION_HEIGHT,SIMULATION_HEIGHT);
     }
 }
 
@@ -501,11 +517,11 @@ std::string ofApp::getGlobalSettingName(int settingIndex)
         case 6:
             return "auto spawn style";
         case 7:
-            return "spawn frequency";
+            return "spawn anti frequency";
         case 8:
             return "spawn amount";
         case 9:
-            return "value 10";
+            return "spawn speed";
         default:
             return "Unknown";
 }
