@@ -8,7 +8,7 @@
 #define MAX_NUMBER_OF_WAVES 5
 #define MAX_NUMBER_OF_RANDOM_SPAWN 7
 #define MAX_NUMBER_OF_ACTION_VALUES 10
-#define LERP_STYLE_SIZE 3;
+#define LERP_STYLE_SIZE 5;
 
 #define PI 3.141592
 
@@ -214,6 +214,10 @@ void main(){
 	float distanceNoiseFactor = (0.9 + 0.2*noise(vec3(positionForNoise2.x,positionForNoise2.t,0.6*time))); // a bit of noise distortion on distance
 	float distanceFromAction = distance(positionFromAction,vec2(0))*distanceNoiseFactor;
 	
+	float speedFactor = 0.05;
+	vec2 centeredNPos = normalizedPosition - vec2(0.5,0.5);
+	centeredNPos.x *= float(width)/height;
+
 	float lerper = 0;
 	if(lerpStyle == 0)
 	{
@@ -221,11 +225,22 @@ void main(){
 	}
 	if(lerpStyle == 1)
 	{
-		lerper = 0.5 + 0.5*sin(2.*PI*(time*0.07*lerpAction - particlePos.x/width));
+		lerper = 0.5 + 0.5*sin(2.*PI*(time*speedFactor*lerpAction - particlePos.x/width));
 	}
 	if(lerpStyle == 2)
 	{
-		lerper = 0.5 + 0.5*sin(2.*PI*(time*0.07*lerpAction - particlePos.y/height));
+		lerper = 0.5 + 0.5*sin(2.*PI*(time*speedFactor*lerpAction - particlePos.y/height));
+	}
+	if(lerpStyle == 3)
+	{
+		float offset = length(centeredNPos);
+		lerper = 0.5 + 0.5*sin(2.*PI*(time*speedFactor*lerpAction - offset));
+	}
+	if(lerpStyle == 4)
+	{
+		float offsetTheta = 2.*PI*time*0.04;
+		vec2 rotatedVec = vec2(cos(offsetTheta) * centeredNPos.x - sin(offsetTheta) * centeredNPos.y, sin(offsetTheta) * centeredNPos.x + cos(offsetTheta) * centeredNPos.y);
+		lerper = 0.5 + 0.5*sin(2.*PI*(time*speedFactor*lerpAction - rotatedVec.x));
 	}
 	//lerper = diffDist<=actionAreaSizeSigma ? 1 : 0;
 	//lerper = particlePos.x/width;
