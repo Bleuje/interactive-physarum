@@ -118,6 +118,14 @@ void ofApp::update(){
     {
         settingsChangeMode = 0;
     }
+    if(settingsChangeMode == 1)
+    {
+        settingsChangeIndex = std::min(SETTINGS_SIZE-1,settingsChangeIndex);
+    }
+    if(settingsChangeMode == 2)
+    {
+        settingsChangeIndex = std::min(ACTION_VALUES_SIZE-1,settingsChangeIndex);
+    }
 
     if(numberOfGamepads == 0)
     {
@@ -317,6 +325,45 @@ void ofApp::draw(){
 
         ofTranslate(0,44*u);
         std::string pressB = "Press B to reset settings of all points";
+        drawTextBox(pressB, &myFontBold, col, 110);
+
+        ofPopMatrix();
+    }
+
+    if(settingsChangeMode == 2)
+    {
+        ofPushMatrix();
+        ofTranslate(50*u,180*u);
+
+        std::string pointName = "Global advanced settings tuning:";
+        drawTextBox(pointName, &myFont, col, 255);
+
+
+        ofScale(0.8);
+
+        ofTranslate(0,25*u);
+
+        for(int i=0;i<ACTION_VALUES_SIZE;i++)
+        {
+            ofTranslate(0,44*u);
+
+            ofTrueTypeFont * pBoldOrNotFont = i==settingsChangeIndex ? &myFontBold : &myFont;
+
+            std::string settingValueString = "Value " + std::to_string(i+1) + " : "
+                + std::to_string(actionValuesArray[i])
+                + (i==settingsChangeIndex ? " <" : "");;
+
+            drawTextBox(settingValueString, pBoldOrNotFont, col, 110);
+        }
+
+
+        ofTranslate(0,80*u);
+        std::string pressA = "Press A to reset selected setting";
+        drawTextBox(pressA, &myFontBold, col, 110);
+
+
+        ofTranslate(0,44*u);
+        std::string pressB = "Press B to reset all settings";
         drawTextBox(pressB, &myFontBold, col, 110);
 
         ofPopMatrix();

@@ -42,7 +42,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e)
     }
     if (buttonId == 6)
     {
-        settingsChangeMode = (settingsChangeMode + 1) % 2;
+        settingsChangeMode = (settingsChangeMode + 1) % 3;
         latestPointSettingsActionTime = getTime();
     }
     if (buttonId == 7)

@@ -24,6 +24,7 @@
 #define ACTIVATE_PEN_FADE false
 #define LOOP_PEN_POSITION false
 #define SETTINGS_SIZE 15
+#define ACTION_VALUES_SIZE 10
 #define SETTINGS_DISAPPEAR_DURATION 10
 #define ACTION_SIGMA_CHANGE_DURATION 0.26
 #define DIGITS_PRECISION 3
@@ -96,6 +97,7 @@ public:
     std::array<float, MAX_NUMBER_OF_RANDOM_SPAWN> randomSpawnYarray = {};
     int randomSpawnNumber = 0;
     void setRandomSpawn();
+    std::array<int, ACTION_VALUES_SIZE> actionValuesArray = {};
 
     ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
     ofShader setterShader,moveShader,depositShader,blurShader;

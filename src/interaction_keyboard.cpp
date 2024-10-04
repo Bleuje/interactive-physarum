@@ -91,7 +91,7 @@ void ofApp::keyPressed(int key)
         }
         break;
     case '5':
-        settingsChangeMode = (settingsChangeMode + 1) % 2;
+        settingsChangeMode = (settingsChangeMode + 1) % 3;
         latestPointSettingsActionTime = getTime();
         break;
     case 'u':
