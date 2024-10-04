@@ -63,3 +63,14 @@ void ofApp::actionSpawnParticles(int spawnType)
         setRandomSpawn();
     }
 }
+
+void ofApp::actionResetCurrentActionValue()
+{
+    actionValuesArray[settingsChangeIndex] = 0;
+}
+
+void ofApp::actionResetAllActionValues()
+{
+    for (auto &x : actionValuesArray)
+        x = 0;
+}

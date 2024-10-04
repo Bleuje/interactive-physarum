@@ -7,36 +7,56 @@ void ofApp::keyPressed(int key)
     case OF_KEY_RIGHT:
         if (settingsChangeMode == 0)
             actionChangeParams(1);
-        else
+        else if (settingsChangeMode == 1)
         {
             pointsDataManager.changeValue(settingsChangeIndex, 1);
+            latestPointSettingsActionTime = getTime();
+        }
+        else if (settingsChangeMode == 2)
+        {
+            actionValuesArray[settingsChangeIndex]++;
             latestPointSettingsActionTime = getTime();
         }
         break;
     case OF_KEY_LEFT:
         if (settingsChangeMode == 0)
             actionChangeParams(-1);
-        else
+        else if (settingsChangeMode == 1)
         {
             pointsDataManager.changeValue(settingsChangeIndex, -1);
+            latestPointSettingsActionTime = getTime();
+        }
+        else if (settingsChangeMode == 2)
+        {
+            actionValuesArray[settingsChangeIndex]--;
             latestPointSettingsActionTime = getTime();
         }
         break;
     case OF_KEY_UP:
         if (settingsChangeMode == 0)
             pointsDataManager.changeSelectionIndex(1);
-        else
+        else if (settingsChangeMode == 1)
         {
             settingsChangeIndex = (settingsChangeIndex - 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
+            latestPointSettingsActionTime = getTime();
+        }
+        else if (settingsChangeMode == 2)
+        {
+            settingsChangeIndex = (settingsChangeIndex - 1 + ACTION_VALUES_SIZE) % ACTION_VALUES_SIZE;
             latestPointSettingsActionTime = getTime();
         }
         break;
     case OF_KEY_DOWN:
         if (settingsChangeMode == 0)
             pointsDataManager.changeSelectionIndex(-1);
-        else
+        else if (settingsChangeMode == 1)
         {
             settingsChangeIndex = (settingsChangeIndex + 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
+            latestPointSettingsActionTime = getTime();
+        }
+        else if (settingsChangeMode == 2)
+        {
+            settingsChangeIndex = (settingsChangeIndex + 1 + ACTION_VALUES_SIZE) % ACTION_VALUES_SIZE;
             latestPointSettingsActionTime = getTime();
         }
         break;
@@ -75,9 +95,13 @@ void ofApp::keyPressed(int key)
         {
             actionChangeColorMode();
         }
-        else
+        else if (settingsChangeMode == 1)
         {
             pointsDataManager.resetCurrentPoint();
+        }
+        else if (settingsChangeMode == 2)
+        {
+            actionResetCurrentActionValue();
         }
         break;
     case 'b':
@@ -85,9 +109,13 @@ void ofApp::keyPressed(int key)
         {
             // nothing
         }
-        else
+        else if (settingsChangeMode == 1)
         {
             pointsDataManager.resetAllPoints();
+        }
+        else if (settingsChangeMode == 2)
+        {
+            actionResetAllActionValues();
         }
         break;
     case '5':
