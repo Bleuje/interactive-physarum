@@ -9,6 +9,7 @@
 #define MAX_NUMBER_OF_RANDOM_SPAWN 7
 #define MAX_NUMBER_OF_ACTION_VALUES 10
 #define LERP_STYLE_SIZE 6;
+#define VELOCITY_STYLE_SIZE 2;
 
 #define PI 3.141592
 
@@ -367,6 +368,11 @@ void main(){
 	
 	// inertia experimental stuff... actually it's a lot weirder than just modifying speed instead of position
 	// probably the weirdest stuff in the code of this project
+
+	
+	int velocityUseAction = actionValuesArray[3];
+	float velocityUseAmount = 0.15*velocityUseAction;
+
 	velocity *= 0.98;
 	float vf = 1.0;
 	float velocityBias = 0.2*L2Action;
@@ -380,7 +386,7 @@ void main(){
 	float inertiaNewPositionY = particlePos.y + dt*vy + moveBias.y;
 
 
-	float moveStyleLerper = 0.6*L2Action + 0.8*waveSum; // intensity of use of inertia
+	float moveStyleLerper = 0.6*L2Action + 0.8*waveSum + velocityUseAmount; // intensity of use of inertia
 	// the new position of the particle:
 	float px = mix(classicNewPositionX, inertiaNewPositionX, moveStyleLerper);
 	float py = mix(classicNewPositionY, inertiaNewPositionY, moveStyleLerper);
