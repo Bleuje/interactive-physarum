@@ -113,6 +113,7 @@ void ofApp::update(){
 
     paramsUpdate();
     updateActionAreaSizeSigma();
+    setRandomAutoSpawn();
 
     if((getTime() - latestPointSettingsActionTime) >= SETTINGS_DISAPPEAR_DURATION)
     {
@@ -176,6 +177,9 @@ void ofApp::update(){
     moveShader.setUniform1f("actionY",curActionY);
 
     moveShader.setUniform1iv("actionValuesArray", actionValuesArray.data(), actionValuesArray.size());
+
+    moveShader.setUniform1f("spwanPositionX",autoSpawnPosition.x);
+    moveShader.setUniform1f("spwanPositionY",autoSpawnPosition.y);
 
     moveShader.setUniform1f("moveBiasActionX",curMoveBiasActionX);
     moveShader.setUniform1f("moveBiasActionY",curMoveBiasActionY);
@@ -453,6 +457,17 @@ void ofApp::setRandomSpawn()
     }
 }
 
+void ofApp::setRandomAutoSpawn()
+{
+    autoSpawnChangeFrequency = std::max(0,actionValuesArray[7]);
+
+    if((autoSpawnChangeFrequency==0) || ((ofGetFrameNum()%autoSpawnChangeFrequency)==0))
+    {
+        autoSpawnPosition.x = ofRandom(0,SIMULATION_WIDTH);
+        autoSpawnPosition.y = ofRandom(0,SIMULATION_HEIGHT);
+    }
+}
+
 float ofApp::getTime()
 {
     return 1.0*ofGetFrameNum()/FRAME_RATE;
@@ -484,11 +499,11 @@ std::string ofApp::getGlobalSettingName(int settingIndex)
         case 5:
             return "pixel scale";
         case 6:
-            return "value 7";
+            return "auto spawn style";
         case 7:
-            return "value 8";
+            return "spawn frequency";
         case 8:
-            return "value 9";
+            return "spawn amount";
         case 9:
             return "value 10";
         default:

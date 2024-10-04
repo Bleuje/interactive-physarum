@@ -101,6 +101,9 @@ public:
     int randomSpawnNumber = 0;
     void setRandomSpawn();
     std::array<int, ACTION_VALUES_SIZE> actionValuesArray = {};
+    void setRandomAutoSpawn();
+    ofVec2f autoSpawnPosition;
+    int autoSpawnChangeFrequency = 0;
 
     ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
     ofShader setterShader,moveShader,depositShader,blurShader;
