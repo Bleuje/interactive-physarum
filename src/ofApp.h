@@ -59,6 +59,8 @@ public:
     void actionChangeDisplayType();
     void actionChangeSelectionIndex(int dir);
     void actionSpawnParticles(int spawnType);
+    void actionResetCurrentActionValue();
+    void actionResetAllActionValues();
 
 
     float actionAreaSizeSigma = 0.3;
