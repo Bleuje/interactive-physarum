@@ -10,6 +10,7 @@
 #define MAX_NUMBER_OF_ACTION_VALUES 10
 #define LERP_STYLE_SIZE 6;
 #define VELOCITY_STYLE_SIZE 2;
+#define AUTOSPAWN_STYLE_SIZE 2;
 
 #define PI 3.141592
 
@@ -24,6 +25,9 @@ uniform float actionX;
 uniform float actionY;
 
 uniform int actionValuesArray[MAX_NUMBER_OF_ACTION_VALUES];
+
+uniform float spwanPositionX;
+uniform float spwanPositionY;
 
 uniform float moveBiasActionX;
 uniform float moveBiasActionY;
@@ -394,8 +398,6 @@ void main(){
 	float px = mix(classicNewPositionX, inertiaNewPositionX, moveStyleLerper);
 	float py = mix(classicNewPositionY, inertiaNewPositionY, moveStyleLerper);
 
-
-
 	// possibility of spawn to other position if spawning action is triggered
 	if(spawnParticles >= 1)
 	{
@@ -437,6 +439,19 @@ void main(){
 	uint depositAmount = uint(1); // all particles add 1 on pixel count, could be more complex one day maybe
 	// atomicAdd for increasing counter at pixel, in parallel computation
 	atomicAdd(particlesCounter[int(round(nextPos.x))*height + int(round(nextPos.y))], depositAmount);
+
+	int autoSpawnStyle = actionValuesArray[6];
+
+	if(autoSpawnStyle==1)
+	{
+		int probaAmount = actionValuesArray[8];
+		float autoSpawnProba = 0.003*exp(0.15*probaAmount);
+		float rand01 = random01FromParticle(particlePos*1.77); // uniform random in [0,1]
+		if(rand01 < autoSpawnProba)
+		{
+			nextPos = vec2(spwanPositionX,spwanPositionY);
+		}
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 	// Technique/formula from Sage Jenson (mxsage)
