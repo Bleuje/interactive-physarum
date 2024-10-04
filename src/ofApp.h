@@ -50,6 +50,7 @@ public:
     float getTime();
     float currentTransitionProgress();
     bool activeTransition();
+    std::string getGlobalSettingName(int settingIndex);
 
     void actionChangeSigmaCount(int dir);
     void actionChangeParams(int dir);
