@@ -7,6 +7,7 @@
 // warning: these be compatible with the c++ code
 #define MAX_NUMBER_OF_WAVES 5
 #define MAX_NUMBER_OF_RANDOM_SPAWN 7
+#define MAX_NUMBER_OF_ACTION_VALUES 10
 
 #define PI 3.141592
 
@@ -19,6 +20,8 @@ uniform float actionAreaSizeSigma;
 
 uniform float actionX;
 uniform float actionY;
+
+uniform int actionValuesArray[MAX_NUMBER_OF_ACTION_VALUES];
 
 uniform float moveBiasActionX;
 uniform float moveBiasActionY;
