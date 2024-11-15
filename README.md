@@ -39,7 +39,7 @@ See end of readme for more sceenshots.
 
 ▶️ [**Demo video on YouTube**](https://www.youtube.com/watch?v=4hLtjlaVzsk) ✨
 
-(there has been the significant colors update since this video was made)
+(there was a significant update on colors since this video was made)
 
 ### Some context to understand the technique
 
