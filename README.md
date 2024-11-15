@@ -23,17 +23,23 @@ Some text for crediting is displayed all the time on screen (bottom left corner)
 
 ### Screenshots
 
-Some screenshots to give a little taste of the project, as of May 1, 2024.
+Some screenshots to give a little taste of the project!
 
-![Screenshot 1 May, 2024, 1](/doc/screenshot-1-may-2024-1.png)
-![Screenshot 1 May, 2024, 2](/doc/screenshot-1-may-2024-2.png)
-![Screenshot 1 May, 2024, 3](/doc/screenshot-1-may-2024-3.png)
 ![Screenshot 1 May, 2024, 5](/doc/screenshot-1-may-2024-5.png)
 ![Screenshot 1 May, 2024, 4bis](/doc/screenshot-1-may-2024-4-bis.png)
+![Screenshot 8 May, 2024, 2](/doc/screenshot-8-may-2024-2.png)
+
+![Screenshot 15 November, 2024, Arctic Blue](/doc/screenshot-nov-2024-ArcticBlue-1.png)
+![Screenshot 15 November, 2024, Purple Fire](/doc/screenshot-nov-2024-PurpleFire-1.png)
+![Screenshot 15 November, 2024, z0rg Purple](/doc/screenshot-nov-2024-ZorgPurple-1.png)
+
+See end of readme for more sceenshots.
 
 ### Video
 
 ▶️ [**Demo video on YouTube**](https://www.youtube.com/watch?v=4hLtjlaVzsk) ✨
+
+(there has been the significant colors update since this video was made)
 
 ### Some context to understand the technique
 
@@ -99,10 +105,7 @@ It's designed for xbox gamepad.
 Advanced settings to be able to tune points and have different patterns than default ones:
 ![screenshot with advanced settings display](/doc/advanced-settings.png)
 
-Different color modes (many hues and black and white are available):
-![Screenshot 1 May, 2024, 6](/doc/screenshot-1-may-2024-6.png)
-![Screenshot 8 May, 2024, 1](/doc/screenshot-8-may-2024-1.png)
-![Screenshot 8 May, 2024, 2](/doc/screenshot-8-may-2024-2.png)
+9 different color modes are available.
 
 ### Interaction with keyboard and mouse
 
@@ -125,3 +128,12 @@ It also has interaction without connected gamepad
 I made a branch "light-compute" that uses less particles and has smaller simulation canvas, for lighter computation (`git checkout light-compute`)
 
 [@frguthmann](https://github.com/frguthmann) is providing help on optimization (but only the easiest optimizations are done so far).
+
+### More screenshots
+
+![Screenshot 15 November, 2024, Forest Green](/doc/screenshot-nov-2024-ForestGreen-1.png)
+![Screenshot 15 November, 2024, Yellow](/doc/screenshot-nov-2024-Yellow-1.png)
+![Screenshot 8 May, 2024, 1](/doc/screenshot-8-may-2024-1.png)
+![Screenshot 1 May, 2024, 1](/doc/screenshot-1-may-2024-1.png)
+![Screenshot 1 May, 2024, 2](/doc/screenshot-1-may-2024-2.png)
+![Screenshot 1 May, 2024, 3](/doc/screenshot-1-may-2024-3.png)
