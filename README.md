@@ -106,6 +106,7 @@ Advanced settings to be able to tune points and have different patterns than def
 ![screenshot with advanced settings display](/doc/advanced-settings.png)
 
 9 different color modes are available.
+(Thanks [z0rg](https://github.com/seb776) for some help with the colors.)
 
 ### Interaction with keyboard and mouse
 
