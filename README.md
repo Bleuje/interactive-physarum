@@ -28,7 +28,6 @@ Some screenshots to give a little taste of the project!
 ![Screenshot 1 May, 2024, 5](/doc/screenshot-1-may-2024-5.png)
 ![Screenshot 1 May, 2024, 4bis](/doc/screenshot-1-may-2024-4-bis.png)
 ![Screenshot 8 May, 2024, 2](/doc/screenshot-8-may-2024-2.png)
-
 ![Screenshot 15 November, 2024, Arctic Blue](/doc/screenshot-nov-2024-ArcticBlue-1.png)
 ![Screenshot 15 November, 2024, Purple Fire](/doc/screenshot-nov-2024-PurpleFire-1.png)
 ![Screenshot 15 November, 2024, z0rg Purple](/doc/screenshot-nov-2024-ZorgPurple-1.png)
