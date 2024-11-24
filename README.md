@@ -32,7 +32,7 @@ Some screenshots to give a little taste of the project!
 ![Screenshot 15 November, 2024, Purple Fire](/doc/screenshot-nov-2024-PurpleFire-1.png)
 ![Screenshot 15 November, 2024, z0rg Purple](/doc/screenshot-nov-2024-ZorgPurple-1.png)
 
-See end of readme for more sceenshots.
+See end of readme for more screenshots.
 
 ### Video
 
