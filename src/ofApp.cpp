@@ -28,16 +28,16 @@ void ofApp::setup(){
     trailWriteBuffer.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RG16F);
     fboDisplay.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RGBA8);
 
-    setterShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_setter.glsl");
+    setterShader.setupShaderFromFile(GL_COMPUTE_SHADER,"shaders/computeshader_setter.glsl");
     setterShader.linkProgram();
 
-    depositShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_deposit.glsl");
+    depositShader.setupShaderFromFile(GL_COMPUTE_SHADER,"shaders/computeshader_deposit.glsl");
     depositShader.linkProgram();
 
-    moveShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_move.glsl");
+    moveShader.setupShaderFromFile(GL_COMPUTE_SHADER,"shaders/computeshader_move.glsl");
     moveShader.linkProgram();
 
-    blurShader.setupShaderFromFile(GL_COMPUTE_SHADER,"computeshader_blur.glsl");
+    blurShader.setupShaderFromFile(GL_COMPUTE_SHADER,"shaders/computeshader_blur.glsl");
     blurShader.linkProgram();
 
     particles.resize(NUMBER_OF_PARTICLES * PARTICLE_PARAMETERS_COUNT);
