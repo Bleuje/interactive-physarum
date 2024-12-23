@@ -5,7 +5,7 @@
 #include <array>
 #include <string>
 
-#include "pointsBaseMatrix.h"
+#include "points_basematrix.h"
 
 #define NUMBER_OF_USED_POINTS 2
 
