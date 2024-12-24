@@ -50,14 +50,14 @@ ______________
 
 I'm introducing many things on top of this simulation algorithm:
 
-- Mainly spatial interpolation between the parameters of 2 Points. That introduces a lot of possibilities of interaction, and new patterns.
+- Mainly spatial interpolation between the parameters of 2 Points. That introduces a lot of possibilities of interaction, and new behaviours.
 - interaction to move particles
 - interaction to spawn particles
 - particles keeping their inertia
 - possibility to tune the parameters of each point
 - color experiments
 
-The way particles add trail is different compared to 36 points and it can result in different patterns.
+The way particles add trail is different compared to 36 points and it can result in different behaviours.
 ______________
 
 The compute shader code of my implementation is in bin/data/shaders/
@@ -101,7 +101,7 @@ It's designed for xbox gamepad.
 
 ![screenshot with information display](/doc/information-screenshot.png)
 
-Advanced settings to be able to tune points and have different patterns than default ones:
+Advanced settings to be able to tune points and have different behaviours than default ones:
 ![screenshot with advanced settings display](/doc/advanced-settings.png)
 
 9 different color modes are available.
