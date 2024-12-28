@@ -68,7 +68,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e)
 
     int axisType = e.axis;
     float value = e.value;
-    if (axisType == 6 && e.value > 0.5)
+    if (axisType == 6 && value > 0.5)
     {
         if (settingsChangeMode == 0)
             actionChangeParams(1);
@@ -78,7 +78,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e)
             latestPointSettingsActionTime = getTime();
         }
     }
-    if (axisType == 6 && e.value < -0.5)
+    if (axisType == 6 && value < -0.5)
     {
         if (settingsChangeMode == 0)
             actionChangeParams(-1);
@@ -88,7 +88,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e)
             latestPointSettingsActionTime = getTime();
         }
     }
-    if (axisType == 7 && e.value > 0.5)
+    if (axisType == 7 && value > 0.5)
     {
         if (settingsChangeMode == 0)
             pointsDataManager.changeSelectionIndex(-1);
@@ -98,7 +98,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e)
             latestPointSettingsActionTime = getTime();
         }
     }
-    if (axisType == 7 && e.value < -0.5)
+    if (axisType == 7 && value < -0.5)
     {
         if (settingsChangeMode == 0)
             pointsDataManager.changeSelectionIndex(1);
@@ -114,12 +114,12 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e)
             curTranslationAxis1 = 0;
         if (axisType == 1)
             curTranslationAxis2 = 0;
-        if (abs(e.value) > 0.09)
+        if (abs(value) > 0.09)
         {
             if (axisType == 0)
-                curTranslationAxis1 = e.value;
+                curTranslationAxis1 = value;
             if (axisType == 1)
-                curTranslationAxis2 = e.value;
+                curTranslationAxis2 = value;
 
             penMoveLatestTime = getTime();
         }
@@ -132,12 +132,12 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e)
         if (axisType == 4)
             curMoveBiasActionY = 0;
 
-        if (abs(e.value) > 0.09)
+        if (abs(value) > 0.09)
         {
             if (axisType == 3)
-                curMoveBiasActionX = e.value;
+                curMoveBiasActionX = value;
             if (axisType == 4)
-                curMoveBiasActionY = e.value;
+                curMoveBiasActionY = value;
 
             penMoveLatestTime = getTime();
         }
@@ -145,11 +145,11 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e)
 
     if (axisType == 2)
     {
-        curL2 = e.value;
+        curL2 = value;
     }
     if (axisType == 5)
     {
-        curR2 = e.value;
+        curR2 = value;
     }
 
     paramsUpdate();
