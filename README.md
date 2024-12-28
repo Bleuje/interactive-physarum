@@ -47,7 +47,7 @@ I'm only testing on Linux, and I bet that if there's a problem on other platform
 
 In case you're new to openFrameworks, here's how you can launch the program: put the ofxGamepad repo in `oF/addons/` and the interactive physarum repo in `oF/apps/myApps/` where oF is your openFrameworks directory. Then at the root of interactive-physarum, do `make && make run`in terminal.
 
-There is a branch "no-gamepad" without gamepad code (`git checkout no-gamepad`)
+There is a branch "no-gamepad" without gamepad code (`git checkout no-gamepad`), it's there the gamepad code is responsible for some compilation errors.
 
 Mouse and keyboard interaction is explained later below.
 
