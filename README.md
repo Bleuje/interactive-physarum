@@ -7,7 +7,7 @@ It is implemented with openFrameworks and the simulations run on GPU with comput
 Please check out 36 Points by Sage Jenson (mxsage) first: https://www.sagejenson.com/36points/
 Press 0-9, A-Z for different Points (different simulation parameters).
 
-It runs at 60 fps on a RTX 2060 GPU, with more than 5M particles. See [how to compile](https://github.com/Bleuje/interactive-physarum/tree/main?tab=readme-ov-file#how-to-compile) section to run it yourself.
+It runs at 60 fps on a RTX 2060 GPU, with more than 5M particles. See [how to compile and run](https://github.com/Bleuje/interactive-physarum/tree/main?tab=readme-ov-file#how-to-compile) section to run it yourself.
 
 ### License:
 License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
@@ -70,10 +70,12 @@ The compute shader code of my implementation is in bin/data/shaders/
 
 **computeshader_setter.glsl** : Just used to reset the counters of the pixels to 0 at each iteration.
 
-### How to compile
+### How to compile and run
 
-[ofxGamepad](https://github.com/Bleuje/ofxGamepad) addon is used (it seems that you should use my fork because of a fix, or maybe just to have same version as me).
+[ofxGamepad](https://github.com/Bleuje/ofxGamepad) addon is used (I think you should use this fork because of some fixes, or just to have same version as me).
 I'm only testing on Linux, and I bet that if there's a problem on other platforms it would be because of this gamepad code.
+
+In case you're new to openFrameworks, here's how you can launch the program: put the ofxGamepad repo in `oF/addons/` and the interactive physarum repo in `oF/apps/myApps/` where oF is your openFrameworks directory. Then at the root of interactive-physarum, do `make && make run`in terminal.
 
 There is a branch "no-gamepad" without gamepad code (`git checkout no-gamepad`)
 
