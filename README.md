@@ -40,6 +40,17 @@ See end of readme for more screenshots.
 
 (there was a significant update on colors since this video was made)
 
+### How to compile and run
+
+[ofxGamepad](https://github.com/Bleuje/ofxGamepad) addon is used (I think you should use this fork because of some fixes, or just to have same version as me).
+I'm only testing on Linux, and I bet that if there's a problem on other platforms it would be because of this gamepad code.
+
+In case you're new to openFrameworks, here's how you can launch the program: put the ofxGamepad repo in `oF/addons/` and the interactive physarum repo in `oF/apps/myApps/` where oF is your openFrameworks directory. Then at the root of interactive-physarum, do `make && make run`in terminal.
+
+There is a branch "no-gamepad" without gamepad code (`git checkout no-gamepad`)
+
+Mouse and keyboard interaction is explained later below.
+
 ### Some context to understand the technique
 
 The simulation algorithm is a more advanced version of the physarum simulation algorithm described by Jeff Jones in [this paper](https://uwe-repository.worktribe.com/output/980579/characteristics-of-pattern-formation-and-evolution-in-approximations-of-physarum-transport-networks).
@@ -69,17 +80,6 @@ The compute shader code of my implementation is in bin/data/shaders/
 **computeshader_blur.glsl** : Blur step on trail map (diffusion), and applying the decay factor.
 
 **computeshader_setter.glsl** : Just used to reset the counters of the pixels to 0 at each iteration.
-
-### How to compile and run
-
-[ofxGamepad](https://github.com/Bleuje/ofxGamepad) addon is used (I think you should use this fork because of some fixes, or just to have same version as me).
-I'm only testing on Linux, and I bet that if there's a problem on other platforms it would be because of this gamepad code.
-
-In case you're new to openFrameworks, here's how you can launch the program: put the ofxGamepad repo in `oF/addons/` and the interactive physarum repo in `oF/apps/myApps/` where oF is your openFrameworks directory. Then at the root of interactive-physarum, do `make && make run`in terminal.
-
-There is a branch "no-gamepad" without gamepad code (`git checkout no-gamepad`)
-
-Mouse and keyboard interaction is explained later below.
 
 ### Interaction with gamepad
 
