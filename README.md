@@ -7,7 +7,7 @@ It is implemented with openFrameworks and the simulations run on GPU with comput
 Please check out 36 Points by Sage Jenson (mxsage) first: https://www.sagejenson.com/36points/
 Press 0-9, A-Z for different Points (different simulation parameters).
 
-It runs at 60 fps on a RTX 2060 GPU, with more than 5M particles.
+It runs at 60 fps on a RTX 2060 GPU, with more than 5M particles. See [how to compile](https://github.com/Bleuje/interactive-physarum/tree/main?tab=readme-ov-file#how-to-compile) section to run it yourself.
 
 ### License:
 License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
