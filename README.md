@@ -69,7 +69,7 @@ I'm introducing many things on top of this simulation algorithm:
 The way particles add trail is different compared to 36 points and it can result in different behaviours.
 ______________
 
-The compute shader code of my implementation is in bin/data/shaders/
+The compute shader code of this implementation is in bin/data/shaders/
 
 **computeshader_move.glsl** : Main shader: updates particles, increases a counter on the particle's pixel position.
 
