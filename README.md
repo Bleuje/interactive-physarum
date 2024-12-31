@@ -40,7 +40,7 @@ See end of readme for more screenshots.
 
 ### How to compile and run
 
-[ofxGamepad](https://github.com/Bleuje/ofxGamepad) addon is used (I think you should use this fork because of some fixes, or just to have same version as me).
+[ofxGamepad](https://github.com/Bleuje/ofxGamepad) addon is used (I think you should use this fork because of some fixes, or just to have same version).
 I'm only testing on Linux, and I bet that if there's a problem on other platforms it would be because of this gamepad code.
 
 In case you're new to openFrameworks, here's how you can launch the program: put the ofxGamepad repo in `oF/addons/` and the interactive physarum repo in `oF/apps/myApps/` where oF is your openFrameworks directory. Then at the root of interactive-physarum, do `make && make run`in terminal.
