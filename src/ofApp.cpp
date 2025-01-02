@@ -359,9 +359,10 @@ void ofApp::draw(){
         ofPopMatrix();
 
         ofTranslate(116*u,50*u + 50*setIndex*u);
+
         if(numberOfActiveGamepads<=1)
         {
-            std::string prefix = setIndex==0 ? "pen: " : "background: ";
+            std::string prefix = setIndex==0 ? "pinceau : " : "fond : ";
             std::string setString = prefix + pointsDataManager.getPointName(setIndex)
             + (setIndex==pointsDataManager.getSelectionIndex() ? " <" : "");
 
@@ -393,7 +394,7 @@ void ofApp::draw(){
         ofPushMatrix();
         ofTranslate(50*u,180*u);
 
-        std::string pointName = pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings tuning:";
+        std::string pointName = "Réglages du " + pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " :";
         drawTextBox(pointName, &myFont, col, 255);
 
 
@@ -416,12 +417,12 @@ void ofApp::draw(){
 
 
         ofTranslate(0,80*u);
-        std::string pressA = "Press A to reset " + pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + " settings";
+        std::string pressA = "Appuyer sur A pour reset les réglages du " + pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + "";
         drawTextBox(pressA, &myFontBold, col, 110);
 
 
         ofTranslate(0,44*u);
-        std::string pressB = "Press B to reset settings of all points";
+        std::string pressB = "Appuyer sur B pour reset les réglages des tous les points";
         drawTextBox(pressB, &myFontBold, col, 110);
 
         ofPopMatrix();
@@ -430,7 +431,7 @@ void ofApp::draw(){
     ofPushMatrix();
     ofTranslate(u*9,ofGetHeight() - 9*u);
     ofScale(0.7);
-    std::string creditString = "Inspiration and parameters from mxsage's \"36 points\"";
+    std::string creditString = "Inspiration et paramètres de \"36 Points\" par Sage Jenson";
 
     ofPushMatrix();
     ofSetColor(col,150);
