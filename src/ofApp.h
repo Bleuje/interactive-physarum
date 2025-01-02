@@ -77,7 +77,7 @@ public:
     float curMoveBiasActionY = 0;
     float curActionX = SIMULATION_WIDTH/2;
     float curActionY = SIMULATION_HEIGHT/2;
-    float translationStep = 6.5;
+    float translationStep = 9;
     int currentWaveIndex = 0;
     float curL2 = 0;
     float curR2 = 0;
