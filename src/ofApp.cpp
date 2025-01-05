@@ -368,9 +368,9 @@ void ofApp::draw(){
     ofPopMatrix();
 
     ofPushMatrix();
-    ofTranslate(1300*u,25*u - 50*u*infoProgress);
+    ofTranslate(1250*u,25*u - 50*u*infoProgress);
     ofScale(0.7*u);
-    std::string pressB = "Right trigger for controls and information";
+    std::string pressB = "Gâchette de droite pour afficher informations et commandes.";
     drawTextBox(pressB, &myFontBold, col, 110);
     ofPopMatrix();
 
