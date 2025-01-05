@@ -376,13 +376,12 @@ void ofApp::draw()
         drawPad(255, 255);
         ofPopMatrix();
 
-        ofTranslate(116*u,50*u + 50*setIndex*u);
+        ofTranslate(116 * u, 50 * u + 50 * setIndex * u);
 
-        if(numberOfActiveGamepads<=1)
+        if (numberOfActiveGamepads <= 1)
         {
-            std::string prefix = setIndex==0 ? "pinceau : " : "fond : ";
-            std::string setString = prefix + pointsDataManager.getPointName(setIndex)
-            + (setIndex==pointsDataManager.getSelectionIndex() ? " <" : "");
+            std::string prefix = setIndex == 0 ? "pinceau : " : "fond : ";
+            std::string setString = prefix + pointsDataManager.getPointName(setIndex) + (setIndex == pointsDataManager.getSelectionIndex() ? " <" : "");
 
             ofTrueTypeFont *pBoldOrNotFont = setIndex == pointsDataManager.getSelectionIndex() ? &myFontBold : &myFont;
             drawTextBox(setString, pBoldOrNotFont, col, 255);
@@ -430,13 +429,11 @@ void ofApp::draw()
             drawTextBox(settingValueString, pBoldOrNotFont, col, 110);
         }
 
-
-        ofTranslate(0,80*u);
+        ofTranslate(0, 80 * u);
         std::string pressA = "Appuyer sur A pour reset les réglages du " + pointsDataManager.getPointName(pointsDataManager.getSelectionIndex()) + "";
         drawTextBox(pressA, &myFontBold, col, 110);
 
-
-        ofTranslate(0,44*u);
+        ofTranslate(0, 44 * u);
         std::string pressB = "Appuyer sur B pour reset les réglages des tous les points";
         drawTextBox(pressB, &myFontBold, col, 110);
 
@@ -488,9 +485,9 @@ void ofApp::draw()
     ofPopMatrix();
 
     ofPushMatrix();
-    ofTranslate(1300 * u, 25 * u - 50 * u * infoProgress);
+    ofTranslate(1250 * u, 25 * u - 50 * u * infoProgress);
     ofScale(0.7 * u);
-    std::string pressB = "Right trigger for controls and information";
+    std::string pressB = "Gâchette de droite pour afficher informations et commandes.";
     drawTextBox(pressB, &myFontBold, col, 110);
     ofPopMatrix();
 
