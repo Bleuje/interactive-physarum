@@ -80,25 +80,24 @@ layout(std430, binding=2) buffer particle{
     uint particlesArray[];
 };
 
+///////////////////////////////////////////////////
+// Randomness utils obtained from chatgpt
 
-
-float gn(in vec2 coordinate, in float seed) { return abs(fract(123.654*sin(distance(coordinate*(seed+0.118446744073709551614), vec2(0.118446744073709551614, 0.314159265358979323846264)))*0.141421356237309504880169));}
-float random(vec2 st) {return fract(0.5+0.5*sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);}
-float random2 (vec3 st) {return fract(sin(dot(st.xyz,vec3(12.9898,78.233, 151.7182))) * 43758.5453123);}
+float random3 (vec3 st) {return fract(sin(dot(st.xyz,vec3(12.9898,78.233, 151.7182))) * 43758.5453123);}
 
 float noise (vec3 st) {
     vec3 i = floor(st);
     vec3 F = fract(st);
 
     // Calculate the eight corners of the cube
-    float a = random2(i);
-    float b = random2(i + vec3(1.0, 0.0, 0.0));
-    float c = random2(i + vec3(0.0, 1.0, 0.0));
-    float d = random2(i + vec3(1.0, 1.0, 0.0));
-    float e = random2(i + vec3(0.0, 0.0, 1.0));
-    float f = random2(i + vec3(1.0, 0.0, 1.0));
-    float g = random2(i + vec3(0.0, 1.0, 1.0));
-    float h = random2(i + vec3(1.0, 1.0, 1.0));
+    float a = random3(i);
+    float b = random3(i + vec3(1.0, 0.0, 0.0));
+    float c = random3(i + vec3(0.0, 1.0, 0.0));
+    float d = random3(i + vec3(1.0, 1.0, 0.0));
+    float e = random3(i + vec3(0.0, 0.0, 1.0));
+    float f = random3(i + vec3(1.0, 0.0, 1.0));
+    float g = random3(i + vec3(0.0, 1.0, 1.0));
+    float h = random3(i + vec3(1.0, 1.0, 1.0));
 
     // Smoothly interpolate the noise value
     vec3 u = F * F * (3.0 - 2.0 * F);
@@ -109,13 +108,48 @@ float noise (vec3 st) {
                    mix( g, h, u.x), u.y), u.z);
 }
 
-
-
-
-vec2 getRandomPos(vec2 particlePos)
+// A small, stand-alone 32-bit hashing function.
+// Maps a single uint 'v' into another "scrambled" uint.
+uint pcg_hash( uint v )
 {
-	return vec2(width*gn(particlePos*13.436515/width,14.365475),height*gn(particlePos*12.765177/width+vec2(353.647,958.6515),35.6198849));
+    // These constants come from PCG-like mixing functions
+    v = v * 747796405u + 2891336453u;
+    uint word  = ((v >> ((v >> 28u) + 4u)) ^ v) * 277803737u;
+    return (word >> 22u) ^ word;
 }
+float randFloat(inout uint state)
+{
+    // Hash and update 'state' each time we want a new random
+    state = pcg_hash(state);
+    // Convert to float in [0..1)
+    //  4294967296 = 2^32
+    return float(state) * (1.0 / 4294967296.0);
+}
+vec2 randomPosFromParticle(in vec2 particlePos)
+{
+    // Convert (x,y) to integer coordinates
+    ivec2 ipos = ivec2(floor(particlePos));
+    
+    // Pack x in the low 16 bits, y in the high 16 bits
+    // (Works if width, height <= 65535)
+    uint seed = (uint(ipos.x) & 0xFFFFu) | ((uint(ipos.y) & 0xFFFFu) << 16);
+    
+    // Generate two random floats in [0..1)
+    float rx = randFloat(seed);
+    float ry = randFloat(seed);
+    
+    // Scale them to [0..width] and [0..height] respectively
+    return vec2(rx * width, ry * height);
+}
+float random01FromParticle(in vec2 particlePos)
+{
+    ivec2 ipos = ivec2(floor(particlePos));
+    uint seed = (uint(ipos.x) & 0xFFFFu) | ((uint(ipos.y) & 0xFFFFu) << 16);
+    return randFloat(seed);
+}
+// End of randomness utils
+///////////////////////////////////////////////////
+
 
 float getGridValue(vec2 pos)
 {
@@ -178,6 +212,7 @@ void main(){
 
 	// Section about the "trigerred waves" interaction, really a secondary feature
  	float waveSum = 0.;
+	float noiseVariationFactor = (0.95 + 0.1*noise(vec3(positionForNoise1.x,positionForNoise1.y,0.3*time)));
 	
 	for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
 	{
@@ -188,7 +223,6 @@ void main(){
 			vec2 relDiffWave = normalizedPosition - normalizedWaveCenterPosition;
 			relDiffWave.x *= float(width)/height;
 			float diffDistWave = distance(relDiffWave,vec2(0));
-			float noiseVariationFactor = (0.95 + 0.1*noise(vec3(positionForNoise1.x,positionForNoise1.y,0.3*time)));
 			float angleToCenter = atan(relDiffWave.y,relDiffWave.x);
 			float dir = (i%2==0) ? 1. : -1.;
 
@@ -268,7 +302,7 @@ void main(){
 		;
 	} else if(sensedMiddle < sensedLeft && sensedMiddle < sensedRight)
 	{
-		newHeading = (random(particlePos)< 0.5 ? heading - rotationAngle : heading + rotationAngle);
+		newHeading = (random01FromParticle(particlePos)< 0.5 ? heading - rotationAngle : heading + rotationAngle);
 	} else if(sensedRight < sensedLeft)
 	{
 		newHeading = heading - rotationAngle;
@@ -315,15 +349,15 @@ void main(){
 	// possibility of spawn to other position if spawning action is triggered
 	if(spawnParticles >= 1)
 	{
-		float randForChoice = gn(particlePos*53.146515/width,13.955475); // uniform random in [0,1]
+		float randForChoice = random01FromParticle(particlePos*1.1); // uniform random in [0,1]
 
 		if(randForChoice < spawnFraction) // probability spawnFraction to spawn
 		{
-			float randForRadius = gn(particlePos*22.698515/width,33.265475);
+			float randForRadius = random01FromParticle(particlePos*2.2);
 
 			if(spawnParticles == 1) // circular spawn
 			{
-				float randForTheta = gn(particlePos*8.129515/width,17.622475);
+				float randForTheta = random01FromParticle(particlePos*3.3);
 				float theta = randForTheta * PI * 2.0;
 				float r1 = actionAreaSizeSigma * 0.55 * (0.95 + 0.1*randForRadius);
 				float sx = r1*cos(theta);
@@ -335,7 +369,7 @@ void main(){
 			}
 			if(spawnParticles == 2) // spawn at few places near pen
 			{
-				int randForSpawnIndex = int(floor(randomSpawnNumber * gn(particlePos*28.218515/width,35.435475)));
+				int randForSpawnIndex = int(floor(randomSpawnNumber * random01FromParticle(particlePos*4.4)));
 				float sx = randomSpawnXarray[randForSpawnIndex];
 				float sy = randomSpawnYarray[randForSpawnIndex];
 				vec2 spos = 0.65 * actionAreaSizeSigma * vec2(sx,sy) * (0.9 + 0.1*randForRadius);
@@ -361,7 +395,7 @@ void main(){
 	float curA = currAHeading.x;
 	if (curA < reinitSegment)
 	{
-		nextPos = getRandomPos(particlePos);
+		nextPos = randomPosFromParticle(particlePos);
 	}
 	float nextA = fract(curA+reinitSegment);
 	///////////////////////////////////////////////////////////////////////////////////
