@@ -247,6 +247,46 @@ struct PointsDataManager
     }
   }
 
+  void createRandomParameters()
+  {
+    resetAllPoints();
+
+    int numberOfSelectedPoints = selectedPoints.size();
+
+    int pointChoice0 = rand() % numberOfSelectedPoints;
+
+    for (int j = 0; j < PARAMS_DIMENSION; j++)
+    {
+      currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]][j] = currentPointsData[selectedPoints[pointChoice0]][j];;
+    }
+
+    for (int j = 0; j < PARAMS_DIMENSION; j++)
+    {
+      if(rand()%2 == 0) continue;
+
+      int pointChoice = rand() % numberOfSelectedPoints;
+      while (pointChoice == pointChoice0)
+      {
+        pointChoice = rand() % numberOfSelectedPoints;
+      }
+      double value = currentPointsData[selectedPoints[pointChoice]][j];
+
+      if (rand() % 2 == 0)
+      {
+        int pointChoice2 = rand() % numberOfSelectedPoints;
+        while (pointChoice2 == pointChoice0)
+        {
+          pointChoice2 = rand() % numberOfSelectedPoints;
+        }
+        double value2 = currentPointsData[selectedPoints[pointChoice2]][j];
+        double lerper = 0.01 * (rand() % 100);
+        value = (1 - lerper) * value + lerper * value2;
+      }
+      currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]][j] = value;
+    }
+    reloadUsedPointsTargets();
+  }
+
   std::string getSettingName(int settingIndex)
   {
     switch (settingIndex) {

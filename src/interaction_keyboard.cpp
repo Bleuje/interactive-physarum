@@ -94,6 +94,9 @@ void ofApp::keyPressed(int key)
         settingsChangeMode = (settingsChangeMode + 1) % 2;
         latestPointSettingsActionTime = getTime();
         break;
+    case 'u':
+        pointsDataManager.createRandomParameters();
+        break;
     }
 
     paramsUpdate();
