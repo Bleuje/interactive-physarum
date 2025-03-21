@@ -4,9 +4,10 @@
 // A new parameter has been added at the end: it's some "sensing scaling factor".
 // This is some tuning to make the original parameters produce better results with the new simulation method.
 
-const int NumberOfBasePoints = 17;
+const int NumberOfBasePoints = 20;
 const int PARAMS_DIMENSION = 15;
 const double ParametersMatrix[NumberOfBasePoints][PARAMS_DIMENSION] = {
+// // SD0 // SDE // SDA // SA0 // SAE // SAA // RA0 // RAE // RAA // MD0 // MDE // MDA // SB1 // SB2 // SF // see explanation below
     {0.000, 4.000, 0.300, 0.100, 51.32, 20.00, 0.410, 4.000, 0.000, 0.100, 6.000, 0.100, 0.000, 0.000, 22.0}, // 0 <-- A "pure_multiscale"
     {0.000, 28.04, 14.53, 0.090, 1.000, 0.000, 0.010, 1.400, 1.120, 0.830, 0.000, 0.000, 0.570, 0.030, 36.0}, // 1 <-- H "hex_hole_open"
     {17.92, 0.000, 0.000, 0.520, 0.000, 0.000, 0.180, 0.000, 0.000, 0.100, 6.050, 0.170, 0.000, 0.000, 18.0}, // 2 <-- C "vertebrata"
@@ -24,4 +25,15 @@ const double ParametersMatrix[NumberOfBasePoints][PARAMS_DIMENSION] = {
     {0.000, 15.00, 8.600, 0.030, 1.000, 0.000, 0.340, 2.000, 1.070, 0.220, 15.00, 0.100, 2.300, 0.820, 38.0}, // 14 <-- O "hyp_offset"
     {0.000, 32.88, 402.0, 0.410, 3.000, 0.000, 0.100, 0.000, 0.000, 0.300, 6.000, 0.000, 0.000, 0.000, 32.0}, // 15 <-- D "strike"
     {0.000, 0.800, 0.020, 5.200, 1.000, 0.000, 0.260, 0.100, 2.790, 0.830, 32.88, 37.74, 0.090, 0.330, 22.0}, // 16 <-- P "clear_spaghetti"
+    {3.000, 10.17, 0.400, 1.030, 0.308, 0.000, 0.148, 20.00, 0.750, 0.830, 1.560, 0.110, 1.070, 0.040, 9.00}, // 17 <-- R
+    {1.464, 20.00, 80.00, 0.260, 2.150, 4.760, 1.513, 2.000, 12.62, 0.385, 12.62, 0.037, 1.000, 0.000, 25.0}, // 18
+    {0.000, 6.000, 100.0, 0.650, 0.175, 1.284, 0.000, 0.600, 5.000, 0.830, 5.395, 20.00, 0.400, 0.000, 8.60}, // 19
 };
+
+// The classic physarum algorithm are sensor distance, sensor angle, rotation angle and move distance.
+// In the 36 Points algorithm, we first sense a value s at particle position, or near it (with parameters SB1 and SB2)
+// Then we set the classic parameters using the 36 Points parameters:
+// sensor distance = SD0 + SDA * pow(s,SDE)
+// sensor angle = SA0 + SAA * pow(s,SAE)
+// rotation angle = RA0 + RAA * pow(s,RAE)
+// move distance = MD0 + MDA * pow(s,MDE)
