@@ -44,7 +44,7 @@ struct PointsDataManager
 {
   using PointData = std::array<float,PARAMS_DIMENSION>;
 
-  std::vector<int> selectedPoints = {0,7,2,36,5,6,11,1,13,14,15,21,27,30,34,40,32}; // 19?
+  std::vector<int> selectedPoints = {0,5,2,15,3,4,6,1,7,8,9,10,11,12,14,16,13};
 
   int currentSelectionIndex = 0;
   PointData usedPointsTargets[NUMBER_OF_USED_POINTS];
