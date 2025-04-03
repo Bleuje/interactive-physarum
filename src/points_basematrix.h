@@ -30,10 +30,13 @@ const double ParametersMatrix[NumberOfBasePoints][PARAMS_DIMENSION] = {
     {0.000, 6.000, 100.0, 0.650, 0.175, 1.284, 0.000, 0.600, 5.000, 0.830, 5.395, 20.00, 0.400, 0.000, 8.60}, // 19
 };
 
-// The classic physarum algorithm are sensor distance, sensor angle, rotation angle and move distance.
+// The parameters of the classic physarum algorithm are sensor distance, sensor angle, rotation angle and move distance.
 // In the 36 Points algorithm, we first sense a value s at particle position, or near it (with parameters SB1 and SB2)
 // Then we set the classic parameters using the 36 Points parameters:
 // sensor distance = SD0 + SDA * pow(s,SDE)
 // sensor angle = SA0 + SAA * pow(s,SAE)
 // rotation angle = RA0 + RAA * pow(s,RAE)
 // move distance = MD0 + MDA * pow(s,MDE)
+
+// See https://cargocollective.com/sagejenson/physarum
+// (for classic algorithm and other information)
