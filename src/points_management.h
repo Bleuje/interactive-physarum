@@ -264,11 +264,17 @@ struct PointsDataManager
     {
       if(rand()%2 == 0) continue;
 
-      int pointChoice = rand() % numberOfSelectedPoints;
-      while (pointChoice == pointChoice0)
+      int pointChoice = -1;
+      bool ok = false;
+      while(!ok)
       {
         pointChoice = rand() % numberOfSelectedPoints;
+        ok = pointChoice != pointChoice0;
+
+        // if parameter is 0 and an exponent, it's not ok
+        ok = ok && (!(j==1 || j==4 || j==7 || j==10) || currentPointsData[selectedPoints[pointChoice]][j]>=0.001);
       }
+
       double value = currentPointsData[selectedPoints[pointChoice]][j];
 
       if (rand() % 2 == 0)
