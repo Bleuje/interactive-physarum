@@ -97,6 +97,9 @@ void ofApp::keyPressed(int key)
     case 'u':
         pointsDataManager.createRandomParameters();
         break;
+    case 'i':
+        pointsDataManager.writeParamsToFile();
+        break;
     }
 
     paramsUpdate();

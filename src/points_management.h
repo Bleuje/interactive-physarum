@@ -330,4 +330,36 @@ struct PointsDataManager
             return "Unknown";
     }
   }
+
+  void writeParamsToFile() {
+      // Create timestamp
+      auto now = std::chrono::system_clock::now();
+      auto t = std::chrono::system_clock::to_time_t(now);
+      std::tm tm = *std::localtime(&t);
+
+      std::ostringstream filenameStream;
+      filenameStream << "parameters/params_"
+                    << std::put_time(&tm, "%Y%m%d_%H%M%S")
+                    << ".txt";
+
+      std::string filename = filenameStream.str();
+
+      std::ofstream file(ofToDataPath(filename));
+      if (!file.is_open()) {
+          ofLogError() << "Could not open file: " << filename;
+          return;
+      }
+
+      file << "{";
+      for (size_t i = 0; i < PARAMS_DIMENSION; ++i) {
+          file << std::fixed << std::setprecision(3) << currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]][i];
+          if (i != PARAMS_DIMENSION - 1) {
+              file << ", ";
+          }
+      }
+      file << "}" << std::endl;
+      file.close();
+
+      ofLogNotice() << "Wrote parameters to " << filename;
+  }
 };
