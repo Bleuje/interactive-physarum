@@ -44,7 +44,7 @@ struct PointsDataManager
 {
   using PointData = std::array<float,PARAMS_DIMENSION>;
 
-  std::vector<int> selectedPoints = {0,5,2,15,3,4,6,1,7,8,9,10,11,12,14,16,13,17,18};
+  std::vector<int> selectedPoints = {0,5,2,15,3,4,6,1,7,8,9,10,11,12,14,16,13,17,18,19,20};
 
   int currentSelectionIndex = 0;
   PointData usedPointsTargets[NUMBER_OF_USED_POINTS];
@@ -264,11 +264,17 @@ struct PointsDataManager
     {
       if(rand()%2 == 0) continue;
 
-      int pointChoice = rand() % numberOfSelectedPoints;
-      while (pointChoice == pointChoice0)
+      int pointChoice = -1;
+      bool ok = false;
+      while(!ok)
       {
         pointChoice = rand() % numberOfSelectedPoints;
+        ok = pointChoice != pointChoice0;
+
+        // if parameter is 0 and an exponent, it's not ok
+        ok = ok && (!(j==1 || j==4 || j==7 || j==10) || currentPointsData[selectedPoints[pointChoice]][j]>=0.001);
       }
+
       double value = currentPointsData[selectedPoints[pointChoice]][j];
 
       if (rand() % 2 == 0)
@@ -323,5 +329,37 @@ struct PointsDataManager
         default:
             return "Unknown";
     }
+  }
+
+  void writeParamsToFile() {
+      // Create timestamp
+      auto now = std::chrono::system_clock::now();
+      auto t = std::chrono::system_clock::to_time_t(now);
+      std::tm tm = *std::localtime(&t);
+
+      std::ostringstream filenameStream;
+      filenameStream << "parameters/params_"
+                    << std::put_time(&tm, "%Y%m%d_%H%M%S")
+                    << ".txt";
+
+      std::string filename = filenameStream.str();
+
+      std::ofstream file(ofToDataPath(filename));
+      if (!file.is_open()) {
+          ofLogError() << "Could not open file: " << filename;
+          return;
+      }
+
+      file << "{";
+      for (size_t i = 0; i < PARAMS_DIMENSION; ++i) {
+          file << std::fixed << std::setprecision(3) << currentPointsData[selectedPoints[selectedIndices[currentSelectionIndex]]][i];
+          if (i != PARAMS_DIMENSION - 1) {
+              file << ", ";
+          }
+      }
+      file << "}" << std::endl;
+      file.close();
+
+      ofLogNotice() << "Wrote parameters to " << filename;
   }
 };
