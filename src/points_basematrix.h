@@ -4,7 +4,7 @@
 // A new parameter has been added at the end: it's some "sensing scaling factor".
 // This is some tuning to make the original parameters produce better results with the new simulation method.
 
-const int NumberOfBasePoints = 23;
+const int NumberOfBasePoints = 24;
 const int PARAMS_DIMENSION = 15;
 
 // default exponent when amplitude is 0, to tune for different mixing of Points (sensor distance) (see explanation comments after the matrix)
@@ -36,8 +36,9 @@ const double ParametersMatrix[NumberOfBasePoints][PARAMS_DIMENSION] = {
     {0.000, 5.000, 0.050, 0.900, 2.800, 0.000, 0.006, 0.840, 1.110, 0.750, 1.200, 0.000, 0.000, 0.000, 21.0}, // 18 <-- S
     {27.50, 28.04, 0.000, 0.390, 1.400, 0.000, 0.090, 0.846, 1.400, 0.100, 2.031, 0.070, 1.400, 0.030, 15.3}, // 19 <-- T
     {0.000, 8.500, 0.029, 0.270, 0.000, 0.000, 0.410, 0.000, 0.000, 0.750, 12.62, 0.060, 0.840, 0.000, 31.8}, // 20 <-- U
-    {1.464, 20.00, 80.00, 0.260, 2.150, 4.760, 1.513, 2.000, 12.62, 0.385, 12.62, 0.037, 1.000, 0.000, 25.0}, // 21
-    {0.000, 6.000, 100.0, 0.650, 0.175, 1.284, 0.000, 0.600, 5.000, 0.830, 5.395, 20.00, 0.400, 0.000, 8.60}, // 22
+    {0.000, 6.370, 5.425, 1.030, 0.000, 0.000, 0.180, 0.289, 0.443, 0.300, 2.200, 0.065, 1.070, 0.040, 19.0}, // 21 <-- V
+    {1.464, 20.00, 80.00, 0.260, 2.150, 4.760, 1.513, 2.000, 12.62, 0.385, 12.62, 0.037, 1.000, 0.000, 25.0}, //
+    {0.000, 6.000, 100.0, 0.650, 0.175, 1.284, 0.000, 0.600, 5.000, 0.830, 5.395, 20.00, 0.400, 0.000, 8.60}, //
 };
 
 // The parameters of the classic physarum algorithm are sensor distance, sensor angle, rotation angle and move distance.
