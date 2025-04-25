@@ -47,7 +47,8 @@ void ofApp::actionTriggerWave()
 
 void ofApp::actionChangeDisplayType()
 {
-    displayType = (displayType + 1) % 2;
+    if(numberOfActiveGamepads<=1)
+        displayType = (displayType + 1) % 2;
 }
 
 void ofApp::actionChangeSelectionIndex(int dir)
