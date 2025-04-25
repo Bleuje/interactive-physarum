@@ -103,6 +103,9 @@ void ofApp::setup(){
 	std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
     ////////////////////////////////////////
 
+    latestActivtyTimeArray[0] = -12345;
+    latestActivtyTimeArray[1] = -12345;
+
     for(int i=0;i<std::max(1,numberOfActiveGamepads);i++)
     {
         actionAreaSizeSigmaArray[i] = 0.3;
