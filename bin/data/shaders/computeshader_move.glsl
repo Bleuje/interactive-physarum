@@ -371,6 +371,14 @@ void main() {
 	// possibility of spawn to other position if spawning action is triggered
 	if(spawnParticles >= 1)
 	{
+		float spawnActionX = actionX;
+		float spawnActionY = actionY;
+		if(numberOfActiveGamepads == 2)
+		{
+			spawnActionX = actionXArray[spawnGamepadIndex];
+			spawnActionY = actionYArray[spawnGamepadIndex];
+		}
+
 		float randForChoice = random01FromParticle(particlePos*1.1); // uniform random in [0,1]
 
 		if(randForChoice < spawnFraction) // probability spawnFraction to spawn
@@ -386,8 +394,8 @@ void main() {
 				float sy = r1*sin(theta);
 				vec2 spos = vec2(sx,sy);
 				spos *= height;
-				px = actionX + spos.x;
-				py = actionY + spos.y;
+				px = spawnActionX + spos.x;
+				py = spawnActionY + spos.y;
 			}
 			if(spawnParticles == 2) // spawn at few places near pen
 			{
@@ -396,8 +404,8 @@ void main() {
 				float sy = randomSpawnYarray[randForSpawnIndex];
 				vec2 spos = 0.65 * actionAreaSizeSigma * vec2(sx,sy) * (0.9 + 0.1*randForRadius);
 				spos *= height;
-				px = actionX + spos.x;
-				py = actionY + spos.y;
+				px = spawnActionX + spos.x;
+				py = spawnActionY + spos.y;
 			}
 		}
 	}
