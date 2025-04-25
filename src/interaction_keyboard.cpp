@@ -65,7 +65,7 @@ void ofApp::keyPressed(int key)
         actionChangeDisplayType();
         break;
     case 'w':
-        actionTriggerWave();
+        actionTriggerWave(singleActiveGamepadIndex);
         break;
     case 'h':
         actionChangeDisplayType();
