@@ -129,9 +129,12 @@ public:
 
     // gamepad events
     int numberOfGamepads;
-    void axisChanged(ofxGamepadAxisEvent &e);
-    void buttonPressed(ofxGamepadButtonEvent &e);
-    void buttonReleased(ofxGamepadButtonEvent &e);
+    std::vector<std::shared_ptr<ofEventListener>> axisListeners;
+    std::vector<std::shared_ptr<ofEventListener>> buttonPressedListeners;
+    std::vector<std::shared_ptr<ofEventListener>> buttonReleasedListeners;
+    void axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex);
+    void buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex);
+    void buttonReleased(ofxGamepadButtonEvent &e, int gamepadIndex);
 
     ofTrueTypeFont myFont, myFontBold;
     ofImage gamepadControlsImage, informationImage;
