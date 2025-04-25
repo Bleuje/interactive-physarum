@@ -95,3 +95,24 @@ void ofApp::drawPad(float col, float alpha)
     }
     ofPopMatrix();
 }
+
+void ofApp::drawPie(float x,float y,float radius,float p,ofColor color)
+{
+    ofPath pie;
+    ofColor colorWithAlpha(color,220);
+    pie.setFillColor(colorWithAlpha); // your color
+    pie.moveTo(x, y);
+
+    int numSteps = 100; // smoothness of the arc
+    float angleEnd = p * TWO_PI;
+
+    for (int i = 0; i <= numSteps; ++i) {
+        float angle = i * angleEnd / numSteps;
+        float px = x + radius * cos(angle);
+        float py = y + radius * sin(angle);
+        pie.lineTo(px, py);
+    }
+
+    pie.close();
+    pie.draw();
+}
