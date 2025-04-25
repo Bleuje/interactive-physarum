@@ -70,7 +70,6 @@ public:
 
     int sigmaCountModulo = 6;
     float maxActionSize = 0.85;
-
     float latestSigmaChangeTime = -12345;
     void updateActionAreaSizeSigma(int gamepadIndex);
 

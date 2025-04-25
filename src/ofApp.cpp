@@ -82,22 +82,27 @@ void ofApp::setup()
     // check if there is a gamepad connected
     numberOfGamepads = ofxGamepadHandler::get()->getNumPads();
 
-    for (int i = 0; i < numberOfGamepads; i++)
-    {
-        ofxGamepad *pad = ofxGamepadHandler::get()->getGamepad(i);
+    for (int i = 0; i < numberOfGamepads; i++) {
+        ofxGamepad* pad = ofxGamepadHandler::get()->getGamepad(i);
         int gamepadIndex = i;
-
+    
         axisListeners.push_back(std::make_shared<ofEventListener>(
-            pad->onAxisChanged.newListener([this, gamepadIndex](ofxGamepadAxisEvent &e)
-                                           { this->axisChanged(e, gamepadIndex); })));
-
+            pad->onAxisChanged.newListener([this, gamepadIndex](ofxGamepadAxisEvent &e) {
+                this->axisChanged(e, gamepadIndex);
+            })
+        ));
+    
         buttonPressedListeners.push_back(std::make_shared<ofEventListener>(
-            pad->onButtonPressed.newListener([this, gamepadIndex](ofxGamepadButtonEvent &e)
-                                             { this->buttonPressed(e, gamepadIndex); })));
-
+            pad->onButtonPressed.newListener([this, gamepadIndex](ofxGamepadButtonEvent &e) {
+                this->buttonPressed(e, gamepadIndex);
+            })
+        ));
+    
         buttonReleasedListeners.push_back(std::make_shared<ofEventListener>(
-            pad->onButtonReleased.newListener([this, gamepadIndex](ofxGamepadButtonEvent &e)
-                                              { this->buttonReleased(e, gamepadIndex); })));
+            pad->onButtonReleased.newListener([this, gamepadIndex](ofxGamepadButtonEvent &e) {
+                this->buttonReleased(e, gamepadIndex);
+            })
+        ));
     }
     numberOfActiveGamepads = numberOfGamepads;
     std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
