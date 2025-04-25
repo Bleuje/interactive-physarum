@@ -145,13 +145,13 @@ void ofApp::update(){
         settingsChangeMode = 0;
     }
 
-    float elapsedTimeGamepad1 = getTime() - latestActivtyTimeArray[0];
-    float elapsedTimeGamepad2 = getTime() - latestActivtyTimeArray[1];
-    int isActive1 = elapsedTimeGamepad1 <= MAX_GAMEPAD_INACTIVIY;
-    int isActive2 = elapsedTimeGamepad2 <= MAX_GAMEPAD_INACTIVIY;
+    inactivityElapsedTime[0] = getTime() - latestActivtyTimeArray[0];
+    inactivityElapsedTime[1] = getTime() - latestActivtyTimeArray[1];
+    int isActive1 = inactivityElapsedTime[0] <= MAX_GAMEPAD_INACTIVIY;
+    int isActive2 = inactivityElapsedTime[1] <= MAX_GAMEPAD_INACTIVIY;
 
     int numberOfTrulyActiveGamepads = isActive1 + isActive2;
-    int bestGamepadIndex = elapsedTimeGamepad1<elapsedTimeGamepad2 ? 0 : 1;
+    int bestGamepadIndex = inactivityElapsedTime[0]<inactivityElapsedTime[1] ? 0 : 1;
 
     if(numberOfTrulyActiveGamepads == 2 && numberOfActiveGamepads==1)
     {
@@ -367,12 +367,19 @@ void ofApp::draw(){
         }
         else
         {
+            ofPushMatrix();
+            float p = inactivityElapsedTime[setIndex] / MAX_GAMEPAD_INACTIVIY;
+            drawPie(-2*u,-10*u,16*u,1-p,getPlayerColor(setIndex+1));
+            ofPushMatrix();
+            ofTranslate(35*u,0);
             std::string prefix = setIndex==0 ? "player 1: " : "player 2: ";
             std::string setString = prefix + pointsDataManager.getPointName(setIndex)
             + (true ? " <" : "");
 
             ofTrueTypeFont * pBoldOrNotFont = &myFontBold;
             drawTextBox(setString, pBoldOrNotFont, col, 255, setIndex+1);
+            ofPopMatrix();
+            ofPopMatrix();
         }
 
         ofPopMatrix();
