@@ -1,8 +1,8 @@
 #include "ofApp.h"
 
-void ofApp::actionChangeSigmaCount(int dir)
+void ofApp::actionChangeSigmaCount(int dir, int gamepadIndex)
 {
-    sigmaCountArray[singleActiveGamepadIndex] = (sigmaCountArray[singleActiveGamepadIndex] + sigmaCountModulo + dir) % sigmaCountModulo;
+    sigmaCountArray[gamepadIndex] = (sigmaCountArray[gamepadIndex] + sigmaCountModulo + dir) % sigmaCountModulo;
     penMoveLatestTime = getTime();
     latestSigmaChangeTime = getTime();
 }

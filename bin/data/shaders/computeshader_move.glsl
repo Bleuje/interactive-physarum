@@ -219,6 +219,30 @@ void main(){
 	//lerper = diffDist<=actionAreaSizeSigma ? 1 : 0;
 	//lerper = particlePos.x/width;
 
+	float distanceFromAction1,distanceFromAction2,s1,s2;
+
+	if(numberOfActiveGamepads == 2)
+	{
+		vec2 normalizedActionPosition1 = vec2(actionXArray[0]/width,actionYArray[0]/height);
+		vec2 normalizedActionPosition2 = vec2(actionXArray[1]/width,actionYArray[1]/height);
+
+		vec2 positionFromAction1 = normalizedPosition - normalizedActionPosition1;
+		vec2 positionFromAction2 = normalizedPosition - normalizedActionPosition2;
+		positionFromAction1.x *= float(width)/height;
+		positionFromAction2.x *= float(width)/height;
+
+		distanceFromAction1 = distance(positionFromAction1,vec2(0))*distanceNoiseFactor;
+		distanceFromAction2 = distance(positionFromAction2,vec2(0))*distanceNoiseFactor;
+
+		s1 = actionAreaSizeSigmaArray[0];
+		s2 = actionAreaSizeSigmaArray[1];
+
+		float w1 = exp(- (distanceFromAction1 * distanceFromAction1) / (2 * s1 * s1));
+		float w2 = exp(- (distanceFromAction2 * distanceFromAction2) / (2 * s2 * s2));
+
+		lerper = w1 / (w1 + w2);
+	}
+
 
 	// Section about the "trigerred waves" interaction, really a secondary feature
  	float waveSum = 0.;
@@ -328,6 +352,16 @@ void main(){
 	float noiseValue = noise(vec3(positionForNoise1.x,positionForNoise1.y,0.8*time));
 	float moveBiasFactor = 5 * lerper * noiseValue;
 	vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX,moveBiasActionY);
+
+	if(numberOfActiveGamepads == 2)
+	{
+		float moveBiasFactor1 = 3 * exp(- (distanceFromAction1 * distanceFromAction1) / (2 * s1 * s1));
+		float moveBiasFactor2 = 3 * exp(- (distanceFromAction2 * distanceFromAction2) / (2 * s1 * s1));
+
+		moveBias = vec2(0.);
+		moveBias += moveBiasFactor1 * vec2(moveBiasActionXArray[0],moveBiasActionYArray[0]);
+		moveBias += moveBiasFactor2 * vec2(moveBiasActionXArray[1],moveBiasActionYArray[1]);
+	}
 
 
 	// position update of the classic physarum algorithm, but with a new move bias for fun interaction

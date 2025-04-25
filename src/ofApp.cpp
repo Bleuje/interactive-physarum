@@ -108,6 +108,7 @@ void ofApp::setup(){
         translationAxis1Array[gamepadIndex] = 0;
         translationAxis2Array[gamepadIndex] = 0;
     }
+    numberOfActiveGamepads = numberOfGamepads;
 	std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
     ////////////////////////////////////////
 
@@ -134,34 +135,45 @@ void ofApp::update(){
     float time = getTime();
 
     paramsUpdate();
-    updateActionAreaSizeSigma();
+    
 
     if((getTime() - latestPointSettingsActionTime) >= SETTINGS_DISAPPEAR_DURATION)
     {
         settingsChangeMode = 0;
     }
 
-    if(numberOfGamepads == 0)
+    if(numberOfActiveGamepads == 0)
     {
         actionXArray[singleActiveGamepadIndex] = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, SIMULATION_WIDTH, true);
         actionYArray[singleActiveGamepadIndex] = ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, SIMULATION_HEIGHT, true);
+        updateActionAreaSizeSigma(singleActiveGamepadIndex);
     }
     else
     {
-        actionXArray[singleActiveGamepadIndex] += translationAxis1Array[singleActiveGamepadIndex]*translationStep;
-        actionYArray[singleActiveGamepadIndex] += translationAxis2Array[singleActiveGamepadIndex]*translationStep;
+        for(int i=0;i<numberOfActiveGamepads;i++)
+        {
+            int index;
+            if(numberOfActiveGamepads==1) index = singleActiveGamepadIndex;
+            else index = i;
 
-        if(LOOP_PEN_POSITION)
-        {
-            actionXArray[singleActiveGamepadIndex] = fmod(actionXArray[singleActiveGamepadIndex] + SIMULATION_WIDTH, SIMULATION_WIDTH);
-            actionYArray[singleActiveGamepadIndex] = fmod(actionYArray[singleActiveGamepadIndex] + SIMULATION_HEIGHT, SIMULATION_HEIGHT);
-        }
-        else
-        {
-            actionXArray[singleActiveGamepadIndex] = ofClamp(actionXArray[singleActiveGamepadIndex], 0, SIMULATION_WIDTH);
-            actionYArray[singleActiveGamepadIndex] = ofClamp(actionYArray[singleActiveGamepadIndex], 0, SIMULATION_HEIGHT);
+            updateActionAreaSizeSigma(index);
+
+            actionXArray[index] += translationAxis1Array[index]*translationStep;
+            actionYArray[index] += translationAxis2Array[index]*translationStep;
+
+            if(LOOP_PEN_POSITION)
+            {
+                actionXArray[index] = fmod(actionXArray[index] + SIMULATION_WIDTH, SIMULATION_WIDTH);
+                actionYArray[index] = fmod(actionYArray[index] + SIMULATION_HEIGHT, SIMULATION_HEIGHT);
+            }
+            else
+            {
+                actionXArray[index] = ofClamp(actionXArray[index], 0, SIMULATION_WIDTH);
+                actionYArray[index] = ofClamp(actionYArray[index], 0, SIMULATION_HEIGHT);
+            }
         }
     }
+
 
     if(numberOfGamepads == 0)
     {
@@ -187,16 +199,11 @@ void ofApp::update(){
     moveShader.setUniform1i("numberOfActiveGamepads",numberOfActiveGamepads);
     moveShader.setUniform1i("singleActiveGamepadIndex",singleActiveGamepadIndex);
 
-    //moveShader.setUniform1f("actionAreaSizeSigma",currentActionAreaSizeSigma);
     moveShader.setUniform1fv("actionAreaSizeSigmaArray", actionAreaSizeSigmaArray.data(), actionAreaSizeSigmaArray.size());
 
-    //moveShader.setUniform1f("actionX",curActionX);
-    //moveShader.setUniform1f("actionY",curActionY);
     moveShader.setUniform1fv("actionXArray", actionXArray.data(), actionXArray.size());
     moveShader.setUniform1fv("actionYArray", actionYArray.data(), actionYArray.size());
 
-    //moveShader.setUniform1f("moveBiasActionX",curMoveBiasActionX);
-    //moveShader.setUniform1f("moveBiasActionY",curMoveBiasActionY);
     moveShader.setUniform1fv("moveBiasActionXArray", moveBiasActionXArray.data(), moveBiasActionXArray.size());
     moveShader.setUniform1fv("moveBiasActionYArray", moveBiasActionYArray.data(), moveBiasActionYArray.size());
 
@@ -268,20 +275,27 @@ void ofApp::draw(){
     // draw circle
     if(displayType==1)
     {
-        ofPushMatrix();
-        
-        float time2 = getTime()*6;
+        for(int i=0;i<numberOfActiveGamepads;i++)
+        {
+            int index;
+            if(numberOfActiveGamepads==1) index = singleActiveGamepadIndex;
+            else index = i;
+            
+            ofPushMatrix();
+            
+            float time2 = getTime()*6;
 
-        float R = actionAreaSizeSigmaArray[singleActiveGamepadIndex]*600*(1.0 + 0.08*sin(0.4f*time2));
+            float R = actionAreaSizeSigmaArray[index]*600*(1.0 + 0.08*sin(0.4f*time2));
 
-        float cx = ofMap(actionXArray[singleActiveGamepadIndex],0,SIMULATION_WIDTH,0,ofGetWidth());
-        float cy = ofMap(actionYArray[singleActiveGamepadIndex],0,SIMULATION_HEIGHT,0,ofGetHeight());
+            float cx = ofMap(actionXArray[index],0,SIMULATION_WIDTH,0,ofGetWidth());
+            float cy = ofMap(actionYArray[index],0,SIMULATION_HEIGHT,0,ofGetHeight());
 
-        ofSetCircleResolution(100);
+            ofSetCircleResolution(100);
 
-        drawCustomCircle(ofVec2f(cx,cy),R,9);
-        
-        ofPopMatrix();
+            drawCustomCircle(ofVec2f(cx,cy),R,9);
+            
+            ofPopMatrix();
+        }
     }
 
     ofFill();
@@ -411,11 +425,11 @@ void ofApp::draw(){
 
 // OTHER
 
-void ofApp::updateActionAreaSizeSigma()
+void ofApp::updateActionAreaSizeSigma(int gamepadIndex)
 {
-    float target = ofMap(sigmaCountArray[singleActiveGamepadIndex],0,sigmaCountModulo,0.15,maxActionSize);
+    float target = ofMap(sigmaCountArray[gamepadIndex],0,sigmaCountModulo,0.15,maxActionSize);
     float lerper = pow(ofMap(getTime() - latestSigmaChangeTime, 0, ACTION_SIGMA_CHANGE_DURATION, 0, 1, true),1.7);
-    actionAreaSizeSigmaArray[singleActiveGamepadIndex] = ofLerp(actionAreaSizeSigmaArray[singleActiveGamepadIndex], target, lerper);
+    actionAreaSizeSigmaArray[gamepadIndex] = ofLerp(actionAreaSizeSigmaArray[gamepadIndex], target, lerper);
 }
 
 void ofApp::setRandomSpawn()
