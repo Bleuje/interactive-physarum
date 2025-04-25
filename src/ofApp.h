@@ -45,9 +45,10 @@ public:
     PointsDataManager pointsDataManager; // loading initial stuff with PointsDataManager::PointsDataManager()
     void paramsUpdate();
 
-    void drawCustomCircle(ofVec2f pos, float R, float r);
+    void drawCustomCircle(ofVec2f pos, float R, float r, int colorIndex = 0);
     void drawPad(float col, float alpha);
-    void drawTextBox(const std::string &stringToShow, ofTrueTypeFont *pFont, float col, float alpha);
+    void drawTextBox(const std::string &stringToShow, ofTrueTypeFont *pFont, float col, float alpha, int contourType = 0);
+    ofColor getPlayerColor(int playerIndex);
     std::string roundedString(float value);
     float u = 1; // variable for screen resolution adaptation
 
