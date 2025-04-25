@@ -155,11 +155,11 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
 
     if (axisType == 2)
     {
-        curL2 = value;
+        curL2Array[gamepadIndex] = value;
     }
     if (axisType == 5)
     {
-        curR2 = value;
+        curR2Array[gamepadIndex] = value;
     }
 
     paramsUpdate();
