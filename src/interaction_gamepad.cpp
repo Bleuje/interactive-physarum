@@ -4,7 +4,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
 {
     // cout << "BUTTON " << e.button << " PRESSED" << endl;
 
-    singleActiveGamepadIndex = gamepadIndex;
+    recordGamepadActivity(gamepadIndex);
 
     int buttonId = e.button;
     if (buttonId == 0)
@@ -76,7 +76,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
     float value = e.value;
 
     if (abs(value) > 0.5)
-        singleActiveGamepadIndex = gamepadIndex;
+        recordGamepadActivity(gamepadIndex);
 
     if (axisType == 6 && value > 0.5)
     {
@@ -168,4 +168,10 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
 void ofApp::buttonReleased(ofxGamepadButtonEvent &e, int gamepadIndex)
 {
     // cout << "BUTTON " << e.button << " RELEASED" << endl;
+}
+
+void ofApp::recordGamepadActivity(int gamepadIndex)
+{
+    latestActivtyTimeArray[gamepadIndex] = getTime();
+    isActiveArray[gamepadIndex] = true;
 }

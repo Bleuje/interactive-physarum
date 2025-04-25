@@ -113,6 +113,7 @@ void ofApp::setup(){
         actionYArray[i] = SIMULATION_HEIGHT / 2 + SIMULATION_HEIGHT/4 * ofRandom(-1,1);
         translationAxis1Array[i] = 0;
         translationAxis2Array[i] = 0;
+        latestActivtyTimeArray[i] = 0;
     }
 
     std::cout << "Number of points : " << pointsDataManager.getNumberOfPoints() << std::endl;
@@ -142,6 +143,31 @@ void ofApp::update(){
     if((getTime() - latestPointSettingsActionTime) >= SETTINGS_DISAPPEAR_DURATION)
     {
         settingsChangeMode = 0;
+    }
+
+    float elapsedTimeGamepad1 = getTime() - latestActivtyTimeArray[0];
+    float elapsedTimeGamepad2 = getTime() - latestActivtyTimeArray[1];
+    int isActive1 = elapsedTimeGamepad1 <= MAX_GAMEPAD_INACTIVIY;
+    int isActive2 = elapsedTimeGamepad2 <= MAX_GAMEPAD_INACTIVIY;
+
+    int numberOfTrulyActiveGamepads = isActive1 + isActive2;
+    int bestGamepadIndex = elapsedTimeGamepad1<elapsedTimeGamepad2 ? 0 : 1;
+
+    if(numberOfTrulyActiveGamepads == 2 && numberOfActiveGamepads==1)
+    {
+        if(bestGamepadIndex==0) actionSwapParams();
+        numberOfActiveGamepads = 2;
+    }
+
+    if(numberOfTrulyActiveGamepads<=1 && numberOfActiveGamepads==2)
+    {
+        numberOfActiveGamepads = 1;
+        if(bestGamepadIndex==1) actionSwapParams();
+        singleActiveGamepadIndex = bestGamepadIndex;
+    }
+    else if(numberOfActiveGamepads == 0)
+    {
+        singleActiveGamepadIndex = 0;
     }
 
     if(numberOfActiveGamepads == 0)
@@ -327,12 +353,24 @@ void ofApp::draw(){
         ofPopMatrix();
 
         ofTranslate(116*u,50*u + 50*setIndex*u);
-        std::string prefix = setIndex==0 ? "pen: " : "background: ";
-        std::string setString = prefix + pointsDataManager.getPointName(setIndex)
-        + (setIndex==pointsDataManager.getSelectionIndex() ? " <" : "");
+        if(numberOfActiveGamepads<=1)
+        {
+            std::string prefix = setIndex==0 ? "pen: " : "background: ";
+            std::string setString = prefix + pointsDataManager.getPointName(setIndex)
+            + (setIndex==pointsDataManager.getSelectionIndex() ? " <" : "");
 
-        ofTrueTypeFont * pBoldOrNotFont = setIndex==pointsDataManager.getSelectionIndex() ? &myFontBold : &myFont;
-        drawTextBox(setString, pBoldOrNotFont, col, 255);
+            ofTrueTypeFont * pBoldOrNotFont = setIndex==pointsDataManager.getSelectionIndex() ? &myFontBold : &myFont;
+            drawTextBox(setString, pBoldOrNotFont, col, 255);
+        }
+        else
+        {
+            std::string prefix = setIndex==0 ? "player 1: " : "player 2: ";
+            std::string setString = prefix + pointsDataManager.getPointName(setIndex)
+            + (true ? " <" : "");
+
+            ofTrueTypeFont * pBoldOrNotFont = &myFontBold;
+            drawTextBox(setString, pBoldOrNotFont, col, 255);
+        }
 
         ofPopMatrix();
     }

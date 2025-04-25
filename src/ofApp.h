@@ -28,6 +28,7 @@
 #define ACTION_SIGMA_CHANGE_DURATION 0.26
 #define DIGITS_PRECISION 3
 #define MAX_NUMBER_OF_RANDOM_SPAWN 5
+#define MAX_GAMEPAD_INACTIVIY 5
 
 class ofApp : public ofBaseApp
 {
@@ -134,6 +135,9 @@ public:
     void axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex);
     void buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex);
     void buttonReleased(ofxGamepadButtonEvent &e, int gamepadIndex);
+    void recordGamepadActivity(int gamepadIndex);
+    std::array<float, 2> latestActivtyTimeArray;
+    std::array<int, 2> isActiveArray;
 
     ofTrueTypeFont myFont, myFontBold;
     ofImage gamepadControlsImage, informationImage;
