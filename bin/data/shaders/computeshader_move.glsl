@@ -31,7 +31,7 @@ uniform float waveTriggerTimes[MAX_NUMBER_OF_WAVES];
 uniform float waveSavedSigmas[MAX_NUMBER_OF_WAVES];
 
 uniform float mouseXchange;
-uniform float L2Action;
+uniform float L2ActionArray[2];
 
 uniform int spawnParticles;
 uniform float spawnFraction;
@@ -338,7 +338,8 @@ void main() {
 	// position update of the classic physarum algorithm, but with a new move bias for fun interaction
 	float classicNewPositionX = particlePos.x + moveDistance*cos(newHeading) + moveBias.x;
 	float classicNewPositionY = particlePos.y + moveDistance*sin(newHeading) + moveBias.y;
-	
+
+	float L2Action = 0.5*(L2ActionArray[0] + L2ActionArray[1] + 2.0);
 	// inertia experimental stuff... actually it's a lot weirder than just modifying speed instead of position
 	// probably the weirdest stuff in the code of this project
 	velocity *= 0.98;
