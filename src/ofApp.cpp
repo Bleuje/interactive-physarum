@@ -256,6 +256,7 @@ void ofApp::update(){
     moveShader.setUniform1i("randomSpawnNumber",randomSpawnNumber);
     moveShader.setUniform1fv("randomSpawnXarray", randomSpawnXarray.data(), randomSpawnXarray.size());
     moveShader.setUniform1fv("randomSpawnYarray", randomSpawnYarray.data(), randomSpawnYarray.size());
+    moveShader.setUniform1i("spawnGamepadIndex", spawnGamepadIndex);
 
     moveShader.setUniform1f("pixelScaleFactor",PIXEL_SCALE_FACTOR);
 
@@ -328,7 +329,9 @@ void ofApp::draw(){
 
             ofSetCircleResolution(100);
 
-            drawCustomCircle(ofVec2f(cx,cy),R,9);
+            int colorIndex = (numberOfActiveGamepads<=1) ? 0 : (i+1);
+
+            drawCustomCircle(ofVec2f(cx,cy),R,9,colorIndex);
             
             ofPopMatrix();
         }
@@ -369,7 +372,7 @@ void ofApp::draw(){
             + (true ? " <" : "");
 
             ofTrueTypeFont * pBoldOrNotFont = &myFontBold;
-            drawTextBox(setString, pBoldOrNotFont, col, 255);
+            drawTextBox(setString, pBoldOrNotFont, col, 255, setIndex+1);
         }
 
         ofPopMatrix();
