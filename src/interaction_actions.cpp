@@ -33,16 +33,16 @@ void ofApp::actionChangeColorMode()
     colorModeType = (colorModeType + 1) % GlobalSettings::NUMBER_OF_COLOR_MODES;
 }
 
-void ofApp::actionTriggerWave()
+void ofApp::actionTriggerWave(int gamepadIndex)
 {
-    waveXarray[currentWaveIndex] = actionXArray[singleActiveGamepadIndex];
-    waveYarray[currentWaveIndex] = actionYArray[singleActiveGamepadIndex];
+    waveXarray[currentWaveIndex] = actionXArray[gamepadIndex];
+    waveYarray[currentWaveIndex] = actionYArray[gamepadIndex];
     waveTriggerTimes[currentWaveIndex] = getTime();
-    waveSavedSigmas[currentWaveIndex] = actionAreaSizeSigmaArray[singleActiveGamepadIndex];
+    waveSavedSigmas[currentWaveIndex] = actionAreaSizeSigmaArray[gamepadIndex];
 
     currentWaveIndex = (currentWaveIndex + 1) % GlobalSettings::MAX_NUMBER_OF_WAVES;
 
-    waveActionAreaSizeSigma = actionAreaSizeSigmaArray[singleActiveGamepadIndex];
+    waveActionAreaSizeSigma = actionAreaSizeSigmaArray[gamepadIndex];
 }
 
 void ofApp::actionChangeDisplayType()
