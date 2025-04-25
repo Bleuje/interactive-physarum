@@ -54,7 +54,7 @@ public:
     float currentTransitionProgress();
     bool activeTransition();
 
-    void actionChangeSigmaCount(int dir);
+    void actionChangeSigmaCount(int dir, int gamepadIndex);
     void actionChangeParams(int dir);
     void actionSwapParams();
     void actionRandomParams();
@@ -68,7 +68,7 @@ public:
     float maxActionSize = 0.85;
     
     float latestSigmaChangeTime = -12345;
-    void updateActionAreaSizeSigma();
+    void updateActionAreaSizeSigma(int gamepadIndex);
 
     int displayType = 1;
     int colorModeType = 1;
@@ -99,7 +99,7 @@ public:
     std::array<float, GlobalSettings::MAX_NUMBER_OF_RANDOM_SPAWN> randomSpawnYarray = {};
     int randomSpawnNumber = 0;
     void setRandomSpawn();
-    int numberOfActiveGamepads = 1;
+    int numberOfActiveGamepads = 2;
     int singleActiveGamepadIndex = 0;
     int spawnGamepadIndex = 0;
 
