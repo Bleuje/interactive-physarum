@@ -189,7 +189,7 @@ void ofApp::update()
     {
         curL2Array[0] = -1; // L2 for no "inertia" effect, when using keyboard only
         curL2Array[1] = -1;
-        curR2Array[1] = -1;
+        curR2Array[0] = -1;
         curR2Array[1] = -1;
     }
     else if(numberOfGamepads <= 1)
