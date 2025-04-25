@@ -1,10 +1,23 @@
 #include "ofApp.h"
 
-void ofApp::drawTextBox(const std::string &stringToShow, ofTrueTypeFont *pFont, float col, float alpha)
+ofColor ofApp::getPlayerColor(int playerIndex)
+{
+    if(playerIndex==1) return ofColor(50,50,200);
+    if(playerIndex==2) return ofColor(200,50,50);
+    return ofColor(0);
+}
+
+void ofApp::drawTextBox(const std::string &stringToShow, ofTrueTypeFont *pFont, float col, float alpha, int contourType)
 {
     ofPushMatrix();
-    ofSetColor(col, 150);
     ofTranslate(-10 * u, -32 * u);
+    if(contourType>=1)
+    {
+        ofSetColor(getPlayerColor(contourType), 150);
+        ofDrawRectangle(-u, -u, 20 * u + pFont->stringWidth(stringToShow) + 2 * u, 41 * u + 2 * u);
+    }
+
+    ofSetColor(col, 150);
     ofDrawRectangle(0, 0, 20 * u + pFont->stringWidth(stringToShow), 41 * u);
     ofPopMatrix();
 
@@ -23,7 +36,7 @@ std::string ofApp::roundedString(float value)
     return result;
 }
 
-void ofApp::drawCustomCircle(ofVec2f pos, float R, float r)
+void ofApp::drawCustomCircle(ofVec2f pos, float R, float r, int colorIndex)
 {
     int mCircle = 14;
     float r2 = ofMap(R, 0, 700, 0.5 * r, 1.5 * r) * 1.0;
@@ -50,7 +63,8 @@ void ofApp::drawCustomCircle(ofVec2f pos, float R, float r)
         ofSetRectMode(OF_RECTMODE_CENTER);
         ofSetColor(255, 120 * alphaFactor);
         ofDrawRectangle(ofVec2f(0, 0), r2 + 3, r2 * 6 + 3);
-        ofSetColor(0, 190 * alphaFactor);
+        ofColor col = getPlayerColor(colorIndex);
+        ofSetColor(col, 190 * alphaFactor);
         ofDrawRectangle(ofVec2f(0, 0), r2, r2 * 6);
         ofSetRectMode(OF_RECTMODE_CORNER);
         ofPopMatrix();
