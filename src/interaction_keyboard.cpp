@@ -56,10 +56,10 @@ void ofApp::keyPressed(int key)
         actionSpawnParticles(1);
         break;
     case 'x':
-        actionChangeSigmaCount(-1);
+        actionChangeSigmaCount(-1, singleActiveGamepadIndex);
         break;
     case 'c':
-        actionChangeSigmaCount(1);
+        actionChangeSigmaCount(1, singleActiveGamepadIndex);
         break;
     case 'p':
         actionChangeDisplayType();

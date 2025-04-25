@@ -226,6 +226,31 @@ void main() {
             waveSum += 0.6 * propagatedWaveFunction(varWave, waveSavedSigmas[i]) * max(0., 1. - 0.3 * diffDistWave / sigmaVariation * noiseVariationFactor);
         }
     }
+    
+	float distanceFromAction1,distanceFromAction2,s1,s2;
+
+	if(numberOfActiveGamepads == 2)
+	{
+		vec2 normalizedActionPosition1 = vec2(actionXArray[0]/width,actionYArray[0]/height);
+		vec2 normalizedActionPosition2 = vec2(actionXArray[1]/width,actionYArray[1]/height);
+
+		vec2 positionFromAction1 = normalizedPosition - normalizedActionPosition1;
+		vec2 positionFromAction2 = normalizedPosition - normalizedActionPosition2;
+		positionFromAction1.x *= float(width)/height;
+		positionFromAction2.x *= float(width)/height;
+
+		distanceFromAction1 = distance(positionFromAction1,vec2(0))*distanceNoiseFactor;
+		distanceFromAction2 = distance(positionFromAction2,vec2(0))*distanceNoiseFactor;
+
+		s1 = actionAreaSizeSigmaArray[0];
+		s2 = actionAreaSizeSigmaArray[1];
+
+		float w1 = exp(- (distanceFromAction1 * distanceFromAction1) / (2 * s1 * s1));
+		float w2 = exp(- (distanceFromAction2 * distanceFromAction2) / (2 * s2 * s2));
+
+		lerper = w1 / (w1 + w2);
+	}
+
 
     waveSum = 1.7 * tanh(waveSum / 1.7) + 0.4 * tanh(4. * waveSum);
     //lerper = mix(lerper,0.,tanh(5.*waveSum));
@@ -299,81 +324,98 @@ void main() {
     float moveBiasFactor = 5 * lerper * noiseValue;
     vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX, moveBiasActionY);
 
-    // position update of the classic physarum algorithm, but with a new move bias for fun interaction
-    float classicNewPositionX = particlePos.x + moveDistance * cos(newHeading) + moveBias.x;
-    float classicNewPositionY = particlePos.y + moveDistance * sin(newHeading) + moveBias.y;
+	if(numberOfActiveGamepads == 2)
+	{
+		float moveBiasFactor1 = 3 * exp(- (distanceFromAction1 * distanceFromAction1) / (2 * s1 * s1));
+		float moveBiasFactor2 = 3 * exp(- (distanceFromAction2 * distanceFromAction2) / (2 * s1 * s1));
 
-    // inertia experimental stuff... actually it's a lot weirder than just modifying speed instead of position
-    // probably the weirdest stuff in the code of this project
-    velocity *= 0.98;
-    float vf = 1.0;
-    float velocityBias = 0.2 * L2Action;
-    float vx = velocity.x + vf * cos(newHeading) + velocityBias * moveBias.x;
-    float vy = velocity.y + vf * sin(newHeading) + velocityBias * moveBias.y;
+		moveBias = vec2(0.);
+		moveBias += moveBiasFactor1 * vec2(moveBiasActionXArray[0],moveBiasActionYArray[0]);
+		moveBias += moveBiasFactor2 * vec2(moveBiasActionXArray[1],moveBiasActionYArray[1]);
+	}
 
-    //float dt = 0.05*moveDistance;
-    float dt = 0.07 * pow(moveDistance, 1.4); // really weird thing, I thought this looked satisfying
 
-    float inertiaNewPositionX = particlePos.x + dt * vx + moveBias.x;
-    float inertiaNewPositionY = particlePos.y + dt * vy + moveBias.y;
+	// position update of the classic physarum algorithm, but with a new move bias for fun interaction
+	float classicNewPositionX = particlePos.x + moveDistance*cos(newHeading) + moveBias.x;
+	float classicNewPositionY = particlePos.y + moveDistance*sin(newHeading) + moveBias.y;
+	
+	// inertia experimental stuff... actually it's a lot weirder than just modifying speed instead of position
+	// probably the weirdest stuff in the code of this project
+	velocity *= 0.98;
+	float vf = 1.0;
+	float velocityBias = 0.2*L2Action;
+	float vx = velocity.x + vf*cos(newHeading) + velocityBias*moveBias.x;
+	float vy = velocity.y + vf*sin(newHeading) + velocityBias*moveBias.y;
 
-    float moveStyleLerper = 0.6 * L2Action + 0.8 * waveSum; // intensity of use of inertia
-    // the new position of the particle:
-    float px = mix(classicNewPositionX, inertiaNewPositionX, moveStyleLerper);
-    float py = mix(classicNewPositionY, inertiaNewPositionY, moveStyleLerper);
+	//float dt = 0.05*moveDistance;
+	float dt = 0.07*pow(moveDistance,1.4); // really weird thing, I thought this looked satisfying
 
-    // possibility of spawn to other position if spawning action is triggered
-    if(spawnParticles >= 1) {
-        float randForChoice = random01FromParticle(particlePos * 1.1); // uniform random in [0,1]
+	float inertiaNewPositionX = particlePos.x + dt*vx + moveBias.x;
+	float inertiaNewPositionY = particlePos.y + dt*vy + moveBias.y;
 
-        if(randForChoice < spawnFraction) // probability spawnFraction to spawn
-        {
-            float randForRadius = random01FromParticle(particlePos * 2.2);
 
-            if(spawnParticles == 1) // circular spawn
-            {
-                float randForTheta = random01FromParticle(particlePos * 3.3);
-                float theta = randForTheta * PI * 2.0;
-                float r1 = actionAreaSizeSigma * 0.55 * (0.95 + 0.1 * randForRadius);
-                float sx = r1 * cos(theta);
-                float sy = r1 * sin(theta);
-                vec2 spos = vec2(sx, sy);
-                spos *= height;
-                px = actionX + spos.x;
-                py = actionY + spos.y;
-            }
-            if(spawnParticles == 2) // spawn at few places near pen
-            {
-                int randForSpawnIndex = int(floor(randomSpawnNumber * random01FromParticle(particlePos * 4.4)));
-                float sx = randomSpawnXarray[randForSpawnIndex];
-                float sy = randomSpawnYarray[randForSpawnIndex];
-                vec2 spos = 0.65 * actionAreaSizeSigma * vec2(sx, sy) * (0.9 + 0.1 * randForRadius);
-                spos *= height;
-                px = actionX + spos.x;
-                py = actionY + spos.y;
-            }
-        }
-    }
+	float moveStyleLerper = 0.6*L2Action + 0.8*waveSum; // intensity of use of inertia
+	// the new position of the particle:
+	float px = mix(classicNewPositionX, inertiaNewPositionX, moveStyleLerper);
+	float py = mix(classicNewPositionY, inertiaNewPositionY, moveStyleLerper);
 
-    // just position loop to keep pixel positions of the simulation canvas
-    vec2 nextPos = vec2(mod(px + float(width), float(width)), mod(py + float(height), float(height)));
 
-    uint depositAmount = uint(1); // all particles add 1 on pixel count, could be more complex one day maybe
-    // atomicAdd for increasing counter at pixel, in parallel computation
-    atomicAdd(particlesCounter[int(round(nextPos.x)) * height + int(round(nextPos.y))], depositAmount);
 
-    ///////////////////////////////////////////////////////////////////////////////////
-    // Technique/formula from Sage Jenson (mxsage)
-    // particles are regularly respawning, their progression is stored in particle data
-    const float reinitSegment = 0.0010; // respawn every 1/reinitSegment iterations
-    float curA = currAHeading.x;
-    if(curA < reinitSegment) {
-        nextPos = randomPosFromParticle(particlePos);
-    }
-    float nextA = fract(curA + reinitSegment);
-    ///////////////////////////////////////////////////////////////////////////////////
+	// possibility of spawn to other position if spawning action is triggered
+	if(spawnParticles >= 1)
+	{
+		float randForChoice = random01FromParticle(particlePos*1.1); // uniform random in [0,1]
 
-    vec2 nextPosUV = mod(nextPos, vec2(width, height)) / vec2(width, height);
+		if(randForChoice < spawnFraction) // probability spawnFraction to spawn
+		{
+			float randForRadius = random01FromParticle(particlePos*2.2);
+
+			if(spawnParticles == 1) // circular spawn
+			{
+				float randForTheta = random01FromParticle(particlePos*3.3);
+				float theta = randForTheta * PI * 2.0;
+				float r1 = actionAreaSizeSigma * 0.55 * (0.95 + 0.1*randForRadius);
+				float sx = r1*cos(theta);
+				float sy = r1*sin(theta);
+				vec2 spos = vec2(sx,sy);
+				spos *= height;
+				px = actionX + spos.x;
+				py = actionY + spos.y;
+			}
+			if(spawnParticles == 2) // spawn at few places near pen
+			{
+				int randForSpawnIndex = int(floor(randomSpawnNumber * random01FromParticle(particlePos*4.4)));
+				float sx = randomSpawnXarray[randForSpawnIndex];
+				float sy = randomSpawnYarray[randForSpawnIndex];
+				vec2 spos = 0.65 * actionAreaSizeSigma * vec2(sx,sy) * (0.9 + 0.1*randForRadius);
+				spos *= height;
+				px = actionX + spos.x;
+				py = actionY + spos.y;
+			}
+		}
+	}
+
+
+	// just position loop to keep pixel positions of the simulation canvas
+	vec2 nextPos = vec2(mod(px + float(width),float(width)),mod(py + float(height),float(height)));
+	
+	uint depositAmount = uint(1); // all particles add 1 on pixel count, could be more complex one day maybe
+	// atomicAdd for increasing counter at pixel, in parallel computation
+	atomicAdd(particlesCounter[int(round(nextPos.x))*height + int(round(nextPos.y))], depositAmount);
+
+	///////////////////////////////////////////////////////////////////////////////////
+	// Technique/formula from Sage Jenson (mxsage)
+	// particles are regularly respawning, their progression is stored in particle data
+	const float reinitSegment=0.0010; // respawn every 1/reinitSegment iterations
+	float curA = currAHeading.x;
+	if (curA < reinitSegment)
+	{
+		nextPos = randomPosFromParticle(particlePos);
+	}
+	float nextA = fract(curA+reinitSegment);
+	///////////////////////////////////////////////////////////////////////////////////
+
+	vec2 nextPosUV = mod(nextPos, vec2(width, height)) / vec2(width, height);
     float newHeadingNorm = mod(newHeading, 2.0 * PI) / (2.0 * PI);
     vec2 nextAandHeading = vec2(nextA, fract(newHeadingNorm));
 
