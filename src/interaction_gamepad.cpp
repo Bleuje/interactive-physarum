@@ -25,7 +25,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
     }
     if (buttonId == 2)
     {
-        // actionTriggerWave();
+        // actionTriggerWave(gamepadIndex);
         spawnGamepadIndex = gamepadIndex;
         actionSpawnParticles(2);
     }
@@ -58,7 +58,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
     if (buttonId == 10)
     {
         spawnGamepadIndex = gamepadIndex;
-        actionTriggerWave();
+        actionTriggerWave(gamepadIndex);
         // actionSpawnParticles(2);
     }
     if (buttonId == 9)
