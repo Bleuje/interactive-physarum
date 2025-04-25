@@ -31,7 +31,7 @@ namespace GlobalSettings
     constexpr float ACTION_SIGMA_CHANGE_DURATION = 0.26f;
     constexpr int DIGITS_PRECISION = 3;
     constexpr int MAX_NUMBER_OF_RANDOM_SPAWN = 5;
-    constexpr int MAX_GAMEPAD_INACTIVIY = 5;
+    constexpr int MAX_GAMEPAD_INACTIVIY = 10;
 };
 
 class ofApp : public ofBaseApp
@@ -48,6 +48,7 @@ public:
     void drawCustomCircle(ofVec2f pos, float R, float r, int colorIndex = 0);
     void drawPad(float col, float alpha);
     void drawTextBox(const std::string &stringToShow, ofTrueTypeFont *pFont, float col, float alpha, int contourType = 0);
+    void drawPie(float x, float y, float radius, float p, ofColor color);
     ofColor getPlayerColor(int playerIndex);
     std::string roundedString(float value);
     float u = 1; // variable for screen resolution adaptation
@@ -68,7 +69,7 @@ public:
 
     int sigmaCountModulo = 6;
     float maxActionSize = 0.85;
-    
+
     float latestSigmaChangeTime = -12345;
     void updateActionAreaSizeSigma(int gamepadIndex);
 
@@ -104,6 +105,7 @@ public:
     int numberOfActiveGamepads = 2;
     int singleActiveGamepadIndex = 0;
     int spawnGamepadIndex = 0;
+    std::array<float, 2> inactivityElapsedTime;
 
     ofFbo trailReadBuffer, trailWriteBuffer, fboDisplay;
     ofShader setterShader, moveShader, depositShader, diffusionShader;
