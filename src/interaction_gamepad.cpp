@@ -39,11 +39,11 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
     }
     if (buttonId == 4)
     {
-        actionChangeSigmaCount(1);
+        actionChangeSigmaCount(1, gamepadIndex);
     }
     if (buttonId == 5)
     {
-        actionChangeSigmaCount(-1);
+        actionChangeSigmaCount(-1, gamepadIndex);
     }
     if (buttonId == 6)
     {
@@ -138,16 +138,16 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
     if (axisType == 3 || axisType == 4)
     {
         if (axisType == 3)
-            moveBiasActionXArray[singleActiveGamepadIndex] = 0;
+            moveBiasActionXArray[gamepadIndex] = 0;
         if (axisType == 4)
-            moveBiasActionYArray[singleActiveGamepadIndex] = 0;
+            moveBiasActionYArray[gamepadIndex] = 0;
 
         if (abs(value) > 0.09)
         {
             if (axisType == 3)
-                moveBiasActionXArray[singleActiveGamepadIndex] = value;
+                moveBiasActionXArray[gamepadIndex] = value;
             if (axisType == 4)
-                moveBiasActionYArray[singleActiveGamepadIndex] = value;
+                moveBiasActionYArray[gamepadIndex] = value;
 
             penMoveLatestTime = getTime();
         }
