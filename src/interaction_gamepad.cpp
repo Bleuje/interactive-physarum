@@ -1,6 +1,6 @@
 #include "ofApp.h"
 
-void ofApp::buttonPressed(ofxGamepadButtonEvent &e)
+void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
 {
     // cout << "BUTTON " << e.button << " PRESSED" << endl;
     int buttonId = e.button;
@@ -62,7 +62,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e)
     paramsUpdate();
 }
 
-void ofApp::axisChanged(ofxGamepadAxisEvent &e)
+void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
 {
     // cout << "AXIS " << e.axis << " VALUE " << ofToString(e.value) << endl;
 
@@ -155,7 +155,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e)
     paramsUpdate();
 }
 
-void ofApp::buttonReleased(ofxGamepadButtonEvent &e)
+void ofApp::buttonReleased(ofxGamepadButtonEvent &e, int gamepadIndex)
 {
     // cout << "BUTTON " << e.button << " RELEASED" << endl;
 }
