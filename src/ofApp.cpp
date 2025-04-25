@@ -82,25 +82,44 @@ void ofApp::setup()
     // check if there is a gamepad connected
     numberOfGamepads = ofxGamepadHandler::get()->getNumPads();
 
-    for (int i = 0; i < numberOfGamepads; i++)
-    {
-        ofxGamepad *pad = ofxGamepadHandler::get()->getGamepad(i);
+    for (int i = 0; i < numberOfGamepads; i++) {
+        ofxGamepad* pad = ofxGamepadHandler::get()->getGamepad(i);
         int gamepadIndex = i;
-
+    
         axisListeners.push_back(std::make_shared<ofEventListener>(
-            pad->onAxisChanged.newListener([this, gamepadIndex](ofxGamepadAxisEvent &e)
-                                           { this->axisChanged(e, gamepadIndex); })));
-
+            pad->onAxisChanged.newListener([this, gamepadIndex](ofxGamepadAxisEvent &e) {
+                this->axisChanged(e, gamepadIndex);
+            })
+        ));
+    
         buttonPressedListeners.push_back(std::make_shared<ofEventListener>(
-            pad->onButtonPressed.newListener([this, gamepadIndex](ofxGamepadButtonEvent &e)
-                                             { this->buttonPressed(e, gamepadIndex); })));
-
+            pad->onButtonPressed.newListener([this, gamepadIndex](ofxGamepadButtonEvent &e) {
+                this->buttonPressed(e, gamepadIndex);
+            })
+        ));
+    
         buttonReleasedListeners.push_back(std::make_shared<ofEventListener>(
-            pad->onButtonReleased.newListener([this, gamepadIndex](ofxGamepadButtonEvent &e)
-                                              { this->buttonReleased(e, gamepadIndex); })));
+            pad->onButtonReleased.newListener([this, gamepadIndex](ofxGamepadButtonEvent &e) {
+                this->buttonReleased(e, gamepadIndex);
+            })
+        ));
     }
-    std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
+    numberOfActiveGamepads = numberOfGamepads;
+	std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
     ////////////////////////////////////////
+
+    for(int i=0;i<std::max(1,numberOfActiveGamepads);i++)
+    {
+        actionAreaSizeSigmaArray[i] = 0.3;
+        sigmaCountArray[i] = 2;
+        moveBiasActionXArray[i] = 0;
+        moveBiasActionYArray[i] = 0;
+        actionXArray[i] = GlobalSettings::SIMULATION_WIDTH / 2 + GlobalSettings::SIMULATION_WIDTH/4 * ofRandom(-1,1);
+        actionYArray[i] = GlobalSettings::SIMULATION_HEIGHT / 2 + GlobalSettings::SIMULATION_HEIGHT/4 * ofRandom(-1,1);
+        translationAxis1Array[i] = 0;
+        translationAxis2Array[i] = 0;
+        //latestActivtyTimeArray[i] = 0;
+    }
 
     std::cout << "Number of points : " << pointsDataManager.getNumberOfPoints() << std::endl;
 
@@ -136,23 +155,23 @@ void ofApp::update()
 
     if (numberOfGamepads == 0)
     {
-        curActionX = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, GlobalSettings::SIMULATION_WIDTH, true);
-        curActionY = ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, GlobalSettings::SIMULATION_HEIGHT, true);
+        actionXArray[singleActiveGamepadIndex] = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, GlobalSettings::SIMULATION_WIDTH, true);
+        actionYArray[singleActiveGamepadIndex] = ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, GlobalSettings::SIMULATION_HEIGHT, true);
     }
     else
     {
-        curActionX += curTranslationAxis1 * translationStep;
-        curActionY += curTranslationAxis2 * translationStep;
+        actionXArray[singleActiveGamepadIndex] += translationAxis1Array[singleActiveGamepadIndex]*translationStep;
+        actionYArray[singleActiveGamepadIndex] += translationAxis2Array[singleActiveGamepadIndex]*translationStep;
 
         if (GlobalSettings::LOOP_PEN_POSITION)
         {
-            curActionX = fmod(curActionX + GlobalSettings::SIMULATION_WIDTH, GlobalSettings::SIMULATION_WIDTH);
-            curActionY = fmod(curActionY + GlobalSettings::SIMULATION_HEIGHT, GlobalSettings::SIMULATION_HEIGHT);
+            actionXArray[singleActiveGamepadIndex] = fmod(actionXArray[singleActiveGamepadIndex] + GlobalSettings::SIMULATION_WIDTH, GlobalSettings::SIMULATION_WIDTH);
+            actionYArray[singleActiveGamepadIndex] = fmod(actionYArray[singleActiveGamepadIndex] + GlobalSettings::SIMULATION_HEIGHT, GlobalSettings::SIMULATION_HEIGHT);
         }
         else
         {
-            curActionX = ofClamp(curActionX, 0, GlobalSettings::SIMULATION_WIDTH);
-            curActionY = ofClamp(curActionY, 0, GlobalSettings::SIMULATION_HEIGHT);
+            actionXArray[singleActiveGamepadIndex] = ofClamp(actionXArray[singleActiveGamepadIndex], 0, GlobalSettings::SIMULATION_WIDTH);
+            actionYArray[singleActiveGamepadIndex] = ofClamp(actionYArray[singleActiveGamepadIndex], 0, GlobalSettings::SIMULATION_HEIGHT);
         }
     }
 
@@ -176,13 +195,21 @@ void ofApp::update()
     moveShader.setUniform1i("height", trailReadBuffer.getHeight());
     moveShader.setUniform1f("time", time);
 
-    moveShader.setUniform1f("actionAreaSizeSigma", currentActionAreaSizeSigma);
+    moveShader.setUniform1i("numberOfActiveGamepads",numberOfActiveGamepads);
+    moveShader.setUniform1i("singleActiveGamepadIndex",singleActiveGamepadIndex);
 
-    moveShader.setUniform1f("actionX", curActionX);
-    moveShader.setUniform1f("actionY", curActionY);
+    //moveShader.setUniform1f("actionAreaSizeSigma",currentActionAreaSizeSigma);
+    moveShader.setUniform1fv("actionAreaSizeSigmaArray", actionAreaSizeSigmaArray.data(), actionAreaSizeSigmaArray.size());
 
-    moveShader.setUniform1f("moveBiasActionX", curMoveBiasActionX);
-    moveShader.setUniform1f("moveBiasActionY", curMoveBiasActionY);
+    //moveShader.setUniform1f("actionX",curActionX);
+    //moveShader.setUniform1f("actionY",curActionY);
+    moveShader.setUniform1fv("actionXArray", actionXArray.data(), actionXArray.size());
+    moveShader.setUniform1fv("actionYArray", actionYArray.data(), actionYArray.size());
+
+    //moveShader.setUniform1f("moveBiasActionX",curMoveBiasActionX);
+    //moveShader.setUniform1f("moveBiasActionY",curMoveBiasActionY);
+    moveShader.setUniform1fv("moveBiasActionXArray", moveBiasActionXArray.data(), moveBiasActionXArray.size());
+    moveShader.setUniform1fv("moveBiasActionYArray", moveBiasActionYArray.data(), moveBiasActionYArray.size());
 
     moveShader.setUniform1fv("waveXarray", waveXarray.data(), waveXarray.size());
     moveShader.setUniform1fv("waveYarray", waveYarray.data(), waveYarray.size());
@@ -252,12 +279,12 @@ void ofApp::draw()
     {
         ofPushMatrix();
 
-        float time2 = getTime() * 6;
+        float time2 = getTime()*6;
 
-        float R = currentActionAreaSizeSigma * 600 * (1.0 + 0.08 * sin(0.4f * time2));
+        float R = actionAreaSizeSigmaArray[singleActiveGamepadIndex]*600*(1.0 + 0.08*sin(0.4f*time2));
 
-        float cx = ofMap(curActionX, 0, GlobalSettings::SIMULATION_WIDTH, 0, ofGetWidth());
-        float cy = ofMap(curActionY, 0, GlobalSettings::SIMULATION_HEIGHT, 0, ofGetHeight());
+        float cx = ofMap(actionXArray[singleActiveGamepadIndex],0,GlobalSettings::SIMULATION_WIDTH,0,ofGetWidth());
+        float cy = ofMap(actionYArray[singleActiveGamepadIndex],0,GlobalSettings::SIMULATION_HEIGHT,0,ofGetHeight());
 
         ofSetCircleResolution(100);
 
@@ -387,9 +414,9 @@ void ofApp::draw()
 
 void ofApp::updateActionAreaSizeSigma()
 {
-    float target = ofMap(sigmaCount, 0, sigmaCountModulo, 0.15, maxActionSize);
-    float lerper = pow(ofMap(getTime() - latestSigmaChangeTime, 0, GlobalSettings::ACTION_SIGMA_CHANGE_DURATION, 0, 1, true), 1.7);
-    currentActionAreaSizeSigma = ofLerp(currentActionAreaSizeSigma, target, lerper);
+    float target = ofMap(sigmaCountArray[singleActiveGamepadIndex],0,sigmaCountModulo,0.15,maxActionSize);
+    float lerper = pow(ofMap(getTime() - latestSigmaChangeTime, 0, GlobalSettings::ACTION_SIGMA_CHANGE_DURATION, 0, 1, true),1.7);
+    actionAreaSizeSigmaArray[singleActiveGamepadIndex] = ofLerp(actionAreaSizeSigmaArray[singleActiveGamepadIndex], target, lerper);
 }
 
 void ofApp::setRandomSpawn()

@@ -2,7 +2,7 @@
 
 void ofApp::actionChangeSigmaCount(int dir)
 {
-    sigmaCount = (sigmaCount + sigmaCountModulo + dir) % sigmaCountModulo;
+    sigmaCountArray[singleActiveGamepadIndex] = (sigmaCountArray[singleActiveGamepadIndex] + sigmaCountModulo + dir) % sigmaCountModulo;
     penMoveLatestTime = getTime();
     latestSigmaChangeTime = getTime();
 }
@@ -35,14 +35,14 @@ void ofApp::actionChangeColorMode()
 
 void ofApp::actionTriggerWave()
 {
-    waveXarray[currentWaveIndex] = curActionX;
-    waveYarray[currentWaveIndex] = curActionY;
+    waveXarray[currentWaveIndex] = actionXArray[singleActiveGamepadIndex];
+    waveYarray[currentWaveIndex] = actionYArray[singleActiveGamepadIndex];
     waveTriggerTimes[currentWaveIndex] = getTime();
-    waveSavedSigmas[currentWaveIndex] = currentActionAreaSizeSigma;
+    waveSavedSigmas[currentWaveIndex] = actionAreaSizeSigmaArray[singleActiveGamepadIndex];
 
     currentWaveIndex = (currentWaveIndex + 1) % GlobalSettings::MAX_NUMBER_OF_WAVES;
 
-    waveActionAreaSizeSigma = currentActionAreaSizeSigma;
+    waveActionAreaSizeSigma = actionAreaSizeSigmaArray[singleActiveGamepadIndex];
 }
 
 void ofApp::actionChangeDisplayType()

@@ -3,6 +3,9 @@
 void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
 {
     // cout << "BUTTON " << e.button << " PRESSED" << endl;
+
+    singleActiveGamepadIndex = gamepadIndex;
+
     int buttonId = e.button;
     if (buttonId == 0)
     {
@@ -25,11 +28,13 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
     if (buttonId == 2)
     {
         // actionTriggerWave();
+        spawnGamepadIndex = gamepadIndex;
         actionSpawnParticles(2);
     }
     if (buttonId == 3)
     {
         // actionChangeDisplayType();
+        spawnGamepadIndex = gamepadIndex;
         actionSpawnParticles(1);
     }
     if (buttonId == 4)
@@ -51,6 +56,7 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
     }
     if (buttonId == 10)
     {
+        spawnGamepadIndex = gamepadIndex;
         actionTriggerWave();
         // actionSpawnParticles(2);
     }
@@ -68,6 +74,10 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
 
     int axisType = e.axis;
     float value = e.value;
+
+    if (abs(value) > 0.5)
+        singleActiveGamepadIndex = gamepadIndex;
+
     if (axisType == 6 && value > 0.5)
     {
         if (settingsChangeMode == 0)
@@ -111,15 +121,15 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
     if (axisType == 0 || axisType == 1)
     {
         if (axisType == 0)
-            curTranslationAxis1 = 0;
+            translationAxis1Array[gamepadIndex] = 0;
         if (axisType == 1)
-            curTranslationAxis2 = 0;
+            translationAxis2Array[gamepadIndex] = 0;
         if (abs(value) > 0.09)
         {
             if (axisType == 0)
-                curTranslationAxis1 = value;
+                translationAxis1Array[gamepadIndex] = value;
             if (axisType == 1)
-                curTranslationAxis2 = value;
+                translationAxis2Array[gamepadIndex] = value;
 
             penMoveLatestTime = getTime();
         }
@@ -128,16 +138,16 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
     if (axisType == 3 || axisType == 4)
     {
         if (axisType == 3)
-            curMoveBiasActionX = 0;
+            moveBiasActionXArray[singleActiveGamepadIndex] = 0;
         if (axisType == 4)
-            curMoveBiasActionY = 0;
+            moveBiasActionYArray[singleActiveGamepadIndex] = 0;
 
         if (abs(value) > 0.09)
         {
             if (axisType == 3)
-                curMoveBiasActionX = value;
+                moveBiasActionXArray[singleActiveGamepadIndex] = value;
             if (axisType == 4)
-                curMoveBiasActionY = value;
+                moveBiasActionYArray[singleActiveGamepadIndex] = value;
 
             penMoveLatestTime = getTime();
         }
