@@ -99,8 +99,10 @@ void ofApp::drawPad(float col, float alpha)
 void ofApp::drawPie(float x,float y,float radius,float p,ofColor color)
 {
     ofPath pie;
-    ofColor colorWithAlpha(color,220);
+    ofColor colorWithAlpha(color,200);
     pie.setFillColor(colorWithAlpha); // your color
+    pie.setStrokeColor(ofColor(ofColor::white,180));        // stroke (outline) color
+    pie.setStrokeWidth(2);                     // stroke thickness
     pie.moveTo(x, y);
 
     int numSteps = 100; // smoothness of the arc
