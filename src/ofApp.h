@@ -78,8 +78,8 @@ public:
     std::array<float, 2> actionYArray;
     float translationStep = 6.5;
     int currentWaveIndex = 0;
-    float curL2 = 0;
-    float curR2 = 0;
+    std::array<float, 2> curL2Array;
+    std::array<float, 2> curR2Array;
     std::array<float, MAX_NUMBER_OF_WAVES> waveXarray = {};
     std::array<float, MAX_NUMBER_OF_WAVES> waveYarray = {};
     std::array<float, MAX_NUMBER_OF_WAVES> waveTriggerTimes = {};
