@@ -368,7 +368,13 @@ void main(){
 	float classicNewPositionX = particlePos.x + moveDistance*cos(newHeading) + moveBias.x;
 	float classicNewPositionY = particlePos.y + moveDistance*sin(newHeading) + moveBias.y;
 
-	float L2Action = 0.5*(L2ActionArray[0] + L2ActionArray[1] + 2.0);
+	//float L2Action = 0.5*(L2ActionArray[0] + L2ActionArray[1] + 2.0);
+	float L2Action;
+	if(numberOfActiveGamepads == 2) L2Action = (lerper*L2ActionArray[0] + (1-lerper)*L2ActionArray[1] + 1.0)/2.0;
+	else
+	{
+		L2Action = (L2ActionArray[singleActiveGamepadIndex]+1.0)/2.0;
+	}
 	// inertia experimental stuff... actually it's a lot weirder than just modifying speed instead of position
 	// probably the weirdest stuff in the code of this project
 	velocity *= 0.98;
