@@ -15,13 +15,16 @@ uniform int height;
 
 uniform float time;
 
-uniform float actionAreaSizeSigma;
+uniform int numberOfActiveGamepads;
+uniform int singleActiveGamepadIndex;
 
-uniform float actionX;
-uniform float actionY;
+uniform float actionAreaSizeSigmaArray[2];
 
-uniform float moveBiasActionX;
-uniform float moveBiasActionY;
+uniform float actionXArray[2];
+uniform float actionYArray[2];
+
+uniform float moveBiasActionXArray[2];
+uniform float moveBiasActionYArray[2];
 
 uniform float waveXarray[MAX_NUMBER_OF_WAVES];
 uniform float waveYarray[MAX_NUMBER_OF_WAVES];
@@ -36,6 +39,7 @@ uniform float spawnFraction;
 uniform int randomSpawnNumber;
 uniform float randomSpawnXarray[MAX_NUMBER_OF_RANDOM_SPAWN];
 uniform float randomSpawnYarray[MAX_NUMBER_OF_RANDOM_SPAWN];
+uniform int spawnGamepadIndex;
 
 uniform float pixelScaleFactor;
 
@@ -178,6 +182,12 @@ void main(){
 
 	PointSettings currentParams_1 = params[1]; // "Background Point" parameters
 	PointSettings currentParams_2 = params[0]; // "Pen Point" parameters
+
+	float actionAreaSizeSigma = actionAreaSizeSigmaArray[singleActiveGamepadIndex];
+	float actionX = actionXArray[singleActiveGamepadIndex];
+	float actionY = actionYArray[singleActiveGamepadIndex];
+	float moveBiasActionX = moveBiasActionXArray[singleActiveGamepadIndex];
+	float moveBiasActionY = moveBiasActionYArray[singleActiveGamepadIndex];
 
 	vec2 particlePos = unpackUnorm2x16(particlesArray[3 * gl_GlobalInvocationID.x]) * vec2(width, height);
 	vec2 currAHeading = unpackUnorm2x16(particlesArray[3 * gl_GlobalInvocationID.x + 1]) * vec2(1.0, 2.0 * PI);

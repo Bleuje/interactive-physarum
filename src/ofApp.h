@@ -60,22 +60,22 @@ public:
     void actionChangeSelectionIndex(int dir);
     void actionSpawnParticles(int spawnType);
 
-    float actionAreaSizeSigma = 0.3;
-    int sigmaCount = 2;
     int sigmaCountModulo = 6;
     float maxActionSize = 0.85;
-    float currentActionAreaSizeSigma = 0.5;
+    
     float latestSigmaChangeTime = -12345;
     void updateActionAreaSizeSigma();
 
     int displayType = 1;
     int colorModeType = 3;
-    float curTranslationAxis1 = 0;
-    float curTranslationAxis2 = 0;
-    float curMoveBiasActionX = 0;
-    float curMoveBiasActionY = 0;
-    float curActionX = SIMULATION_WIDTH / 2;
-    float curActionY = SIMULATION_HEIGHT / 2;
+    std::array<float, 2> translationAxis1Array;
+    std::array<float, 2> translationAxis2Array;
+    std::array<float, 2> actionAreaSizeSigmaArray;
+    std::array<int, 2> sigmaCountArray;
+    std::array<float, 2> moveBiasActionXArray;
+    std::array<float, 2> moveBiasActionYArray;
+    std::array<float, 2> actionXArray;
+    std::array<float, 2> actionYArray;
     float translationStep = 6.5;
     int currentWaveIndex = 0;
     float curL2 = 0;
@@ -95,6 +95,9 @@ public:
     std::array<float, MAX_NUMBER_OF_RANDOM_SPAWN> randomSpawnYarray = {};
     int randomSpawnNumber = 0;
     void setRandomSpawn();
+    int numberOfActiveGamepads = 1;
+    int singleActiveGamepadIndex = 0;
+    int spawnGamepadIndex = 0;
 
     ofFbo trailReadBuffer, trailWriteBuffer, fboDisplay;
     ofShader setterShader, moveShader, depositShader, blurShader;
