@@ -63,7 +63,7 @@ public:
     void actionSwapParams();
     void actionRandomParams();
     void actionChangeColorMode();
-    void actionTriggerWave();
+    void actionTriggerWave(int gamepadIndex);
     void actionChangeDisplayType();
     void actionChangeSelectionIndex(int dir);
     void actionSpawnParticles(int spawnType);
