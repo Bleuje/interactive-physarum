@@ -161,7 +161,6 @@ void ofApp::update()
     int isActive2 = inactivityElapsedTime[1] <= GlobalSettings::MAX_GAMEPAD_INACTIVIY;
 
     int numberOfTrulyActiveGamepads = isActive1 + isActive2;
-
     int bestGamepadIndex = inactivityElapsedTime[0] < inactivityElapsedTime[1] ? 0 : 1;
 
     if (numberOfTrulyActiveGamepads == 2 && numberOfActiveGamepads == 1)
