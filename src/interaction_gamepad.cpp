@@ -4,8 +4,6 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
 {
     // cout << "BUTTON " << e.button << " PRESSED" << endl;
 
-    recordGamepadActivity(gamepadIndex);
-
     int buttonId = e.button;
     if (buttonId == 0)
     {
@@ -47,8 +45,11 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
     }
     if (buttonId == 6)
     {
-        settingsChangeMode = (settingsChangeMode + 1) % 2;
-        latestPointSettingsActionTime = getTime();
+        if (numberOfActiveGamepads <= 1)
+        {
+            settingsChangeMode = (settingsChangeMode + 1) % 2;
+            latestPointSettingsActionTime = getTime();
+        }
     }
     if (buttonId == 7)
     {
@@ -64,6 +65,8 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
     {
         actionChangeDisplayType();
     }
+
+    recordGamepadActivity(gamepadIndex);
 
     paramsUpdate();
 }
@@ -81,7 +84,15 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
     if (axisType == 6 && value > 0.5)
     {
         if (settingsChangeMode == 0)
-            actionChangeParams(1);
+        {
+            if (numberOfActiveGamepads == 1)
+                actionChangeParams(1);
+            else
+            {
+                pointsDataManager.currentSelectionIndex = gamepadIndex;
+                actionChangeParams(1);
+            }
+        }
         else
         {
             pointsDataManager.changeValue(settingsChangeIndex, 1);
@@ -91,7 +102,15 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
     if (axisType == 6 && value < -0.5)
     {
         if (settingsChangeMode == 0)
-            actionChangeParams(-1);
+        {
+            if (numberOfActiveGamepads == 1)
+                actionChangeParams(-1);
+            else
+            {
+                pointsDataManager.currentSelectionIndex = gamepadIndex;
+                actionChangeParams(-1);
+            }
+        }
         else
         {
             pointsDataManager.changeValue(settingsChangeIndex, -1);
@@ -101,7 +120,15 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
     if (axisType == 7 && value > 0.5)
     {
         if (settingsChangeMode == 0)
-            pointsDataManager.changeSelectionIndex(-1);
+        {
+            if (numberOfActiveGamepads == 1)
+                pointsDataManager.changeSelectionIndex(-1);
+            else
+            {
+                pointsDataManager.currentSelectionIndex = gamepadIndex;
+                actionChangeParams(-1);
+            }
+        }
         else
         {
             settingsChangeIndex = (settingsChangeIndex + 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
@@ -111,7 +138,15 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
     if (axisType == 7 && value < -0.5)
     {
         if (settingsChangeMode == 0)
-            pointsDataManager.changeSelectionIndex(1);
+        {
+            if (numberOfActiveGamepads == 1)
+                pointsDataManager.changeSelectionIndex(1);
+            else
+            {
+                pointsDataManager.currentSelectionIndex = gamepadIndex;
+                actionChangeParams(1);
+            }
+        }
         else
         {
             settingsChangeIndex = (settingsChangeIndex - 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
