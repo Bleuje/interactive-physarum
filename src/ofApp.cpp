@@ -103,6 +103,9 @@ void ofApp::setup()
     std::cout << "Number of gamepads : " << numberOfGamepads << std::endl;
     ////////////////////////////////////////
 
+    latestActivtyTimeArray[0] = -12345;
+    latestActivtyTimeArray[1] = -12345.1;
+
     for (int i = 0; i < std::max(1, numberOfActiveGamepads); i++)
     {
         actionAreaSizeSigmaArray[i] = 0.3;
@@ -113,7 +116,7 @@ void ofApp::setup()
         actionYArray[i] = GlobalSettings::SIMULATION_HEIGHT / 2 + GlobalSettings::SIMULATION_HEIGHT / 4 * ofRandom(-1, 1);
         translationAxis1Array[i] = 0;
         translationAxis2Array[i] = 0;
-        latestActivtyTimeArray[i] = 0;
+        // latestActivtyTimeArray[i] = 0;
     }
 
     std::cout << "Number of points : " << pointsDataManager.getNumberOfPoints() << std::endl;
