@@ -350,7 +350,7 @@ void main() {
     float vx = velocity.x + vf * cos(newHeading) + velocityBias * moveBias.x;
     float vy = velocity.y + vf * sin(newHeading) + velocityBias * moveBias.y;
 
-    // float dt = 0.05*moveDistance;
+	// float dt = 0.05*moveDistance;
     float dt = 0.07 * pow(moveDistance, 1.4); // really weird thing, I thought this looked satisfying
 
     float inertiaNewPositionX = particlePos.x + dt * vx + moveBias.x;

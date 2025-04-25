@@ -54,7 +54,7 @@ void ofApp::actionTriggerWave(int gamepadIndex)
 
 void ofApp::actionChangeDisplayType()
 {
-    if(numberOfActiveGamepads<=1)
+    if (numberOfActiveGamepads <= 1)
         displayType = (displayType + 1) % 2;
 }
 
