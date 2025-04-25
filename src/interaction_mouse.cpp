@@ -11,7 +11,7 @@ void ofApp::mousePressed(int x, int y, int button)
         actionSpawnParticles(1);
         break;
     case 1:
-        actionTriggerWave();
+        actionTriggerWave(singleActiveGamepadIndex);
         break;
     }
 }
