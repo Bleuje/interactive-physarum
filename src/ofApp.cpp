@@ -121,7 +121,6 @@ void ofApp::setup()
         actionYArray[i] = GlobalSettings::SIMULATION_HEIGHT / 2 + GlobalSettings::SIMULATION_HEIGHT/4 * ofRandom(-1,1);
         translationAxis1Array[i] = 0;
         translationAxis2Array[i] = 0;
-        //latestActivtyTimeArray[i] = 0;
     }
 
     std::cout << "Number of points : " << pointsDataManager.getNumberOfPoints() << std::endl;
@@ -191,7 +190,15 @@ void ofApp::update()
 
     if(numberOfGamepads == 0)
     {
-        curL2 = -1; // L2 for no "inertia" effect, when using keyboard only
+        curL2Array[0] = -1; // L2 for no "inertia" effect, when using keyboard only
+        curL2Array[1] = -1;
+        curR2Array[1] = -1;
+        curR2Array[1] = -1;
+    }
+    else if(numberOfGamepads <= 1)
+    {
+        curL2Array[1 - singleActiveGamepadIndex] = -1;
+        curR2Array[1 - singleActiveGamepadIndex] = -1;
     }
 
     setterShader.begin();
@@ -225,8 +232,8 @@ void ofApp::update()
     moveShader.setUniform1fv("waveTriggerTimes", waveTriggerTimes.data(), waveTriggerTimes.size());
     moveShader.setUniform1fv("waveSavedSigmas", waveSavedSigmas.data(), waveSavedSigmas.size());
 
-    moveShader.setUniform1f("mouseXchange", 1.0 * ofGetMouseX() / ofGetWidth());
-    moveShader.setUniform1f("L2Action", ofMap(curL2, -1, 1, 0, 1.0, true));
+    moveShader.setUniform1f("mouseXchange",1.0*ofGetMouseX()/ofGetWidth());
+    moveShader.setUniform1fv("L2ActionArray", curL2Array.data(), curL2Array.size());
 
     moveShader.setUniform1i("spawnParticles", int(particlesSpawn));
     moveShader.setUniform1f("spawnFraction", GlobalSettings::SPAWN_FRACTION);
@@ -272,9 +279,8 @@ void ofApp::draw()
 {
     u = float(ofGetHeight()) / 1080;
 
-    float R2action = ofMap(curR2, -1, 0.3, 0, 1, true);
-    if (numberOfGamepads == 0)
-        R2action = 0;
+    float R2action = ofMap(curR2Array[0]+curR2Array[1]+2.0, 0, 1.3, 0, 1, true);
+    if(numberOfGamepads==0) R2action = 0;
 
     ofPushMatrix();
 
@@ -289,7 +295,7 @@ void ofApp::draw()
         for(int i=0;i<std::max(1,numberOfActiveGamepads);i++)
         {
             int index;
-            if(numberOfActiveGamepads==1) index = singleActiveGamepadIndex;
+            if(numberOfActiveGamepads<=1) index = singleActiveGamepadIndex;
             else index = i;
             
             ofPushMatrix();
