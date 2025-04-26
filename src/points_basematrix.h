@@ -8,10 +8,10 @@ const int NumberOfBasePoints = 24;
 const int PARAMS_DIMENSION = 15;
 
 // default exponent when amplitude is 0, to tune for different mixing of Points (sensor distance) (see explanation comments after the matrix)
-const double DE_SD = 0.000;
-const double DE_SA = 0.000;
-const double DE_RA = 0.000;
-const double DE_MD = 0.000;
+const double DE_SD = 2.000;
+const double DE_SA = 1.000;
+const double DE_RA = 1.000;
+const double DE_MD = 3.000;
 
 const double ParametersMatrix[NumberOfBasePoints][PARAMS_DIMENSION] = {
 // // SD0 // SDE // SDA // SA0 // SAE // SAA // RA0 // RAE // RAA // MD0 // MDE // MDA // SB1 // SB2 // SF // see explanation below
