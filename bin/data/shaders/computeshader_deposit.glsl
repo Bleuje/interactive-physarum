@@ -202,15 +202,17 @@ vec3 gradPlasmaTwilight(float f) { return interpolateGradient5(f, plasmaTwilight
 
 layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 void main(){
+    ivec2 pix = ivec2(gl_GlobalInvocationID.xy);
+
 	vec2 prevColor = imageLoad(trailRead,ivec2(gl_GlobalInvocationID.xy)).xy; // Getting the trail map color on current pixel
 
-	float count = float(particlesCounter[ gl_GlobalInvocationID.x * height + gl_GlobalInvocationID.y ]); // number of particles on the pixel
+    float count = float(particlesCounter[ gl_GlobalInvocationID.x * height + gl_GlobalInvocationID.y ]); // number of particles on the pixel
 
 	// The following 3 lines of code are my own innovation (looks like with the license, attribution is required if you use this :) ),
 	// a way to define an amount of added trail in function of the number of particles on the pixel
-	uint limit = 100;
-	float limitedCount = count<float(limit)?count:float(limit);
-	float addedDeposit = pow(limitedCount,0.5)*depositFactor;
+    const float LIMIT = 100.0;
+    float limitedCount = min(count, LIMIT);
+    float addedDeposit = sqrt(limitedCount) * depositFactor;
 
 	// Trail map update
 	float val = prevColor.x + addedDeposit;
@@ -227,10 +229,10 @@ void main(){
 	trailColorValue = min(1.0,trailColorValue);
 
 	// getting a radial offset for color changes depending on pixel position
-	vec2 pos = vec2(gl_GlobalInvocationID.xy);
-	pos -= vec2(width/2,height/2);
-	pos *= 0.0007;
-	float offset = length(pos);
+    // radial offset for color changes depending on pixel position
+    vec2 pos = vec2(pix) - vec2(float(width) * 0.5, float(height) * 0.5);
+    pos *= (2.0 / float(width + height)) * 0.7;
+    float offset = length(pos);
 	
 	// something for a color experiment:
 	// difference between latest trail map value and delayed trail map value
@@ -240,6 +242,10 @@ void main(){
 	vec4 outputColor = vec4(0.,1.,0.,1.); // (dummy overwritten value)
 	vec3 col = vec3(0.,1.,0.); // (dummy overwritten value)
 
+    // reused variables
+    float blend = tanh(500.0*temporalDiff + 2.0*offset);
+    vec3 col2 = vec3(countColorValue);
+
 	if(colorModeType == 0) // white on black from particle counts
 	{
 		col = vec3(countColorValue);
@@ -247,53 +253,47 @@ void main(){
 	else if(colorModeType == 1) // yellow
 	{
 		vec3 col1 = gradSolarDrift(tanh(countColorValue*1.3));
-		vec3 col2 = vec3(countColorValue);
-		col = mix(col1,col2,tanh(500.*temporalDiff + 2.0*offset));
+		col = mix(col1,col2,blend);
 	}
 	else if(colorModeType == 2) // pink/purple (from z0rg :) )
 	{
 		vec3 col1 = gradZorgPurple(fract(tanh(countColorValue*0.6 + offset) + 0.15)); // weird, but let's keep it like this
-		vec3 col2 = vec3(countColorValue);
-		col = mix(col1,col2,tanh(500.*temporalDiff + 2.0*offset));
+		col = mix(col1,col2,blend);
 	}
 	else if(colorModeType == 3) // orange over purple, not very saturated
 	{
 		vec3 col1 = gradPurpleFire(tanh(countColorValue*1.3));
-		vec3 col2 = vec3(countColorValue);
-		col = mix(col1,col2,tanh(500.*temporalDiff + 2.0*offset));
+		col = mix(col1,col2,blend);
 	}
 	else if(colorModeType == 4) // gold over dark green
 	{
 		vec3 col1 = gradOrangeBlue(tanh(countColorValue*1.3 + offset));
-		vec3 col2 = vec3(countColorValue);
-		col = mix(col1,col2,tanh(500.*temporalDiff + 2.0*offset));
+		col = mix(col1,col2,blend);
 	}
 	else if(colorModeType == 5)
 	{
 		vec3 col1 = gradNeonInferno(tanh(countColorValue*1.3));
-		vec3 col2 = vec3(countColorValue);
-		col = mix(col1,col2,tanh(500.*temporalDiff + 2.0*offset));
+		col = mix(col1,col2,blend);
 	}
 	else if(colorModeType == 6) // icy blue
 	{
 		vec3 col1 = gradArctic(fract(tanh(countColorValue*0.6 + offset) + 0.15));
-		vec3 col2 = vec3(countColorValue);
-		col = mix(col1,col2,tanh(500.*temporalDiff + 2.0*offset));
+		col = mix(col1,col2,blend);
 	}
 	else if(colorModeType == 7) // yellow over pink/purple, saturated, no white
 	{
 		vec3 col1 = gradOrangeBlue(tanh(countColorValue*1.3 + offset));
 		vec3 colPurple = gradZorgPurple(tanh(countColorValue*0.6 + offset) + 0.15);
-		vec3 col2 = mix(vec3(countColorValue),colPurple,0.85);
-		col = mix(col2,col1,tanh(sin(500.*temporalDiff) + 2.0*offset));
+		vec3 col2_ = mix(vec3(countColorValue),colPurple,0.85);
+		col = mix(col2_,col1,tanh(sin(500.*temporalDiff) + 2.0*offset));
 		col = mix(col1,colPurple,pow(tanh(sin(500.*temporalDiff) + 2.0*offset + 0.5),2.0));
 	}
 	else if(colorModeType == 8) // bright is yellow, over blue background, embarassingly experimental
 	{
 		vec3 col1 = gradOrangeBlue(tanh(countColorValue*1.3 + offset));
 		vec3 colGreen = gradGreen(tanh(countColorValue*2.3 + offset));
-		vec3 col2 = mix(vec3(clamp(1.3*countColorValue,0.,1.)),colGreen,0.5);
-		vec3 col3 = mix(col2,col1,1.-0.6*tanh(sin(-1500.*abs(temporalDiff)) + 2.0*offset));
+		vec3 col2_ = mix(vec3(clamp(1.3*countColorValue,0.,1.)),colGreen,0.5);
+		vec3 col3 = mix(col2_,col1,1.-0.6*tanh(sin(-1500.*abs(temporalDiff)) + 2.0*offset));
 		vec3 col4 = gradOrangeBlue(tanh(countColorValue*1.3 + offset));
 		vec3 col5 = vec3(countColorValue);
 		vec3 col6 = 1.25*mix(col4,col5,tanh(500.*temporalDiff + 2.0*offset));
@@ -303,8 +303,7 @@ void main(){
     else if(colorModeType == 9) // green
 	{
 		vec3 col1 = gradGreen(tanh(countColorValue*1.3));
-		vec3 col2 = vec3(countColorValue);
-		col = mix(col1,col2,tanh(500.*temporalDiff + 2.0*offset));
+		col = mix(col1,col2,blend);
 	}
     else if(colorModeType == 10000) // smooth/blurry cyan with red movement
 	{
