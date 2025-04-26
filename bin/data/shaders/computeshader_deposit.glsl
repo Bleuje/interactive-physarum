@@ -46,41 +46,41 @@ vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )
 }
 /////////////////////////////////////
 
-// Color gradients:
-
 // Generic gradient interpolation
-vec3 interpolateGradient5(float f, const vec3 cols[5], bool invertF)
+vec3 interpolateGradient5(float f, const vec3 cols[5])
 {
-    f = clamp(f, 0.0, 1.0);if (invertF) f = 1.0 - f;
+    f = clamp(f, 0.0, 1.0);
     float cur = f * 4.0; // 5 colors => (5-1) = 4
     int icur = int(floor(cur));
     int next = min(icur + 1, 4);
     return mix(cols[icur], cols[next], fract(cur));
 }
-vec3 interpolateGradient6(float f, const vec3 cols[6], bool invertF)
+
+vec3 interpolateGradient6(float f, const vec3 cols[6])
 {
-    f = clamp(f, 0.0, 1.0);if (invertF) f = 1.0 - f;
+    f = clamp(f, 0.0, 1.0);
     float cur = f * 5.0;
     int icur = int(floor(cur));
     int next = min(icur + 1, 5);
     return mix(cols[icur], cols[next], fract(cur));
 }
-vec3 interpolateGradient7(float f, const vec3 cols[7], bool invertF)
+
+vec3 interpolateGradient7(float f, const vec3 cols[7])
 {
-    f = clamp(f, 0.0, 1.0);if (invertF) f = 1.0 - f;
+    f = clamp(f, 0.0, 1.0);
     float cur = f * 6.0;
     int icur = int(floor(cur));
     int next = min(icur + 1, 6);
     return mix(cols[icur], cols[next], fract(cur));
 }
 
-// Gradient color arrays
+// Gradient color arrays (some inverted manually!)
 const vec3 zorgPurple[5] = vec3[5](
-    vec3(0.58f, 1.f, 0.2f),
-    vec3(1.f, 0.f, 0.56f),
-    vec3(0.07f, 0.18f, 0.38f),
     vec3(0.0),
-    vec3(0.0)
+    vec3(0.0),
+    vec3(0.07f, 0.18f, 0.38f),
+    vec3(1.f, 0.f, 0.56f),
+    vec3(0.58f, 1.f, 0.2f)
 );
 
 const vec3 orangeBlue[7] = vec3[7](
@@ -172,26 +172,28 @@ const vec3 solarDrift[7] = vec3[7](
     vec3(1.0f, 0.95f, 0.7f)
 );
 
+// Manually inverted plasmaTwilight!
 const vec3 plasmaTwilight[5] = vec3[5](
-    vec3(1.0f, 0.3f, 0.7f),
-    vec3(0.5f, 0.2f, 0.7f),
-    vec3(0.2f, 0.4f, 0.9f),
+    vec3(0.0),
     vec3(0.0f, 0.2f, 0.5f),
-    vec3(0.0)
+    vec3(0.2f, 0.4f, 0.9f),
+    vec3(0.5f, 0.2f, 0.7f),
+    vec3(1.0f, 0.3f, 0.7f)
 );
 
 // Gradient functions
-vec3 gradZorgPurple(float f) { return interpolateGradient5(f, zorgPurple, true); }
-vec3 gradOrangeBlue(float f) { return interpolateGradient7(f, orangeBlue, false); }
-vec3 gradGreen(float f) { return interpolateGradient7(f, green, false); }
-vec3 gradTealSunset(float f) { return interpolateGradient7(f, tealSunset, false); }
-vec3 gradForestNight(float f) { return interpolateGradient7(f, forestNight, false); }
-vec3 gradPurpleFire(float f) { return interpolateGradient7(f, purpleFire, false); }
-vec3 gradArctic(float f) { return interpolateGradient7(f, arctic, false); }
-vec3 gradCyan(float f) { return interpolateGradient7(f, cyan, false); }
-vec3 gradNeonInferno(float f) { return interpolateGradient6(f, neonInferno, false); }
-vec3 gradSolarDrift(float f) { return interpolateGradient7(f, solarDrift, false); }
-vec3 gradPlasmaTwilight(float f) { return interpolateGradient5(f, plasmaTwilight, true); }
+vec3 gradZorgPurple(float f) { return interpolateGradient5(f, zorgPurple); }
+vec3 gradOrangeBlue(float f) { return interpolateGradient7(f, orangeBlue); }
+vec3 gradGreen(float f) { return interpolateGradient7(f, green); }
+vec3 gradTealSunset(float f) { return interpolateGradient7(f, tealSunset); }
+vec3 gradForestNight(float f) { return interpolateGradient7(f, forestNight); }
+vec3 gradPurpleFire(float f) { return interpolateGradient7(f, purpleFire); }
+vec3 gradArctic(float f) { return interpolateGradient7(f, arctic); }
+vec3 gradCyan(float f) { return interpolateGradient7(f, cyan); }
+vec3 gradNeonInferno(float f) { return interpolateGradient6(f, neonInferno); }
+vec3 gradSolarDrift(float f) { return interpolateGradient7(f, solarDrift); }
+vec3 gradPlasmaTwilight(float f) { return interpolateGradient5(f, plasmaTwilight); }
+
 
 /////////////////////////////////////////////////////
 // This shader is looking at a single pixel.
