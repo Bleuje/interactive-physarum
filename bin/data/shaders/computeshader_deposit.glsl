@@ -198,6 +198,61 @@ vec3 gradCyan(float f)
     return mix(cols[icur], cols[next], fract(cur));
 }
 
+vec3 gradNeonInferno(float f)
+{
+    f = clamp(f, 0., 1.);
+    vec3 cols[6];
+
+    cols[0] = vec3(0.0);                     // Black
+    cols[1] = vec3(0.2, 0.0, 0.3);           // Dark Violet
+    cols[2] = vec3(0.6, 0.0, 0.6);           // Magenta
+    cols[3] = vec3(0.8, 0.1, 0.2);           // Red
+    cols[4] = vec3(1.0, 0.5, 0.1);           // Orange
+    cols[5] = vec3(1.0);                     // White
+
+    float cur = f * 5.0;
+    int icur = int(floor(cur));
+    int next = min(icur + 1, 5);
+    return mix(cols[icur], cols[next], fract(cur));
+}
+
+vec3 gradSolarDrift(float f)
+{
+    f = clamp(f, 0., 1.);
+    vec3 cols[7];
+
+    cols[0] = vec3(0.0);                    // Black
+    cols[1] = vec3(0.0);                    // Black
+    cols[2] = vec3(0.3f, 0.1f, 0.0f);        // Dark Red-Brown
+    cols[3] = vec3(0.6f, 0.2f, 0.0f);        // Warm Orange-Red
+    cols[4] = vec3(0.9f, 0.5f, 0.1f);        // Orange
+    cols[5] = vec3(1.0f, 0.8f, 0.2f);        // Golden Yellow
+    cols[6] = vec3(1.0f, 0.95f, 0.7f);       // Pale Gold
+
+    float cur = f * 6.0;
+    int icur = int(floor(cur));
+    int next = min(icur + 1, 6);
+    return mix(cols[icur], cols[next], fract(cur));
+}
+
+vec3 gradPlasmaTwilight(float f)
+{
+    f = clamp(1.0 - f, 0., 1.);
+    vec3 cols[5];
+
+    cols[0] = vec3(1.0f, 0.3f, 0.7f);        // Bright Magenta
+    cols[1] = vec3(0.5f, 0.2f, 0.7f);         // Violet
+    cols[2] = vec3(0.2f, 0.4f, 0.9f);         // Electric Blue
+    cols[3] = vec3(0.0f, 0.2f, 0.5f);         // Deep Blue
+    cols[4] = vec3(0.0);                      // Black
+
+    float cur = f * 4.0;
+    int icur = int(floor(cur));
+    int next = min(icur + 1, 4);
+    return mix(cols[icur], cols[next], fract(cur));
+}
+
+
 /////////////////////////////////////////////////////
 // This shader is looking at a single pixel.
 // It adds deposit to the trail map from the number of particles on this pixel.
@@ -247,10 +302,11 @@ void main(){
 	{
 		col = vec3(countColorValue);
 	}
-	else if(colorModeType == 1) // smooth/blurry cyan with red movement
+	else if(colorModeType == 1) // yellow
 	{
-		// Color defined with combination of particle count (red) and trail map (green, blue)
-		col = vec3(countColorValue, trailColorValue, trailColorValue);
+		vec3 col1 = gradSolarDrift(tanh(countColorValue*1.3));
+		vec3 col2 = vec3(countColorValue);
+		col = mix(col1,col2,tanh(500.*temporalDiff + 2.0*offset));
 	}
 	else if(colorModeType == 2) // pink/purple (from z0rg :) )
 	{
@@ -270,9 +326,9 @@ void main(){
 		vec3 col2 = vec3(countColorValue);
 		col = mix(col1,col2,tanh(500.*temporalDiff + 2.0*offset));
 	}
-	else if(colorModeType == 5) // green
+	else if(colorModeType == 5)
 	{
-		vec3 col1 = gradGreen(tanh(countColorValue*1.3));
+		vec3 col1 = gradNeonInferno(tanh(countColorValue*1.3));
 		vec3 col2 = vec3(countColorValue);
 		col = mix(col1,col2,tanh(500.*temporalDiff + 2.0*offset));
 	}
@@ -301,6 +357,17 @@ void main(){
 		vec3 col6 = 1.25*mix(col4,col5,tanh(500.*temporalDiff + 2.0*offset));
 		col6 = pow(col6,vec3(2.0));
 		col = max(col6,col3);
+	}
+    else if(colorModeType == 9) // green
+	{
+		vec3 col1 = gradGreen(tanh(countColorValue*1.3));
+		vec3 col2 = vec3(countColorValue);
+		col = mix(col1,col2,tanh(500.*temporalDiff + 2.0*offset));
+	}
+    else if(colorModeType == 10000) // smooth/blurry cyan with red movement
+	{
+		// Color defined with combination of particle count (red) and trail map (green, blue)
+		col = vec3(countColorValue, trailColorValue, trailColorValue);
 	}
 
 	col = clamp(col,vec3(0.),vec3(1.));
