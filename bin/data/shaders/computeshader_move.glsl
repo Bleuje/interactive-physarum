@@ -213,10 +213,10 @@ void main(){
 	// Section about the "trigerred waves" interaction, really a secondary feature
  	float waveSum = 0.;
 	float noiseVariationFactor = (0.95 + 0.1*noise(vec3(positionForNoise1.x,positionForNoise1.y,0.3*time)));
+	float maxWaveTime = 5.0; // in seconds
 	
 	for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
 	{
-		int maxWaveTime = 5; // in seconds
 		if((time - waveTriggerTimes[i]) <= maxWaveTime)
 		{
 			vec2 normalizedWaveCenterPosition = vec2(waveXarray[i]/width,waveYarray[i]/height);
