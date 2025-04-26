@@ -231,7 +231,7 @@ void main(){
 	// getting a radial offset for color changes depending on pixel position
     // radial offset for color changes depending on pixel position
     vec2 pos = vec2(pix) - vec2(float(width) * 0.5, float(height) * 0.5);
-    pos *= (2.0 / float(width + height)) * 0.7;
+    pos *= (2.0 / float(width + height)) * 0.6;
     float offset = length(pos);
 	
 	// something for a color experiment:
