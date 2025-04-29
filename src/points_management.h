@@ -184,6 +184,15 @@ struct PointsDataManager
     reloadUsedPointsTargets();
   }
 
+  void useRandomIndices2(int gamepadIndex)
+  {
+    int sz = selectedPoints.size();
+
+    selectedIndices[gamepadIndex] = rand() % sz;
+
+    reloadUsedPointsTargets();
+  }
+
   void changeSelectionIndex(int dir)
   {
     currentSelectionIndex = (currentSelectionIndex + dir + NUMBER_OF_USED_POINTS) % NUMBER_OF_USED_POINTS;
