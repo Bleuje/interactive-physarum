@@ -8,7 +8,9 @@ void ofApp::buttonPressed(ofxGamepadButtonEvent &e, int gamepadIndex)
     if (buttonId == 0)
     {
         if (settingsChangeMode == 0)
-            actionRandomParams();
+            if(numberOfActiveGamepads==2) actionRandomGamepadParams(gamepadIndex);
+            else actionRandomParams();
+            
         else
         {
             pointsDataManager.resetCurrentPoint();

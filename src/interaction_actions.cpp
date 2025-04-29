@@ -28,6 +28,13 @@ void ofApp::actionRandomParams()
     transitionTriggerTime = getTime();
 }
 
+void ofApp::actionRandomGamepadParams(int gamepadIndex)
+{
+    pointsDataManager.useRandomIndices2(gamepadIndex);
+
+    transitionTriggerTime = getTime();
+}
+
 void ofApp::actionChangeColorMode()
 {
     colorModeType = (colorModeType + 1) % GlobalSettings::NUMBER_OF_COLOR_MODES;
