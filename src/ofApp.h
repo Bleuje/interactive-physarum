@@ -57,6 +57,7 @@ public:
     void actionChangeParams(int dir);
     void actionSwapParams();
     void actionRandomParams();
+    void actionRandomGamepadParams(int gamepadIndex);
     void actionChangeColorMode();
     void actionTriggerWave(int gamepadIndex);
     void actionChangeDisplayType();
