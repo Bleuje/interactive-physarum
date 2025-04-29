@@ -326,8 +326,8 @@ void main() {
 
 	if(numberOfActiveGamepads == 2)
 	{
-		float moveBiasFactor1 = 3 * exp(- (distanceFromAction1 * distanceFromAction1) / (2 * s1 * s1));
-		float moveBiasFactor2 = 3 * exp(- (distanceFromAction2 * distanceFromAction2) / (2 * s1 * s1));
+		float moveBiasFactor1 = 5 * exp(- (distanceFromAction1 * distanceFromAction1) / (s1 * s1)) * noiseValue;
+		float moveBiasFactor2 = 5 * exp(- (distanceFromAction2 * distanceFromAction2) / (s1 * s1)) * noiseValue;
 
 		moveBias = vec2(0.);
 		moveBias += moveBiasFactor1 * vec2(moveBiasActionXArray[0],moveBiasActionYArray[0]);
