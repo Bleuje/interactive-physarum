@@ -418,7 +418,7 @@ void main(){
 			{
 				float randForTheta = random01FromParticle(particlePos*3.3);
 				float theta = randForTheta * PI * 2.0;
-				float r1 = actionAreaSizeSigma * 0.55 * (0.95 + 0.1*randForRadius);
+				float r1 = actionAreaSizeSigmaArray[spawnGamepadIndex] * 0.55 * (0.95 + 0.1*randForRadius);
 				float sx = r1*cos(theta);
 				float sy = r1*sin(theta);
 				vec2 spos = vec2(sx,sy);
@@ -431,7 +431,7 @@ void main(){
 				int randForSpawnIndex = int(floor(randomSpawnNumber * random01FromParticle(particlePos*4.4)));
 				float sx = randomSpawnXarray[randForSpawnIndex];
 				float sy = randomSpawnYarray[randForSpawnIndex];
-				vec2 spos = 0.65 * actionAreaSizeSigma * vec2(sx,sy) * (0.9 + 0.1*randForRadius);
+				vec2 spos = 0.65 * actionAreaSizeSigmaArray[spawnGamepadIndex] * vec2(sx,sy) * (0.9 + 0.1*randForRadius);
 				spos *= height;
 				px = spawnActionX + spos.x;
 				py = spawnActionY + spos.y;
