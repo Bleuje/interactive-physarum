@@ -74,7 +74,6 @@ vec3 interpolateGradient7(float f, const vec3 cols[7])
     return mix(cols[icur], cols[next], fract(cur));
 }
 
-// Gradient color arrays (some inverted manually!)
 const vec3 zorgPurple[5] = vec3[5](
     vec3(0.0),
     vec3(0.0),
@@ -172,7 +171,6 @@ const vec3 solarDrift[7] = vec3[7](
     vec3(1.0f, 0.95f, 0.7f)
 );
 
-// Manually inverted plasmaTwilight!
 const vec3 plasmaTwilight[5] = vec3[5](
     vec3(0.0),
     vec3(0.0f, 0.2f, 0.5f),
