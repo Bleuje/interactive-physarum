@@ -70,7 +70,7 @@ public:
     void updateActionAreaSizeSigma();
 
     int displayType = 1;
-    int colorModeType = 3;
+    int colorModeType = 1;
     float curTranslationAxis1 = 0;
     float curTranslationAxis2 = 0;
     float curMoveBiasActionX = 0;

@@ -186,9 +186,9 @@ void main() {
         vec3 col3 = gradArctic(tanh(countColorValue * 1.3));
         col = mix(col1, col3, blend);
         col = clamp(1.25*col,0.,1.);
-    } else if(colorModeType == 2) // pink/purple (from z0rg :)
+    } else if(colorModeType == 2) // icy blue
     {
-        vec3 col1 = gradZorgPurple(fract(tanh(countColorValue * 0.6 + offset) + 0.15)); // weird, but let's keep it like this
+        vec3 col1 = gradArctic(fract(tanh(countColorValue * 0.6 + offset) + 0.15));
         col = mix(col1, col2, blend);
     } else if(colorModeType == 3) // orange over purple, not very saturated
     {
@@ -201,17 +201,20 @@ void main() {
     } else if(colorModeType == 5) {
         vec3 col1 = gradNeonInferno(tanh(countColorValue * 1.3));
         col = mix(col1, col2, blend);
-    } else if(colorModeType == 6) // icy blue
+    } else if(colorModeType == 6) // pink/purple (from z0rg :)
     {
-        vec3 col1 = gradArctic(fract(tanh(countColorValue * 0.6 + offset) + 0.15));
+        vec3 col1 = gradZorgPurple(fract(tanh(countColorValue * 0.6 + offset) + 0.15)); // weird, but let's keep it like this
         col = mix(col1, col2, blend);
-    } else if(colorModeType == 7) // yellow over pink/purple, saturated, no white
+        vec3 col3 = gradArctic(tanh(countColorValue * 1.3));
+        col = mix(col1, col3, blend);
+        col = clamp(1.5*pow(col,vec3(1.1)),0.,1.);
+    } else if(colorModeType == 7)
     {
-        vec3 col1 = gradOrangeBlue(tanh(countColorValue * 1.3 + offset));
-        vec3 colPurple = gradZorgPurple(tanh(countColorValue * 0.6 + offset) + 0.15);
-        vec3 col2_ = mix(vec3(countColorValue), colPurple, 0.85);
-        col = mix(col2_, col1, tanh(sin(500. * temporalDiff) + 2.0 * offset));
-        col = mix(col1, colPurple, pow(tanh(sin(500. * temporalDiff) + 2.0 * offset + 0.5), 2.0));
+        vec3 col1 = gradNeonInferno(tanh(countColorValue * 1.3));
+        // col = mix(col1, col2, blend);
+        vec3 col3 = gradArctic(tanh(countColorValue * 1.3));
+        col = mix(col1, col3, blend);
+        col = clamp(1.1*col,0.,1.);
     } else if(colorModeType == 8) // bright is yellow, over blue background, embarassingly experimental
     {
         vec3 col1 = gradOrangeBlue(tanh(countColorValue * 1.3 + offset));
@@ -227,6 +230,9 @@ void main() {
     {
         vec3 col1 = gradGreen(tanh(countColorValue * 1.3));
         col = mix(col1, col2, blend);
+        // vec3 col3 = gradArctic(tanh(countColorValue * 1.3));
+        // col = mix(col1, col3, blend);
+        // col = clamp(1.1*col,0.,1.);
     } else if(colorModeType == 10000) // smooth/blurry cyan with red movement
     {
 		// Color defined with combination of particle count (red) and trail map (green, blue)
