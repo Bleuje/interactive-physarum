@@ -172,15 +172,15 @@ void main() {
     PointSettings currentParams_1 = params[1]; // "Background Point" parameters
     PointSettings currentParams_2 = params[0]; // "Pen Point" parameters
 
-	float actionAreaSizeSigma = actionAreaSizeSigmaArray[singleActiveGamepadIndex];
-	float actionX = actionXArray[singleActiveGamepadIndex];
-	float actionY = actionYArray[singleActiveGamepadIndex];
-	float moveBiasActionX = moveBiasActionXArray[singleActiveGamepadIndex];
-	float moveBiasActionY = moveBiasActionYArray[singleActiveGamepadIndex];
+    float actionAreaSizeSigma = actionAreaSizeSigmaArray[singleActiveGamepadIndex];
+    float actionX = actionXArray[singleActiveGamepadIndex];
+    float actionY = actionYArray[singleActiveGamepadIndex];
+    float moveBiasActionX = moveBiasActionXArray[singleActiveGamepadIndex];
+    float moveBiasActionY = moveBiasActionYArray[singleActiveGamepadIndex];
 
-	vec2 particlePos = unpackUnorm2x16(particlesArray[3 * gl_GlobalInvocationID.x]) * vec2(width, height);
-	vec2 currAHeading = unpackUnorm2x16(particlesArray[3 * gl_GlobalInvocationID.x + 1]) * vec2(1.0, 2.0 * PI);
-	vec2 velocity = unpackHalf2x16(particlesArray[3 * gl_GlobalInvocationID.x + 2]);
+    vec2 particlePos = unpackUnorm2x16(particlesArray[3 * gl_GlobalInvocationID.x]) * vec2(width, height);
+    vec2 currAHeading = unpackUnorm2x16(particlesArray[3 * gl_GlobalInvocationID.x + 1]) * vec2(1.0, 2.0 * PI);
+    vec2 velocity = unpackHalf2x16(particlesArray[3 * gl_GlobalInvocationID.x + 2]);
 
     float heading = currAHeading.y;
     vec2 direction = vec2(cos(heading), sin(heading));
@@ -226,31 +226,29 @@ void main() {
             waveSum += 0.6 * propagatedWaveFunction(varWave, waveSavedSigmas[i]) * max(0., 1. - 0.3 * diffDistWave / sigmaVariation * noiseVariationFactor);
         }
     }
-    
-	float distanceFromAction1,distanceFromAction2,s1,s2;
 
-	if(numberOfActiveGamepads == 2)
-	{
-		vec2 normalizedActionPosition1 = vec2(actionXArray[0]/width,actionYArray[0]/height);
-		vec2 normalizedActionPosition2 = vec2(actionXArray[1]/width,actionYArray[1]/height);
+    float distanceFromAction1, distanceFromAction2, s1, s2;
 
-		vec2 positionFromAction1 = normalizedPosition - normalizedActionPosition1;
-		vec2 positionFromAction2 = normalizedPosition - normalizedActionPosition2;
-		positionFromAction1.x *= float(width)/height;
-		positionFromAction2.x *= float(width)/height;
+    if(numberOfActiveGamepads == 2) {
+        vec2 normalizedActionPosition1 = vec2(actionXArray[0] / width, actionYArray[0] / height);
+        vec2 normalizedActionPosition2 = vec2(actionXArray[1] / width, actionYArray[1] / height);
 
-		distanceFromAction1 = distance(positionFromAction1,vec2(0))*distanceNoiseFactor;
-		distanceFromAction2 = distance(positionFromAction2,vec2(0))*distanceNoiseFactor;
+        vec2 positionFromAction1 = normalizedPosition - normalizedActionPosition1;
+        vec2 positionFromAction2 = normalizedPosition - normalizedActionPosition2;
+        positionFromAction1.x *= float(width) / height;
+        positionFromAction2.x *= float(width) / height;
 
-		s1 = actionAreaSizeSigmaArray[0];
-		s2 = actionAreaSizeSigmaArray[1];
+        distanceFromAction1 = distance(positionFromAction1, vec2(0)) * distanceNoiseFactor;
+        distanceFromAction2 = distance(positionFromAction2, vec2(0)) * distanceNoiseFactor;
 
-		float w1 = exp(- (distanceFromAction1 * distanceFromAction1) / (2 * s1 * s1));
-		float w2 = exp(- (distanceFromAction2 * distanceFromAction2) / (2 * s2 * s2));
+        s1 = actionAreaSizeSigmaArray[0];
+        s2 = actionAreaSizeSigmaArray[1];
 
-		lerper = w1 / (w1 + w2);
-	}
+        float w1 = exp(-(distanceFromAction1 * distanceFromAction1) / (2 * s1 * s1));
+        float w2 = exp(-(distanceFromAction2 * distanceFromAction2) / (2 * s2 * s2));
 
+        lerper = w1 / (w1 + w2);
+    }
 
     waveSum = 1.7 * tanh(waveSum / 1.7) + 0.4 * tanh(4. * waveSum);
     //lerper = mix(lerper,0.,tanh(5.*waveSum));
@@ -324,113 +322,104 @@ void main() {
     float moveBiasFactor = 5 * lerper * noiseValue;
     vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX, moveBiasActionY);
 
-	if(numberOfActiveGamepads == 2)
-	{
-		float moveBiasFactor1 = 5 * exp(- (distanceFromAction1 * distanceFromAction1) / (s1 * s1)) * noiseValue;
-		float moveBiasFactor2 = 5 * exp(- (distanceFromAction2 * distanceFromAction2) / (s1 * s1)) * noiseValue;
+    if(numberOfActiveGamepads == 2) {
+        float moveBiasFactor1 = 5 * exp(-(distanceFromAction1 * distanceFromAction1) / (s1 * s1)) * noiseValue;
+        float moveBiasFactor2 = 5 * exp(-(distanceFromAction2 * distanceFromAction2) / (s1 * s1)) * noiseValue;
 
-		moveBias = vec2(0.);
-		moveBias += moveBiasFactor1 * vec2(moveBiasActionXArray[0],moveBiasActionYArray[0]);
-		moveBias += moveBiasFactor2 * vec2(moveBiasActionXArray[1],moveBiasActionYArray[1]);
-	}
-
+        moveBias = vec2(0.);
+        moveBias += moveBiasFactor1 * vec2(moveBiasActionXArray[0], moveBiasActionYArray[0]);
+        moveBias += moveBiasFactor2 * vec2(moveBiasActionXArray[1], moveBiasActionYArray[1]);
+    }
 
 	// position update of the classic physarum algorithm, but with a new move bias for fun interaction
-	float classicNewPositionX = particlePos.x + moveDistance*cos(newHeading) + moveBias.x;
-	float classicNewPositionY = particlePos.y + moveDistance*sin(newHeading) + moveBias.y;
+    float classicNewPositionX = particlePos.x + moveDistance * cos(newHeading) + moveBias.x;
+    float classicNewPositionY = particlePos.y + moveDistance * sin(newHeading) + moveBias.y;
 
 	//float L2Action = 0.5*(L2ActionArray[0] + L2ActionArray[1] + 2.0);
-	float L2Action;
-	if(numberOfActiveGamepads == 2) L2Action = (lerper*L2ActionArray[0] + (1-lerper)*L2ActionArray[1] + 1.0)/2.0;
-	else
-	{
-		L2Action = (L2ActionArray[singleActiveGamepadIndex]+1.0)/2.0;
-	}
+    float L2Action;
+    if(numberOfActiveGamepads == 2)
+        L2Action = (lerper * L2ActionArray[0] + (1 - lerper) * L2ActionArray[1] + 1.0) / 2.0;
+    else {
+        L2Action = (L2ActionArray[singleActiveGamepadIndex] + 1.0) / 2.0;
+    }
 	// inertia experimental stuff... actually it's a lot weirder than just modifying speed instead of position
 	// probably the weirdest stuff in the code of this project
-	velocity *= 0.98;
-	float vf = 1.0;
-	float velocityBias = 0.2*L2Action;
-	float vx = velocity.x + vf*cos(newHeading) + velocityBias*moveBias.x;
-	float vy = velocity.y + vf*sin(newHeading) + velocityBias*moveBias.y;
+    velocity *= 0.98;
+    float vf = 1.0;
+    float velocityBias = 0.2 * L2Action;
+    float vx = velocity.x + vf * cos(newHeading) + velocityBias * moveBias.x;
+    float vy = velocity.y + vf * sin(newHeading) + velocityBias * moveBias.y;
 
 	//float dt = 0.05*moveDistance;
-	float dt = 0.07*pow(moveDistance,1.4); // really weird thing, I thought this looked satisfying
+    float dt = 0.07 * pow(moveDistance, 1.4); // really weird thing, I thought this looked satisfying
 
-	float inertiaNewPositionX = particlePos.x + dt*vx + moveBias.x;
-	float inertiaNewPositionY = particlePos.y + dt*vy + moveBias.y;
+    float inertiaNewPositionX = particlePos.x + dt * vx + moveBias.x;
+    float inertiaNewPositionY = particlePos.y + dt * vy + moveBias.y;
 
-
-	float moveStyleLerper = 0.6*L2Action + 0.8*waveSum; // intensity of use of inertia
+    float moveStyleLerper = 0.6 * L2Action + 0.8 * waveSum; // intensity of use of inertia
 	// the new position of the particle:
-	float px = mix(classicNewPositionX, inertiaNewPositionX, moveStyleLerper);
-	float py = mix(classicNewPositionY, inertiaNewPositionY, moveStyleLerper);
-
-
+    float px = mix(classicNewPositionX, inertiaNewPositionX, moveStyleLerper);
+    float py = mix(classicNewPositionY, inertiaNewPositionY, moveStyleLerper);
 
 	// possibility of spawn to other position if spawning action is triggered
-	if(spawnParticles >= 1)
-	{
-		float spawnActionX = actionX;
-		float spawnActionY = actionY;
-		if(numberOfActiveGamepads == 2)
-		{
-			spawnActionX = actionXArray[spawnGamepadIndex];
-			spawnActionY = actionYArray[spawnGamepadIndex];
-		}
+    if(spawnParticles >= 1) {
+        float spawnActionX = actionX;
+        float spawnActionY = actionY;
+        if(numberOfActiveGamepads == 2) {
+            spawnActionX = actionXArray[spawnGamepadIndex];
+            spawnActionY = actionYArray[spawnGamepadIndex];
+        }
 
-		float randForChoice = random01FromParticle(particlePos*1.1); // uniform random in [0,1]
+        float randForChoice = random01FromParticle(particlePos * 1.1); // uniform random in [0,1]
 
-		if(randForChoice < spawnFraction) // probability spawnFraction to spawn
-		{
-			float randForRadius = random01FromParticle(particlePos*2.2);
+        if(randForChoice < spawnFraction) // probability spawnFraction to spawn
+        {
+            float randForRadius = random01FromParticle(particlePos * 2.2);
 
-			if(spawnParticles == 1) // circular spawn
-			{
-				float randForTheta = random01FromParticle(particlePos*3.3);
-				float theta = randForTheta * PI * 2.0;
-				float r1 = actionAreaSizeSigmaArray[spawnGamepadIndex] * 0.55 * (0.95 + 0.1*randForRadius);
-				float sx = r1*cos(theta);
-				float sy = r1*sin(theta);
-				vec2 spos = vec2(sx,sy);
-				spos *= height;
-				px = spawnActionX + spos.x;
-				py = spawnActionY + spos.y;
-			}
-			if(spawnParticles == 2) // spawn at few places near pen
-			{
-				int randForSpawnIndex = int(floor(randomSpawnNumber * random01FromParticle(particlePos*4.4)));
-				float sx = randomSpawnXarray[randForSpawnIndex];
-				float sy = randomSpawnYarray[randForSpawnIndex];
-				vec2 spos = 0.65 * actionAreaSizeSigmaArray[spawnGamepadIndex] * vec2(sx,sy) * (0.9 + 0.1*randForRadius);
-				spos *= height;
-				px = spawnActionX + spos.x;
-				py = spawnActionY + spos.y;
-			}
-		}
-	}
-
+            if(spawnParticles == 1) // circular spawn
+            {
+                float randForTheta = random01FromParticle(particlePos * 3.3);
+                float theta = randForTheta * PI * 2.0;
+                float r1 = actionAreaSizeSigmaArray[spawnGamepadIndex] * 0.55 * (0.95 + 0.1 * randForRadius);
+                float sx = r1 * cos(theta);
+                float sy = r1 * sin(theta);
+                vec2 spos = vec2(sx, sy);
+                spos *= height;
+                px = spawnActionX + spos.x;
+                py = spawnActionY + spos.y;
+            }
+            if(spawnParticles == 2) // spawn at few places near pen
+            {
+                int randForSpawnIndex = int(floor(randomSpawnNumber * random01FromParticle(particlePos * 4.4)));
+                float sx = randomSpawnXarray[randForSpawnIndex];
+                float sy = randomSpawnYarray[randForSpawnIndex];
+                vec2 spos = 0.65 * actionAreaSizeSigmaArray[spawnGamepadIndex] * vec2(sx, sy) * (0.9 + 0.1 * randForRadius);
+                spos *= height;
+                px = spawnActionX + spos.x;
+                py = spawnActionY + spos.y;
+            }
+        }
+    }
 
 	// just position loop to keep pixel positions of the simulation canvas
-	vec2 nextPos = vec2(mod(px + float(width),float(width)),mod(py + float(height),float(height)));
-	
-	uint depositAmount = uint(1); // all particles add 1 on pixel count, could be more complex one day maybe
+    vec2 nextPos = vec2(mod(px + float(width), float(width)), mod(py + float(height), float(height)));
+
+    uint depositAmount = uint(1); // all particles add 1 on pixel count, could be more complex one day maybe
 	// atomicAdd for increasing counter at pixel, in parallel computation
-	atomicAdd(particlesCounter[int(round(nextPos.x))*height + int(round(nextPos.y))], depositAmount);
+    atomicAdd(particlesCounter[int(round(nextPos.x)) * height + int(round(nextPos.y))], depositAmount);
 
 	///////////////////////////////////////////////////////////////////////////////////
 	// Technique/formula from Sage Jenson (mxsage)
 	// particles are regularly respawning, their progression is stored in particle data
-	const float reinitSegment=0.0010; // respawn every 1/reinitSegment iterations
-	float curA = currAHeading.x;
-	if (curA < reinitSegment)
-	{
-		nextPos = randomPosFromParticle(particlePos);
-	}
-	float nextA = fract(curA+reinitSegment);
+    const float reinitSegment = 0.0010; // respawn every 1/reinitSegment iterations
+    float curA = currAHeading.x;
+    if(curA < reinitSegment) {
+        nextPos = randomPosFromParticle(particlePos);
+    }
+    float nextA = fract(curA + reinitSegment);
 	///////////////////////////////////////////////////////////////////////////////////
 
-	vec2 nextPosUV = mod(nextPos, vec2(width, height)) / vec2(width, height);
+    vec2 nextPosUV = mod(nextPos, vec2(width, height)) / vec2(width, height);
     float newHeadingNorm = mod(newHeading, 2.0 * PI) / (2.0 * PI);
     vec2 nextAandHeading = vec2(nextA, fract(newHeadingNorm));
 
