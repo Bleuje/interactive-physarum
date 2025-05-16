@@ -185,6 +185,7 @@ void main() {
         vec3 col1 = gradPurpleFire(tanh(countColorValue * 1.3));
         vec3 col3 = gradArctic(tanh(countColorValue * 1.3));
         col = mix(col1, col3, blend);
+        col = clamp(1.25*col,0.,1.);
     } else if(colorModeType == 2) // pink/purple (from z0rg :)
     {
         vec3 col1 = gradZorgPurple(fract(tanh(countColorValue * 0.6 + offset) + 0.15)); // weird, but let's keep it like this
