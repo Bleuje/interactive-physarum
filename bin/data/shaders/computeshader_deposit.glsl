@@ -185,7 +185,7 @@ void main() {
         vec3 col1 = gradPurpleFire(tanh(countColorValue * 1.3));
         vec3 col3 = gradArctic(tanh(countColorValue * 1.3));
         col = mix(col1, col3, blend);
-        col = clamp(1.25*col,0.,1.);
+        col = clamp(1.25 * col, 0., 1.);
     } else if(colorModeType == 2) // icy blue
     {
         vec3 col1 = gradArctic(fract(tanh(countColorValue * 0.6 + offset) + 0.15));
@@ -207,14 +207,13 @@ void main() {
         col = mix(col1, col2, blend);
         vec3 col3 = gradArctic(tanh(countColorValue * 1.3));
         col = mix(col1, col3, blend);
-        col = clamp(1.5*pow(col,vec3(1.1)),0.,1.);
-    } else if(colorModeType == 7)
-    {
+        col = clamp(1.5 * pow(col, vec3(1.1)), 0., 1.);
+    } else if(colorModeType == 7) {
         vec3 col1 = gradNeonInferno(tanh(countColorValue * 1.3));
         // col = mix(col1, col2, blend);
         vec3 col3 = gradArctic(tanh(countColorValue * 1.3));
         col = mix(col1, col3, blend);
-        col = clamp(1.1*col,0.,1.);
+        col = clamp(1.1 * col, 0., 1.);
     } else if(colorModeType == 8) // bright is yellow, over blue background, embarassingly experimental
     {
         vec3 col1 = gradOrangeBlue(tanh(countColorValue * 1.3 + offset));
