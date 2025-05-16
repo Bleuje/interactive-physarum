@@ -93,6 +93,8 @@ void ofApp::setup(){
     std::cout << "Number of points : " << pointsDataManager.getNumberOfPoints() << std::endl;
 
     paramsUpdate();
+
+    pointsDataManager.reloadUsedPointsTargets();
 }
 
 void ofApp::paramsUpdate()

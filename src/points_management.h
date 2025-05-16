@@ -76,7 +76,7 @@ struct PointsDataManager
     {
       usedPointsTargets[k] = currentPointsData[0];
       currentPointValues[k] = currentPointsData[0];
-      selectedIndices[k] = 0;
+      selectedIndices[k] = 21;
     }
   }
 
