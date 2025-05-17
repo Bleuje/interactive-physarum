@@ -23,7 +23,7 @@ namespace GlobalSettings
     constexpr int MAX_NUMBER_OF_WAVES = 5;
     constexpr float TRANSITION_DURATION = 0.5f;
     constexpr float PEN_FADE_DURATION = 1.0f;
-    constexpr float SPAWN_FRACTION = 0.1f;
+    constexpr float SPAWN_FRACTION = 0.08f;
     constexpr bool ACTIVATE_PEN_FADE = false;
     constexpr bool LOOP_PEN_POSITION = false;
     constexpr int SETTINGS_SIZE = 15;
