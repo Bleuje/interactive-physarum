@@ -314,6 +314,9 @@ void ofApp::draw()
     fboDisplay.draw(0, 0);
     ofPopMatrix();
 
+    if(numberOfActiveGamepads==2)
+        displayType = 1;
+
     // draw circle
     if (displayType == 1)
     {
