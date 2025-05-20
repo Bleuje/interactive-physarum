@@ -156,6 +156,7 @@ void ofApp::update()
     int isActive2 = inactivityElapsedTime[1] <= GlobalSettings::MAX_GAMEPAD_INACTIVIY;
 
     int numberOfTrulyActiveGamepads = isActive1 + isActive2;
+
     int bestGamepadIndex = inactivityElapsedTime[0] < inactivityElapsedTime[1] ? 0 : 1;
 
     if (numberOfTrulyActiveGamepads == 2 && numberOfActiveGamepads == 1)
@@ -165,7 +166,12 @@ void ofApp::update()
         numberOfActiveGamepads = 2;
     }
 
-    if (numberOfTrulyActiveGamepads <= 1 && numberOfActiveGamepads == 2)
+    if (numberOfTrulyActiveGamepads == 1 && previousNumberOfTrulyActiveGamepads == 0)
+    {
+        numberOfActiveGamepads = 1;
+        singleActiveGamepadIndex = bestGamepadIndex;
+    }
+    else if (numberOfTrulyActiveGamepads <= 1 && numberOfActiveGamepads == 2)
     {
         numberOfActiveGamepads = 1;
         if (bestGamepadIndex == 1)
@@ -176,6 +182,7 @@ void ofApp::update()
     {
         singleActiveGamepadIndex = 0;
     }
+    previousNumberOfTrulyActiveGamepads = numberOfTrulyActiveGamepads;
 
     if (numberOfActiveGamepads == 0)
     {
@@ -314,7 +321,7 @@ void ofApp::draw()
     fboDisplay.draw(0, 0);
     ofPopMatrix();
 
-    if(numberOfActiveGamepads==2)
+    if (numberOfActiveGamepads == 2)
         displayType = 1;
 
     // draw circle
