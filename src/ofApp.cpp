@@ -104,7 +104,7 @@ void ofApp::setup(){
     ////////////////////////////////////////
 
     latestActivtyTimeArray[0] = -12345;
-    latestActivtyTimeArray[1] = -12345;
+    latestActivtyTimeArray[1] = -12345.1;
 
     for(int i=0;i<std::max(1,numberOfActiveGamepads);i++)
     {
@@ -116,7 +116,7 @@ void ofApp::setup(){
         actionYArray[i] = SIMULATION_HEIGHT / 2 + SIMULATION_HEIGHT/4 * ofRandom(-1,1);
         translationAxis1Array[i] = 0;
         translationAxis2Array[i] = 0;
-        latestActivtyTimeArray[i] = 0;
+        //latestActivtyTimeArray[i] = 0;
     }
 
     std::cout << "Number of points : " << pointsDataManager.getNumberOfPoints() << std::endl;
@@ -156,6 +156,7 @@ void ofApp::update(){
     int isActive2 = inactivityElapsedTime[1] <= MAX_GAMEPAD_INACTIVIY;
 
     int numberOfTrulyActiveGamepads = isActive1 + isActive2;
+    
     int bestGamepadIndex = inactivityElapsedTime[0]<inactivityElapsedTime[1] ? 0 : 1;
 
     if(numberOfTrulyActiveGamepads == 2 && numberOfActiveGamepads==1)
@@ -164,7 +165,12 @@ void ofApp::update(){
         numberOfActiveGamepads = 2;
     }
 
-    if(numberOfTrulyActiveGamepads<=1 && numberOfActiveGamepads==2)
+    if(numberOfTrulyActiveGamepads==1 && previousNumberOfTrulyActiveGamepads==0)
+    {
+        numberOfActiveGamepads = 1;
+        singleActiveGamepadIndex = bestGamepadIndex;
+    }
+    else if(numberOfTrulyActiveGamepads<=1 && numberOfActiveGamepads==2)
     {
         numberOfActiveGamepads = 1;
         if(bestGamepadIndex==1) actionSwapParams();
@@ -174,6 +180,7 @@ void ofApp::update(){
     {
         singleActiveGamepadIndex = 0;
     }
+    previousNumberOfTrulyActiveGamepads = numberOfTrulyActiveGamepads;
 
     if(numberOfActiveGamepads == 0)
     {

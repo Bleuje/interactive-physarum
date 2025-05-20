@@ -72,6 +72,7 @@ public:
 
     int displayType = 1;
     int colorModeType = 1;
+    int previousNumberOfTrulyActiveGamepads = 0;
     std::array<float, 2> translationAxis1Array;
     std::array<float, 2> translationAxis2Array;
     std::array<float, 2> actionAreaSizeSigmaArray;
