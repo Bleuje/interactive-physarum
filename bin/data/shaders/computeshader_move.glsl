@@ -32,6 +32,7 @@ uniform float waveSavedSigmas[MAX_NUMBER_OF_WAVES];
 
 uniform float mouseXchange;
 uniform float L2ActionArray[2];
+uniform float R2ActionArray[2];
 
 uniform int spawnParticles;
 uniform float spawnFraction;
@@ -198,13 +199,37 @@ void main() {
     positionForNoise2 *= noiseScale2;
 
     // looking for "lerper" variable, the parameter for interpolation between the parameters of the 2 Points (Pen/Background)
-    vec2 positionFromAction = normalizedPosition - normalizedActionPosition;
-    positionFromAction.x *= float(width) / height;
-    float distanceNoiseFactor = (0.9 + 0.2 * noise(vec3(positionForNoise2.x, positionForNoise2.t, 0.6 * time))); // a bit of noise distortion on distance
-    float distanceFromAction = distance(positionFromAction, vec2(0)) * distanceNoiseFactor;
-    float lerper = exp(-distanceFromAction * distanceFromAction / actionAreaSizeSigma / actionAreaSizeSigma); // use of a gaussian function: 1 at the center, 0 far from the center
-    //lerper = diffDist<=actionAreaSizeSigma ? 1 : 0;
-    //lerper = particlePos.x/width;
+
+    // vec2 positionFromAction = normalizedPosition - normalizedActionPosition;
+    // positionFromAction.x *= float(width) / height;
+    // float distanceNoiseFactor = (0.9 + 0.2 * noise(vec3(positionForNoise2.x, positionForNoise2.t, 0.6 * time))); // a bit of noise distortion on distance
+    // float distanceFromAction = distance(positionFromAction, vec2(0)) * distanceNoiseFactor;
+    // float lerper = exp(-distanceFromAction * distanceFromAction / actionAreaSizeSigma / actionAreaSizeSigma); // use of a gaussian function: 1 at the center, 0 far from the center
+    // //lerper = diffDist<=actionAreaSizeSigma ? 1 : 0;
+    // //lerper = particlePos.x/width;
+
+    /* --------- radial fall-off for the active pad ---------- */
+    vec2 diff = normalizedPosition - normalizedActionPosition;
+    diff.x   *= float(width) / height;
+
+    float d  = distance(diff, vec2(0)) *
+            (0.9 + 0.2 * noise(vec3(positionForNoise2.x,
+                                    positionForNoise2.t, 0.6 * time)));
+
+    /* Pure Gaussian ------------------------------------------------------- */
+    float g = exp(-d * d / (2.0 * actionAreaSizeSigma * actionAreaSizeSigma));
+
+    /* “Hardness” in [0,1] comes from the R2 trigger ----------------------- */
+    float hardness = clamp(R2ActionArray[singleActiveGamepadIndex], 0.0, 1.0);
+
+    /* Logistic soft-step -------------------------------------------------- */
+    float k = mix(6.0, 60.0, 0.95 * hardness * hardness); // same as before
+    float A = 1.0 / (1.0 + exp(-k * (g - 0.6)));          // centre = 0.6
+
+    float R2EffectFactor = 0.92;
+
+    /* Final interpolation:  hardness = 0 → Gaussian, 1 → Logistic --------- */
+    float lerper = mix(g, A, R2EffectFactor * hardness);
 
     // Section about the "trigerred waves" interaction, really a secondary feature
     float waveSum = 0.;
@@ -229,25 +254,46 @@ void main() {
 
     float distanceFromAction1, distanceFromAction2, s1, s2;
 
-    if(numberOfActiveGamepads == 2) {
-        vec2 normalizedActionPosition1 = vec2(actionXArray[0] / width, actionYArray[0] / height);
-        vec2 normalizedActionPosition2 = vec2(actionXArray[1] / width, actionYArray[1] / height);
+    float w0,w1;
 
-        vec2 positionFromAction1 = normalizedPosition - normalizedActionPosition1;
-        vec2 positionFromAction2 = normalizedPosition - normalizedActionPosition2;
-        positionFromAction1.x *= float(width) / height;
-        positionFromAction2.x *= float(width) / height;
+    if (numberOfActiveGamepads == 2)
+    {
+        vec2 act0 = vec2(actionXArray[0] / width, actionYArray[0] / height);
+        vec2 act1 = vec2(actionXArray[1] / width, actionYArray[1] / height);
 
-        distanceFromAction1 = distance(positionFromAction1, vec2(0)) * distanceNoiseFactor;
-        distanceFromAction2 = distance(positionFromAction2, vec2(0)) * distanceNoiseFactor;
+        vec2 diff0 = normalizedPosition - act0;
+        vec2 diff1 = normalizedPosition - act1;
+        diff0.x *= float(width) / height;
+        diff1.x *= float(width) / height;
 
-        s1 = actionAreaSizeSigmaArray[0];
-        s2 = actionAreaSizeSigmaArray[1];
+        float dn = 0.9 + 0.2 *
+                noise(vec3(positionForNoise2.x, positionForNoise2.t, 0.6 * time));
+        float d0 = distance(diff0, vec2(0)) * dn;
+        float d1 = distance(diff1, vec2(0)) * dn;
 
-        float w1 = exp(-(distanceFromAction1 * distanceFromAction1) / (2 * s1 * s1));
-        float w2 = exp(-(distanceFromAction2 * distanceFromAction2) / (2 * s2 * s2));
+        float s0 = actionAreaSizeSigmaArray[0];
+        float s1 = actionAreaSizeSigmaArray[1];
 
-        lerper = w1 / (w1 + w2);
+        /* Gaussians ------------------------------------------------------- */
+        float g0 = exp(-d0 * d0 / (2.0 * s0 * s0));
+        float g1 = exp(-d1 * d1 / (2.0 * s1 * s1));
+
+        /* Per-pad hardness ------------------------------------------------ */
+        float h0 = clamp(R2ActionArray[0], 0.0, 1.0);
+        float h1 = clamp(R2ActionArray[1], 0.0, 1.0);
+
+        float k0 = mix(6.0, 60.0, 0.95 * h0 * h0);
+        float k1 = mix(6.0, 60.0, 0.95 * h1 * h1);
+
+        float Z0 = 1.0 / (1.0 + exp(-k0 * (g0 - 0.6)));
+        float Z1 = 1.0 / (1.0 + exp(-k1 * (g1 - 0.6)));
+
+        /* Blend Gaussian→Logistic per pad -------------------------------- */
+        w0 = mix(g0, Z0, R2EffectFactor * h0);
+        w1 = mix(g1, Z1, R2EffectFactor * h1);
+
+        /* Normalise so lerper ∈ [0,1] ------------------------------------ */
+        lerper = w0 / (w0 + w1 + 1e-6);
     }
 
     waveSum = 1.7 * tanh(waveSum / 1.7) + 0.4 * tanh(4. * waveSum);
@@ -323,8 +369,8 @@ void main() {
     vec2 moveBias = moveBiasFactor * vec2(moveBiasActionX, moveBiasActionY);
 
     if(numberOfActiveGamepads == 2) {
-        float moveBiasFactor1 = 5 * exp(-(distanceFromAction1 * distanceFromAction1) / (s1 * s1)) * noiseValue;
-        float moveBiasFactor2 = 5 * exp(-(distanceFromAction2 * distanceFromAction2) / (s1 * s1)) * noiseValue;
+        float moveBiasFactor1 = 5 * w0 * noiseValue;
+        float moveBiasFactor2 = 5 * w1 * noiseValue;
 
         moveBias = vec2(0.);
         moveBias += moveBiasFactor1 * vec2(moveBiasActionXArray[0], moveBiasActionYArray[0]);
