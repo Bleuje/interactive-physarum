@@ -217,7 +217,8 @@ void main() {
                                     positionForNoise2.t, 0.6 * time)));
 
     /* Pure Gaussian ------------------------------------------------------- */
-    float g = exp(-d * d / (2.0 * actionAreaSizeSigma * actionAreaSizeSigma));
+    float sigmaFactor = 0.5;
+    float g = exp(-d * d / (2.0 * sigmaFactor * actionAreaSizeSigma * actionAreaSizeSigma));
 
     /* “Hardness” in [0,1] comes from the R2 trigger ----------------------- */
     float hardness = clamp(R2ActionArray[singleActiveGamepadIndex], 0.0, 1.0);
@@ -275,8 +276,8 @@ void main() {
         float s1 = actionAreaSizeSigmaArray[1];
 
         /* Gaussians ------------------------------------------------------- */
-        float g0 = exp(-d0 * d0 / (2.0 * s0 * s0));
-        float g1 = exp(-d1 * d1 / (2.0 * s1 * s1));
+        float g0 = exp(-d0 * d0 / (sigmaFactor * 2.0 * s0 * s0));
+        float g1 = exp(-d1 * d1 / (sigmaFactor * 2.0 * s1 * s1));
 
         /* Per-pad hardness ------------------------------------------------ */
         float h0 = clamp(R2ActionArray[0], 0.0, 1.0);
