@@ -117,6 +117,7 @@ void ofApp::setup(){
         translationAxis1Array[i] = 0;
         translationAxis2Array[i] = 0;
         //latestActivtyTimeArray[i] = 0;
+        spawnActivations[i] = 0;
     }
 
     std::cout << "Number of points : " << pointsDataManager.getNumberOfPoints() << std::endl;
@@ -144,6 +145,11 @@ void ofApp::update(){
 
     paramsUpdate();
     
+    if(rand()%60 == 0)
+    {
+        spawnActivations[0] = 0;
+        spawnActivations[1] = 0;
+    }
 
     if((getTime() - latestPointSettingsActionTime) >= SETTINGS_DISAPPEAR_DURATION)
     {
@@ -262,8 +268,10 @@ void ofApp::update(){
 
     moveShader.setUniform1f("mouseXchange",1.0*ofGetMouseX()/ofGetWidth());
     moveShader.setUniform1fv("L2ActionArray", curL2Array.data(), curL2Array.size());
+    moveShader.setUniform1fv("R2ActionArray", curR2Array.data(), curR2Array.size());
 
     moveShader.setUniform1i("spawnParticles", int(particlesSpawn));
+    moveShader.setUniform1iv("spawnActivations", spawnActivations.data(), spawnActivations.size());
     moveShader.setUniform1f("spawnFraction",SPAWN_FRACTION);
     moveShader.setUniform1i("randomSpawnNumber",randomSpawnNumber);
     moveShader.setUniform1fv("randomSpawnXarray", randomSpawnXarray.data(), randomSpawnXarray.size());
@@ -312,6 +320,7 @@ void ofApp::draw(){
     u = float(ofGetHeight())/1080;
 
     float R2action = ofMap(curR2Array[0]+curR2Array[1]+2.0, 0, 1.3, 0, 1, true);
+    float L2action = ofMap(curL2Array[0]+curL2Array[1]+2.0, 0, 1.3, 0, 1, true);
     if(numberOfGamepads==0) R2action = 0;
 
     ofPushMatrix();
@@ -470,7 +479,9 @@ void ofApp::draw(){
         ofSaveScreen("frames/fr"+str.str()+".png");
     }
 */
-    float infoProgress = 1-pow(1-R2action,2.0);
+    float bothTriggersAction = min(R2action,L2action) * 0;
+
+    float infoProgress = 1-pow(1-bothTriggersAction,2.0);
 
     ofPushMatrix();
     ofTranslate(-25*u - 1500*u*(1-infoProgress),230*u);
@@ -484,12 +495,12 @@ void ofApp::draw(){
     informationImage.draw(0, 0);
     ofPopMatrix();
 
-    ofPushMatrix();
-    ofTranslate(1300*u,25*u - 50*u*infoProgress);
-    ofScale(0.7*u);
-    std::string pressB = "Right trigger for controls and information";
-    drawTextBox(pressB, &myFontBold, col, 110);
-    ofPopMatrix();
+    // ofPushMatrix();
+    // ofTranslate(1300*u,25*u - 50*u*infoProgress);
+    // ofScale(0.7*u);
+    // std::string pressB = "Right trigger for controls and information";
+    // drawTextBox(pressB, &myFontBold, col, 110);
+    // ofPopMatrix();
 
 
     ofPopMatrix();

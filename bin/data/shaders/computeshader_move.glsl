@@ -32,6 +32,7 @@ uniform float waveSavedSigmas[MAX_NUMBER_OF_WAVES];
 
 uniform float mouseXchange;
 uniform float L2ActionArray[2];
+uniform float R2ActionArray[2];
 
 uniform int spawnParticles;
 uniform float spawnFraction;
@@ -39,6 +40,7 @@ uniform int randomSpawnNumber;
 uniform float randomSpawnXarray[MAX_NUMBER_OF_RANDOM_SPAWN];
 uniform float randomSpawnYarray[MAX_NUMBER_OF_RANDOM_SPAWN];
 uniform int spawnGamepadIndex;
+uniform int spawnActivations[2];
 
 uniform float pixelScaleFactor;
 
@@ -253,6 +255,13 @@ void main() {
     waveSum = 1.7 * tanh(waveSum / 1.7) + 0.4 * tanh(4. * waveSum);
     //lerper = mix(lerper,0.,tanh(5.*waveSum));
 
+    float R2Action;
+    if(numberOfActiveGamepads == 2)
+        R2Action = (lerper * R2ActionArray[0] + (1 - lerper) * R2ActionArray[1] + 1.0) / 2.0;
+    else {
+        R2Action = (R2ActionArray[singleActiveGamepadIndex] + 1.0) / 2.0;
+    }
+
     // Sensing a value at particle pos or next to it...
 
     // A factor on sensed value, lerp between "pen" and "background" parameters
@@ -361,26 +370,49 @@ void main() {
     float px = mix(classicNewPositionX, inertiaNewPositionX, moveStyleLerper);
     float py = mix(classicNewPositionY, inertiaNewPositionY, moveStyleLerper);
 
+    int spawnParticles2 = (R2Action > 0.5) ? 1 : spawnParticles;
+    float spawnFraction2 = (R2Action > 0.5) ? 0.007 + 0.013 * R2Action : spawnFraction;
+
+    int spawnGamepadIndex2 = spawnGamepadIndex;
+
+    if(numberOfActiveGamepads == 2) {
+        R2Action = (lerper * R2ActionArray[0] + (1.0 - lerper) * R2ActionArray[1] + 1.0) / 2.0;
+        spawnFraction2 = (R2Action > 0.5) ? 0.007 + 0.013 * R2Action : spawnFraction;
+        int sum = spawnActivations[0] + spawnActivations[1];
+        if(sum==2)
+        {
+            float randForChoice = random01FromParticle(particlePos * 1.3); // uniform random in [0,1]
+            spawnGamepadIndex2 = randForChoice<0.5 ? 0 : 1;
+            spawnFraction2 *= 1.25;
+        } else if(spawnActivations[0]==1)
+        {
+            spawnGamepadIndex2 = 0;
+        } else if(spawnActivations[1]==1)
+        {
+            spawnGamepadIndex2 = 1;
+        }
+    }
+
 	// possibility of spawn to other position if spawning action is triggered
-    if(spawnParticles >= 1) {
+    if(spawnParticles2 >= 1) {
         float spawnActionX = actionX;
         float spawnActionY = actionY;
         if(numberOfActiveGamepads == 2) {
-            spawnActionX = actionXArray[spawnGamepadIndex];
-            spawnActionY = actionYArray[spawnGamepadIndex];
+            spawnActionX = actionXArray[spawnGamepadIndex2];
+            spawnActionY = actionYArray[spawnGamepadIndex2];
         }
 
         float randForChoice = random01FromParticle(particlePos * 1.1); // uniform random in [0,1]
 
-        if(randForChoice < spawnFraction) // probability spawnFraction to spawn
+        if(randForChoice < spawnFraction2) // probability spawnFraction to spawn
         {
             float randForRadius = random01FromParticle(particlePos * 2.2);
 
-            if(spawnParticles == 1) // circular spawn
+            if(spawnParticles2 == 1) // circular spawn
             {
                 float randForTheta = random01FromParticle(particlePos * 3.3);
                 float theta = randForTheta * PI * 2.0;
-                float r1 = actionAreaSizeSigmaArray[spawnGamepadIndex] * 0.55 * (0.95 + 0.1 * randForRadius);
+                float r1 = actionAreaSizeSigmaArray[spawnGamepadIndex2] * 0.55 * (0.95 + 0.1 * randForRadius);
                 float sx = r1 * cos(theta);
                 float sy = r1 * sin(theta);
                 vec2 spos = vec2(sx, sy);
@@ -388,12 +420,12 @@ void main() {
                 px = spawnActionX + spos.x;
                 py = spawnActionY + spos.y;
             }
-            if(spawnParticles == 2) // spawn at few places near pen
+            if(spawnParticles2 == 2) // spawn at few places near pen
             {
                 int randForSpawnIndex = int(floor(randomSpawnNumber * random01FromParticle(particlePos * 4.4)));
                 float sx = randomSpawnXarray[randForSpawnIndex];
                 float sy = randomSpawnYarray[randForSpawnIndex];
-                vec2 spos = 0.65 * actionAreaSizeSigmaArray[spawnGamepadIndex] * vec2(sx, sy) * (0.9 + 0.1 * randForRadius);
+                vec2 spos = 0.65 * actionAreaSizeSigmaArray[spawnGamepadIndex2] * vec2(sx, sy) * (0.9 + 0.1 * randForRadius);
                 spos *= height;
                 px = spawnActionX + spos.x;
                 py = spawnActionY + spos.y;

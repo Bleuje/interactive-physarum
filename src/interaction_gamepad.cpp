@@ -196,6 +196,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e, int gamepadIndex)
     }
     if (axisType == 5)
     {
+        spawnActivations[gamepadIndex] = value > 0.5;
         curR2Array[gamepadIndex] = value;
     }
 

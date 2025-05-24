@@ -103,6 +103,7 @@ public:
     int numberOfActiveGamepads = 2;
     int singleActiveGamepadIndex = 0;
     int spawnGamepadIndex = 0;
+    std::array<int, 2> spawnActivations;
     std::array<float, 2> inactivityElapsedTime;
 
     ofFbo trailReadBuffer, trailWriteBuffer, fboDisplay;
