@@ -1,8 +1,8 @@
 ## Interactive physarum
 
-Interactive physarum/organic simulations, for an installation with gamepad control, but you can also try it out with mouse and keyboard.
+Interactive physarum/organic simulations, mostly for an installation with gamepad control — but you can also try it with mouse and keyboard. It’s not meant to be scientific, but rather playful and aesthetically pleasing.
 
-It is implemented with openFrameworks and the simulations run on GPU with compute shaders. It runs at 60 fps on a RTX 2060 GPU, with more than 5M particles. See [how to compile and run](https://github.com/Bleuje/interactive-physarum/tree/main?tab=readme-ov-file#how-to-compile-and-run) section to run it yourself.
+See [how to compile and run](https://github.com/Bleuje/interactive-physarum/tree/main?tab=readme-ov-file#how-to-compile-and-run) section to run it yourself.
 
 Please check out 36 Points by Sage Jenson (mxsage) first: https://www.sagejenson.com/36points/
 Press 0-9, A-Z for different Points (different simulation parameters).
@@ -39,6 +39,8 @@ See end of readme for more screenshots.
 (there was a significant update on colors since this video was made)
 
 ### How to compile and run
+
+This project is using [openFrameworks](https://openframeworks.cc/).
 
 [ofxGamepad](https://github.com/Bleuje/ofxGamepad) addon is used (I think you should use this fork because of some fixes, or just to have same version).
 I'm only testing on Linux, and I bet that if there's a problem on other platforms it would be because of this gamepad code.
