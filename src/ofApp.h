@@ -33,8 +33,8 @@ namespace GlobalSettings
     constexpr int MAX_NUMBER_OF_RANDOM_SPAWN = 5;
 };
 
-
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp
+{
 
 public:
     void setup();
@@ -44,9 +44,9 @@ public:
     PointsDataManager pointsDataManager; // loading initial stuff with PointsDataManager::PointsDataManager()
     void paramsUpdate();
 
-    void drawCustomCircle(ofVec2f pos,float R,float r);
+    void drawCustomCircle(ofVec2f pos, float R, float r);
     void drawPad(float col, float alpha);
-    void drawTextBox(const std::string& stringToShow, ofTrueTypeFont* pFont, float col, float alpha);
+    void drawTextBox(const std::string &stringToShow, ofTrueTypeFont *pFont, float col, float alpha);
     std::string roundedString(float value);
     float u = 1; // variable for screen resolution adaptation
 
@@ -64,7 +64,6 @@ public:
     void actionChangeSelectionIndex(int dir);
     void actionSpawnParticles(int spawnType);
 
-
     float actionAreaSizeSigma = 0.3;
     int sigmaCount = 2;
     int sigmaCountModulo = 6;
@@ -79,8 +78,8 @@ public:
     float curTranslationAxis2 = 0;
     float curMoveBiasActionX = 0;
     float curMoveBiasActionY = 0;
-    float curActionX = GlobalSettings::SIMULATION_WIDTH/2;
-    float curActionY = GlobalSettings::SIMULATION_HEIGHT/2;
+    float curActionX = GlobalSettings::SIMULATION_WIDTH / 2;
+    float curActionY = GlobalSettings::SIMULATION_HEIGHT / 2;
     float translationStep = 6.5;
     int currentWaveIndex = 0;
     float curL2 = 0;
@@ -101,14 +100,15 @@ public:
     int randomSpawnNumber = 0;
     void setRandomSpawn();
 
-    ofFbo trailReadBuffer,trailWriteBuffer,fboDisplay;
-    ofShader setterShader,moveShader,depositShader,blurShader;
+    ofFbo trailReadBuffer, trailWriteBuffer, fboDisplay;
+    ofShader setterShader, moveShader, depositShader, blurShader;
 
     std::vector<uint32_t> counter;
     ofBufferObject counterBuffer;
     std::vector<PointSettings> simulationParameters;
     ofBufferObject simulationParametersBuffer;
-    struct Particle{
+    struct Particle
+    {
         glm::vec4 data;
         glm::vec4 data2;
     };
@@ -117,7 +117,7 @@ public:
 
     void keyPressed(int key);
     void keyReleased(int key);
-    void mouseMoved(int x, int y );
+    void mouseMoved(int x, int y);
     void mouseDragged(int x, int y, int button);
     void mousePressed(int x, int y, int button);
     void mouseReleased(int x, int y, int button);
