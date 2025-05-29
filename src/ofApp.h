@@ -4,7 +4,6 @@
 
 #include "ofMain.h"
 #include "ofxGamepadHandler.h"
-#include "utils.h"
 #include "points_management.h"
 
 #define SIMULATION_WIDTH 1280

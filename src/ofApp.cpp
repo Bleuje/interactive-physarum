@@ -36,12 +36,15 @@ void ofApp::setup(){
     blurShader.linkProgram();
 
     particles.resize(NUMBER_OF_PARTICLES * PARTICLE_PARAMETERS_COUNT);
-    float marginx = 3;
-    float marginy = 3;
+
+    auto floatAsUint16 = [](float x) -> uint16_t
+    {
+        return static_cast<uint16_t>(std::round(std::clamp(x, 0.0f, 1.0f) * 65535.0f));
+    };
 
     for (int i = 0; i < NUMBER_OF_PARTICLES; i++) {
-        particles[PARTICLE_PARAMETERS_COUNT * i + 0] = floatAsUint16(ofRandom(marginx, SIMULATION_WIDTH - marginx) / SIMULATION_WIDTH);
-        particles[PARTICLE_PARAMETERS_COUNT * i + 1] = floatAsUint16(ofRandom(marginy, SIMULATION_HEIGHT - marginy) / SIMULATION_HEIGHT);
+        particles[PARTICLE_PARAMETERS_COUNT * i + 0] = floatAsUint16(ofRandom(0, SIMULATION_WIDTH) / SIMULATION_WIDTH);
+        particles[PARTICLE_PARAMETERS_COUNT * i + 1] = floatAsUint16(ofRandom(0, SIMULATION_HEIGHT) / SIMULATION_HEIGHT);
         particles[PARTICLE_PARAMETERS_COUNT * i + 2] = floatAsUint16(ofRandom(1));
         particles[PARTICLE_PARAMETERS_COUNT * i + 3] = floatAsUint16(ofRandom(1));
         particles[PARTICLE_PARAMETERS_COUNT * i + 4] = 0;
