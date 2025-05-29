@@ -4,7 +4,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetFrameRate(FRAME_RATE);
+    ofSetFrameRate(GlobalSettings::FRAME_RATE);
 
     ofEnableAntiAliasing();
 
@@ -16,12 +16,12 @@ void ofApp::setup(){
     gamepadControlsImage.load("images/xboxgamepadcontrols.png");
     informationImage.load("images/interactive-physarum-info.png");
 
-    counter.resize(SIMULATION_WIDTH*SIMULATION_HEIGHT);
+    counter.resize(GlobalSettings::SIMULATION_WIDTH*GlobalSettings::SIMULATION_HEIGHT);
     counterBuffer.allocate(counter, GL_DYNAMIC_DRAW);
 
-    trailReadBuffer.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RG16F);
-    trailWriteBuffer.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RG16F);
-    fboDisplay.allocate(SIMULATION_WIDTH, SIMULATION_HEIGHT, GL_RGBA8);
+    trailReadBuffer.allocate(GlobalSettings::SIMULATION_WIDTH, GlobalSettings::SIMULATION_HEIGHT, GL_RG16F);
+    trailWriteBuffer.allocate(GlobalSettings::SIMULATION_WIDTH, GlobalSettings::SIMULATION_HEIGHT, GL_RG16F);
+    fboDisplay.allocate(GlobalSettings::SIMULATION_WIDTH, GlobalSettings::SIMULATION_HEIGHT, GL_RGBA8);
 
     setterShader.setupShaderFromFile(GL_COMPUTE_SHADER,"shaders/computeshader_setter.glsl");
     setterShader.linkProgram();
@@ -35,20 +35,20 @@ void ofApp::setup(){
     blurShader.setupShaderFromFile(GL_COMPUTE_SHADER,"shaders/computeshader_blur.glsl");
     blurShader.linkProgram();
 
-    particles.resize(NUMBER_OF_PARTICLES * PARTICLE_PARAMETERS_COUNT);
+    particles.resize(GlobalSettings::NUMBER_OF_PARTICLES * GlobalSettings::PARTICLE_PARAMETERS_COUNT);
 
     auto floatAsUint16 = [](float x) -> uint16_t
     {
         return static_cast<uint16_t>(std::round(std::clamp(x, 0.0f, 1.0f) * 65535.0f));
     };
 
-    for (int i = 0; i < NUMBER_OF_PARTICLES; i++) {
-        particles[PARTICLE_PARAMETERS_COUNT * i + 0] = floatAsUint16(ofRandom(0, SIMULATION_WIDTH) / SIMULATION_WIDTH);
-        particles[PARTICLE_PARAMETERS_COUNT * i + 1] = floatAsUint16(ofRandom(0, SIMULATION_HEIGHT) / SIMULATION_HEIGHT);
-        particles[PARTICLE_PARAMETERS_COUNT * i + 2] = floatAsUint16(ofRandom(1));
-        particles[PARTICLE_PARAMETERS_COUNT * i + 3] = floatAsUint16(ofRandom(1));
-        particles[PARTICLE_PARAMETERS_COUNT * i + 4] = 0;
-        particles[PARTICLE_PARAMETERS_COUNT * i + 5] = 0;
+    for (size_t i = 0; i < GlobalSettings::NUMBER_OF_PARTICLES; i++) {
+        particles[GlobalSettings::PARTICLE_PARAMETERS_COUNT * i + 0] = floatAsUint16(ofRandom(0, GlobalSettings::SIMULATION_WIDTH) / GlobalSettings::SIMULATION_WIDTH);
+        particles[GlobalSettings::PARTICLE_PARAMETERS_COUNT * i + 1] = floatAsUint16(ofRandom(0, GlobalSettings::SIMULATION_HEIGHT) / GlobalSettings::SIMULATION_HEIGHT);
+        particles[GlobalSettings::PARTICLE_PARAMETERS_COUNT * i + 2] = floatAsUint16(ofRandom(1));
+        particles[GlobalSettings::PARTICLE_PARAMETERS_COUNT * i + 3] = floatAsUint16(ofRandom(1));
+        particles[GlobalSettings::PARTICLE_PARAMETERS_COUNT * i + 4] = 0;
+        particles[GlobalSettings::PARTICLE_PARAMETERS_COUNT * i + 5] = 0;
     }
     particlesBuffer.allocate(particles,GL_DYNAMIC_DRAW);
 
@@ -62,18 +62,18 @@ void ofApp::setup(){
     counterBuffer.bindBase(GL_SHADER_STORAGE_BUFFER, 3);
     fboDisplay.getTexture().bindAsImage(4,GL_WRITE_ONLY);
 
-    for(int i=0;i<MAX_NUMBER_OF_WAVES;i++)
+    for(int i=0;i<GlobalSettings::MAX_NUMBER_OF_WAVES;i++)
     {
-        waveXarray[i] = SIMULATION_WIDTH/2;
-        waveYarray[i] = SIMULATION_HEIGHT/2;
+        waveXarray[i] = GlobalSettings::SIMULATION_WIDTH/2;
+        waveYarray[i] = GlobalSettings::SIMULATION_HEIGHT/2;
         waveTriggerTimes[i] = -12345;
         waveSavedSigmas[i] = 0.5;
     }
 
-    for(int i=0;i<MAX_NUMBER_OF_RANDOM_SPAWN;i++)
+    for(int i=0;i<GlobalSettings::MAX_NUMBER_OF_RANDOM_SPAWN;i++)
     {
-        randomSpawnXarray[i] = SIMULATION_WIDTH/2;
-        randomSpawnYarray[i] = SIMULATION_HEIGHT/2;
+        randomSpawnXarray[i] = GlobalSettings::SIMULATION_WIDTH/2;
+        randomSpawnYarray[i] = GlobalSettings::SIMULATION_HEIGHT/2;
     }
 
     ////////////////////////////////////////
@@ -119,30 +119,30 @@ void ofApp::update(){
     paramsUpdate();
     updateActionAreaSizeSigma();
 
-    if((getTime() - latestPointSettingsActionTime) >= SETTINGS_DISAPPEAR_DURATION)
+    if((getTime() - latestPointSettingsActionTime) >= GlobalSettings::SETTINGS_DISAPPEAR_DURATION)
     {
         settingsChangeMode = 0;
     }
 
     if(numberOfGamepads == 0)
     {
-        curActionX = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, SIMULATION_WIDTH, true);
-        curActionY = ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, SIMULATION_HEIGHT, true);
+        curActionX = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, GlobalSettings::SIMULATION_WIDTH, true);
+        curActionY = ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, GlobalSettings::SIMULATION_HEIGHT, true);
     }
     else
     {
         curActionX += curTranslationAxis1*translationStep;
         curActionY += curTranslationAxis2*translationStep;
 
-        if(LOOP_PEN_POSITION)
+        if(GlobalSettings::LOOP_PEN_POSITION)
         {
-            curActionX = fmod(curActionX + SIMULATION_WIDTH, SIMULATION_WIDTH);
-            curActionY = fmod(curActionY + SIMULATION_HEIGHT, SIMULATION_HEIGHT);
+            curActionX = fmod(curActionX + GlobalSettings::SIMULATION_WIDTH, GlobalSettings::SIMULATION_WIDTH);
+            curActionY = fmod(curActionY + GlobalSettings::SIMULATION_HEIGHT, GlobalSettings::SIMULATION_HEIGHT);
         }
         else
         {
-            curActionX = ofClamp(curActionX, 0, SIMULATION_WIDTH);
-            curActionY = ofClamp(curActionY, 0, SIMULATION_HEIGHT);
+            curActionX = ofClamp(curActionX, 0, GlobalSettings::SIMULATION_WIDTH);
+            curActionY = ofClamp(curActionY, 0, GlobalSettings::SIMULATION_HEIGHT);
         }
     }
 
@@ -155,7 +155,7 @@ void ofApp::update(){
     setterShader.setUniform1i("width",trailReadBuffer.getWidth());
     setterShader.setUniform1i("height",trailReadBuffer.getHeight());
     setterShader.setUniform1i("value",0);
-    setterShader.dispatchCompute(SIMULATION_WIDTH / 32, SIMULATION_HEIGHT / 32, 1);
+    setterShader.dispatchCompute(GlobalSettings::SIMULATION_WIDTH / GlobalSettings::WORK_GROUP_SIZE, GlobalSettings::SIMULATION_HEIGHT / GlobalSettings::WORK_GROUP_SIZE, 1);
     setterShader.end();
 
 
@@ -184,14 +184,14 @@ void ofApp::update(){
     moveShader.setUniform1f("L2Action",ofMap(curL2,-1,1,0,1.0,true));
 
     moveShader.setUniform1i("spawnParticles", int(particlesSpawn));
-    moveShader.setUniform1f("spawnFraction",SPAWN_FRACTION);
+    moveShader.setUniform1f("spawnFraction",GlobalSettings::SPAWN_FRACTION);
     moveShader.setUniform1i("randomSpawnNumber",randomSpawnNumber);
     moveShader.setUniform1fv("randomSpawnXarray", randomSpawnXarray.data(), randomSpawnXarray.size());
     moveShader.setUniform1fv("randomSpawnYarray", randomSpawnYarray.data(), randomSpawnYarray.size());
 
-    moveShader.setUniform1f("pixelScaleFactor",PIXEL_SCALE_FACTOR);
+    moveShader.setUniform1f("pixelScaleFactor",GlobalSettings::PIXEL_SCALE_FACTOR);
 
-    moveShader.dispatchCompute(particles.size() / (128 * PARTICLE_PARAMETERS_COUNT), 1, 1);
+    moveShader.dispatchCompute(particles.size() / (GlobalSettings::PARTICLE_WORK_GROUPS * GlobalSettings::PARTICLE_PARAMETERS_COUNT), 1, 1);
     moveShader.end();
 
 
@@ -199,10 +199,10 @@ void ofApp::update(){
     depositShader.begin();
     depositShader.setUniform1i("width",trailReadBuffer.getWidth());
     depositShader.setUniform1i("height",trailReadBuffer.getHeight());
-    depositShader.setUniform1f("depositFactor",DEPOSIT_FACTOR);
+    depositShader.setUniform1f("depositFactor",GlobalSettings::DEPOSIT_FACTOR);
     depositShader.setUniform1i("colorModeType",colorModeType);
-    depositShader.setUniform1i("numberOfColorModes",NUMBER_OF_COLOR_MODES);
-    depositShader.dispatchCompute(SIMULATION_WIDTH / 32, SIMULATION_HEIGHT / 32, 1);
+    depositShader.setUniform1i("numberOfColorModes",GlobalSettings::NUMBER_OF_COLOR_MODES);
+    depositShader.dispatchCompute(GlobalSettings::SIMULATION_WIDTH / GlobalSettings::WORK_GROUP_SIZE, GlobalSettings::SIMULATION_HEIGHT / GlobalSettings::WORK_GROUP_SIZE, 1);
     depositShader.end();
 
     trailReadBuffer.getTexture().bindAsImage(1,GL_WRITE_ONLY);
@@ -212,9 +212,9 @@ void ofApp::update(){
     blurShader.setUniform1i("width",trailReadBuffer.getWidth());
     blurShader.setUniform1i("height",trailReadBuffer.getHeight());
     blurShader.setUniform1f("PI",PI);
-    blurShader.setUniform1f("decayFactor",DECAY_FACTOR);
+    blurShader.setUniform1f("decayFactor",GlobalSettings::DECAY_FACTOR);
     blurShader.setUniform1f("time",time);
-    blurShader.dispatchCompute(trailReadBuffer.getWidth()/32,trailReadBuffer.getHeight()/32,1);
+    blurShader.dispatchCompute(trailReadBuffer.getWidth()/GlobalSettings::WORK_GROUP_SIZE,trailReadBuffer.getHeight()/GlobalSettings::WORK_GROUP_SIZE,1);
     blurShader.end();
 
 
@@ -249,8 +249,8 @@ void ofApp::draw(){
 
         float R = currentActionAreaSizeSigma*600*(1.0 + 0.08*sin(0.4f*time2));
 
-        float cx = ofMap(curActionX,0,SIMULATION_WIDTH,0,ofGetWidth());
-        float cy = ofMap(curActionY,0,SIMULATION_HEIGHT,0,ofGetHeight());
+        float cx = ofMap(curActionX,0,GlobalSettings::SIMULATION_WIDTH,0,ofGetWidth());
+        float cy = ofMap(curActionY,0,GlobalSettings::SIMULATION_HEIGHT,0,ofGetHeight());
 
         ofSetCircleResolution(100);
 
@@ -301,7 +301,7 @@ void ofApp::draw(){
 
         ofTranslate(0,25*u);
 
-        for(int i=0;i<SETTINGS_SIZE;i++)
+        for(int i=0;i<GlobalSettings::SETTINGS_SIZE;i++)
         {
             ofTranslate(0,44*u);
 
@@ -389,14 +389,14 @@ void ofApp::draw(){
 void ofApp::updateActionAreaSizeSigma()
 {
     float target = ofMap(sigmaCount,0,sigmaCountModulo,0.15,maxActionSize);
-    float lerper = pow(ofMap(getTime() - latestSigmaChangeTime, 0, ACTION_SIGMA_CHANGE_DURATION, 0, 1, true),1.7);
+    float lerper = pow(ofMap(getTime() - latestSigmaChangeTime, 0, GlobalSettings::ACTION_SIGMA_CHANGE_DURATION, 0, 1, true),1.7);
     currentActionAreaSizeSigma = ofLerp(currentActionAreaSizeSigma, target, lerper);
 }
 
 void ofApp::setRandomSpawn()
 {
     //randomSpawnNumber = floor(ofRandom(MAX_NUMBER_OF_RANDOM_SPAWN/2,MAX_NUMBER_OF_RANDOM_SPAWN));
-    randomSpawnNumber = MAX_NUMBER_OF_RANDOM_SPAWN;
+    randomSpawnNumber = GlobalSettings::MAX_NUMBER_OF_RANDOM_SPAWN;
 
     for(int i=0;i<randomSpawnNumber;i++)
     {
@@ -411,17 +411,17 @@ void ofApp::setRandomSpawn()
 
 float ofApp::getTime()
 {
-    return 1.0*ofGetFrameNum()/FRAME_RATE;
+    return 1.0*ofGetFrameNum()/GlobalSettings::FRAME_RATE;
 }
 
 float ofApp::currentTransitionProgress()
 {
-    return ofMap(getTime() - transitionTriggerTime, 0, TRANSITION_DURATION, 0., 1., true);
+    return ofMap(getTime() - transitionTriggerTime, 0, GlobalSettings::TRANSITION_DURATION, 0., 1., true);
 }
 
 bool ofApp::activeTransition()
 {
-    return (getTime() - transitionTriggerTime) <= TRANSITION_DURATION;
+    return (getTime() - transitionTriggerTime) <= GlobalSettings::TRANSITION_DURATION;
 }
 
 

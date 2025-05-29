@@ -94,7 +94,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e)
             pointsDataManager.changeSelectionIndex(-1);
         else
         {
-            settingsChangeIndex = (settingsChangeIndex + 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
+            settingsChangeIndex = (settingsChangeIndex + 1 + GlobalSettings::SETTINGS_SIZE) % GlobalSettings::SETTINGS_SIZE;
             latestPointSettingsActionTime = getTime();
         }
     }
@@ -104,7 +104,7 @@ void ofApp::axisChanged(ofxGamepadAxisEvent &e)
             pointsDataManager.changeSelectionIndex(1);
         else
         {
-            settingsChangeIndex = (settingsChangeIndex - 1 + SETTINGS_SIZE) % SETTINGS_SIZE;
+            settingsChangeIndex = (settingsChangeIndex - 1 + GlobalSettings::SETTINGS_SIZE) % GlobalSettings::SETTINGS_SIZE;
             latestPointSettingsActionTime = getTime();
         }
     }

@@ -18,7 +18,7 @@ std::string ofApp::roundedString(float value)
 {
     std::stringstream stream;
     // Set fixed-point notation and round to three decimal places
-    stream << std::fixed << std::setprecision(DIGITS_PRECISION) << value;
+    stream << std::fixed << std::setprecision(GlobalSettings::DIGITS_PRECISION) << value;
     std::string result = stream.str();
     return result;
 }
@@ -31,9 +31,9 @@ void ofApp::drawCustomCircle(ofVec2f pos, float R, float r)
     R *= u;
 
     float alphaFactor = 1.0;
-    if (ACTIVATE_PEN_FADE)
+    if (GlobalSettings::ACTIVATE_PEN_FADE)
     {
-        alphaFactor = ofMap(getTime() - penMoveLatestTime, 0, PEN_FADE_DURATION, 1, 0, true);
+        alphaFactor = ofMap(getTime() - penMoveLatestTime, 0, GlobalSettings::PEN_FADE_DURATION, 1, 0, true);
     }
 
     for (int i = 0; i < mCircle; i++)

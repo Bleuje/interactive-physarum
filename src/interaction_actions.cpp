@@ -30,7 +30,7 @@ void ofApp::actionRandomParams()
 
 void ofApp::actionChangeColorMode()
 {
-    colorModeType = (colorModeType + 1) % NUMBER_OF_COLOR_MODES;
+    colorModeType = (colorModeType + 1) % GlobalSettings::NUMBER_OF_COLOR_MODES;
 }
 
 void ofApp::actionTriggerWave()
@@ -40,7 +40,7 @@ void ofApp::actionTriggerWave()
     waveTriggerTimes[currentWaveIndex] = getTime();
     waveSavedSigmas[currentWaveIndex] = currentActionAreaSizeSigma;
 
-    currentWaveIndex = (currentWaveIndex + 1) % MAX_NUMBER_OF_WAVES;
+    currentWaveIndex = (currentWaveIndex + 1) % GlobalSettings::MAX_NUMBER_OF_WAVES;
 
     waveActionAreaSizeSigma = currentActionAreaSizeSigma;
 }

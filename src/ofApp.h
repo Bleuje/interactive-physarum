@@ -6,27 +6,32 @@
 #include "ofxGamepadHandler.h"
 #include "points_management.h"
 
-#define SIMULATION_WIDTH 1280
-#define SIMULATION_HEIGHT 736
-#define NUMBER_OF_PARTICLES (512*512*22)
-#define PARTICLE_PARAMETERS_COUNT 6
-#define DECAY_FACTOR 0.75
-#define DEPOSIT_FACTOR 0.003
-#define PIXEL_SCALE_FACTOR 250.0
+namespace GlobalSettings
+{
+    constexpr int SIMULATION_WIDTH = 1280;
+    constexpr int SIMULATION_HEIGHT = 736;
+    constexpr size_t NUMBER_OF_PARTICLES = 512 * 512 * 22;
+    constexpr int PARTICLE_PARAMETERS_COUNT = 6;
+    constexpr int WORK_GROUP_SIZE = 32;
+    constexpr int PARTICLE_WORK_GROUPS = 128;
+    constexpr float DECAY_FACTOR = 0.75f;
+    constexpr float DEPOSIT_FACTOR = 0.003f;
+    constexpr float PIXEL_SCALE_FACTOR = 250.0f;
 
-#define FRAME_RATE 60
-#define NUMBER_OF_COLOR_MODES 10
-#define MAX_NUMBER_OF_WAVES 5
-#define TRANSITION_DURATION 0.5
-#define PEN_FADE_DURATION 1.0
-#define SPAWN_FRACTION 0.1
-#define ACTIVATE_PEN_FADE false
-#define LOOP_PEN_POSITION false
-#define SETTINGS_SIZE 15
-#define SETTINGS_DISAPPEAR_DURATION 10
-#define ACTION_SIGMA_CHANGE_DURATION 0.26
-#define DIGITS_PRECISION 3
-#define MAX_NUMBER_OF_RANDOM_SPAWN 5
+    constexpr int FRAME_RATE = 60;
+    constexpr int NUMBER_OF_COLOR_MODES = 10;
+    constexpr int MAX_NUMBER_OF_WAVES = 5;
+    constexpr float TRANSITION_DURATION = 0.5f;
+    constexpr float PEN_FADE_DURATION = 1.0f;
+    constexpr float SPAWN_FRACTION = 0.1f;
+    constexpr bool ACTIVATE_PEN_FADE = false;
+    constexpr bool LOOP_PEN_POSITION = false;
+    constexpr int SETTINGS_SIZE = 15;
+    constexpr float SETTINGS_DISAPPEAR_DURATION = 10.0f;
+    constexpr float ACTION_SIGMA_CHANGE_DURATION = 0.26f;
+    constexpr int DIGITS_PRECISION = 3;
+    constexpr int MAX_NUMBER_OF_RANDOM_SPAWN = 5;
+};
 
 
 class ofApp : public ofBaseApp{
@@ -74,16 +79,16 @@ public:
     float curTranslationAxis2 = 0;
     float curMoveBiasActionX = 0;
     float curMoveBiasActionY = 0;
-    float curActionX = SIMULATION_WIDTH/2;
-    float curActionY = SIMULATION_HEIGHT/2;
+    float curActionX = GlobalSettings::SIMULATION_WIDTH/2;
+    float curActionY = GlobalSettings::SIMULATION_HEIGHT/2;
     float translationStep = 6.5;
     int currentWaveIndex = 0;
     float curL2 = 0;
     float curR2 = 0;
-    std::array<float, MAX_NUMBER_OF_WAVES> waveXarray = {};
-    std::array<float, MAX_NUMBER_OF_WAVES> waveYarray = {};
-    std::array<float, MAX_NUMBER_OF_WAVES> waveTriggerTimes = {};
-    std::array<float, MAX_NUMBER_OF_WAVES> waveSavedSigmas = {};
+    std::array<float, GlobalSettings::MAX_NUMBER_OF_WAVES> waveXarray = {};
+    std::array<float, GlobalSettings::MAX_NUMBER_OF_WAVES> waveYarray = {};
+    std::array<float, GlobalSettings::MAX_NUMBER_OF_WAVES> waveTriggerTimes = {};
+    std::array<float, GlobalSettings::MAX_NUMBER_OF_WAVES> waveSavedSigmas = {};
     float transitionTriggerTime = -12345;
     float waveActionAreaSizeSigma = 0.001;
     float penMoveLatestTime = -12345;
@@ -91,8 +96,8 @@ public:
     int settingsChangeMode = 0;
     int settingsChangeIndex = 0;
     float latestPointSettingsActionTime = -12345;
-    std::array<float, MAX_NUMBER_OF_RANDOM_SPAWN> randomSpawnXarray = {};
-    std::array<float, MAX_NUMBER_OF_RANDOM_SPAWN> randomSpawnYarray = {};
+    std::array<float, GlobalSettings::MAX_NUMBER_OF_RANDOM_SPAWN> randomSpawnXarray = {};
+    std::array<float, GlobalSettings::MAX_NUMBER_OF_RANDOM_SPAWN> randomSpawnYarray = {};
     int randomSpawnNumber = 0;
     void setRandomSpawn();
 
