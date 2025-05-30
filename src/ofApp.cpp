@@ -211,9 +211,7 @@ void ofApp::update()
     diffusionShader.begin();
     diffusionShader.setUniform1i("width", trailReadBuffer.getWidth());
     diffusionShader.setUniform1i("height", trailReadBuffer.getHeight());
-    diffusionShader.setUniform1f("PI", PI);
     diffusionShader.setUniform1f("decayFactor", GlobalSettings::DECAY_FACTOR);
-    diffusionShader.setUniform1f("time", time);
     diffusionShader.dispatchCompute(trailReadBuffer.getWidth() / GlobalSettings::WORK_GROUP_SIZE, trailReadBuffer.getHeight() / GlobalSettings::WORK_GROUP_SIZE, 1);
     diffusionShader.end();
 

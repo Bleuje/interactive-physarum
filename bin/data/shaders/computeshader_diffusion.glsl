@@ -3,8 +3,6 @@
 uniform int width;
 uniform int height;
 uniform float decayFactor;
-uniform float PI;
-uniform float time;
 
 layout(rg16f,binding=0) uniform readonly image2D trailRead;
 layout(rg16f,binding=1) uniform writeonly image2D trailWrite;
