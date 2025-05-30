@@ -8,15 +8,15 @@
 
 namespace GlobalSettings
 {
-    constexpr int SIMULATION_WIDTH = 1280;
-    constexpr int SIMULATION_HEIGHT = 736;
-    constexpr size_t NUMBER_OF_PARTICLES = 512 * 512 * 22;
+    constexpr int SIMULATION_WIDTH = 1920;
+    constexpr int SIMULATION_HEIGHT = 1088;
+    constexpr size_t NUMBER_OF_PARTICLES = 512 * 512 * 50;
     constexpr int PARTICLE_PARAMETERS_COUNT = 6;
     constexpr int WORK_GROUP_SIZE = 32;
     constexpr int PARTICLE_WORK_GROUPS = 128;
     constexpr float DECAY_FACTOR = 0.75f;
     constexpr float DEPOSIT_FACTOR = 0.003f;
-    constexpr float PIXEL_SCALE_FACTOR = 250.0f;
+    constexpr float PIXEL_SCALE_FACTOR = 300.0f;
 
     constexpr int FRAME_RATE = 60;
     constexpr int NUMBER_OF_COLOR_MODES = 10;
