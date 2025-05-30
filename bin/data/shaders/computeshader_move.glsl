@@ -331,37 +331,37 @@ void main() {
         moveBias += moveBiasFactor2 * vec2(moveBiasActionXArray[1], moveBiasActionYArray[1]);
     }
 
-	// position update of the classic physarum algorithm, but with a new move bias for fun interaction
+    // position update of the classic physarum algorithm, but with a new move bias for fun interaction
     float classicNewPositionX = particlePos.x + moveDistance * cos(newHeading) + moveBias.x;
     float classicNewPositionY = particlePos.y + moveDistance * sin(newHeading) + moveBias.y;
 
-	//float L2Action = 0.5*(L2ActionArray[0] + L2ActionArray[1] + 2.0);
+    // float L2Action = 0.5*(L2ActionArray[0] + L2ActionArray[1] + 2.0);
     float L2Action;
     if(numberOfActiveGamepads == 2)
         L2Action = (lerper * L2ActionArray[0] + (1 - lerper) * L2ActionArray[1] + 1.0) / 2.0;
     else {
         L2Action = (L2ActionArray[singleActiveGamepadIndex] + 1.0) / 2.0;
     }
-	// inertia experimental stuff... actually it's a lot weirder than just modifying speed instead of position
-	// probably the weirdest stuff in the code of this project
+    // inertia experimental stuff... actually it's a lot weirder than just modifying speed instead of position
+    // probably the weirdest stuff in the code of this project
     velocity *= 0.98;
     float vf = 1.0;
     float velocityBias = 0.2 * L2Action;
     float vx = velocity.x + vf * cos(newHeading) + velocityBias * moveBias.x;
     float vy = velocity.y + vf * sin(newHeading) + velocityBias * moveBias.y;
 
-	//float dt = 0.05*moveDistance;
+    // float dt = 0.05*moveDistance;
     float dt = 0.07 * pow(moveDistance, 1.4); // really weird thing, I thought this looked satisfying
 
     float inertiaNewPositionX = particlePos.x + dt * vx + moveBias.x;
     float inertiaNewPositionY = particlePos.y + dt * vy + moveBias.y;
 
     float moveStyleLerper = 0.6 * L2Action + 0.8 * waveSum; // intensity of use of inertia
-	// the new position of the particle:
+    // the new position of the particle:
     float px = mix(classicNewPositionX, inertiaNewPositionX, moveStyleLerper);
     float py = mix(classicNewPositionY, inertiaNewPositionY, moveStyleLerper);
 
-	// possibility of spawn to other position if spawning action is triggered
+    // possibility of spawn to other position if spawning action is triggered
     if(spawnParticles >= 1) {
         float spawnActionX = actionX;
         float spawnActionY = actionY;
@@ -401,23 +401,23 @@ void main() {
         }
     }
 
-	// just position loop to keep pixel positions of the simulation canvas
+    // just position loop to keep pixel positions of the simulation canvas
     vec2 nextPos = vec2(mod(px + float(width), float(width)), mod(py + float(height), float(height)));
 
     uint depositAmount = uint(1); // all particles add 1 on pixel count, could be more complex one day maybe
-	// atomicAdd for increasing counter at pixel, in parallel computation
+    // atomicAdd for increasing counter at pixel, in parallel computation
     atomicAdd(particlesCounter[int(round(nextPos.x)) * height + int(round(nextPos.y))], depositAmount);
 
-	///////////////////////////////////////////////////////////////////////////////////
-	// Technique/formula from Sage Jenson (mxsage)
-	// particles are regularly respawning, their progression is stored in particle data
+    ///////////////////////////////////////////////////////////////////////////////////
+    // Technique/formula from Sage Jenson (mxsage)
+    // particles are regularly respawning, their progression is stored in particle data
     const float reinitSegment = 0.0010; // respawn every 1/reinitSegment iterations
     float curA = currAHeading.x;
     if(curA < reinitSegment) {
         nextPos = randomPosFromParticle(particlePos);
     }
     float nextA = fract(curA + reinitSegment);
-	///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
 
     vec2 nextPosUV = mod(nextPos, vec2(width, height)) / vec2(width, height);
     float newHeadingNorm = mod(newHeading, 2.0 * PI) / (2.0 * PI);
