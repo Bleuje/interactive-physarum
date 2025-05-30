@@ -77,7 +77,7 @@ The compute shader code of this implementation is in bin/data/shaders/
 
 **computeshader_deposit.glsl** : Add trail from particle counter on pixel. Also gives the displayed image, from trail image and count on pixel.
 
-**computeshader_blur.glsl** : Blur step on trail map (diffusion), and applying the decay factor.
+**computeshader_diffusion.glsl** : Blur step on trail map (diffusion), and applying the decay factor.
 
 **computeshader_setter.glsl** : Just used to reset the counters of the pixels to 0 at each iteration.
 

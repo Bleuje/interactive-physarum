@@ -101,7 +101,7 @@ public:
     void setRandomSpawn();
 
     ofFbo trailReadBuffer, trailWriteBuffer, fboDisplay;
-    ofShader setterShader, moveShader, depositShader, blurShader;
+    ofShader setterShader, moveShader, depositShader, diffusionShader;
 
     std::vector<uint32_t> counter;
     ofBufferObject counterBuffer;

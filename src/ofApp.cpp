@@ -33,8 +33,8 @@ void ofApp::setup()
     moveShader.setupShaderFromFile(GL_COMPUTE_SHADER, "shaders/computeshader_move.glsl");
     moveShader.linkProgram();
 
-    blurShader.setupShaderFromFile(GL_COMPUTE_SHADER, "shaders/computeshader_blur.glsl");
-    blurShader.linkProgram();
+    diffusionShader.setupShaderFromFile(GL_COMPUTE_SHADER, "shaders/computeshader_diffusion.glsl");
+    diffusionShader.linkProgram();
 
     particles.resize(GlobalSettings::NUMBER_OF_PARTICLES * GlobalSettings::PARTICLE_PARAMETERS_COUNT);
 
@@ -208,14 +208,14 @@ void ofApp::update()
     trailReadBuffer.getTexture().bindAsImage(1, GL_WRITE_ONLY);
     trailWriteBuffer.getTexture().bindAsImage(0, GL_READ_ONLY);
 
-    blurShader.begin();
-    blurShader.setUniform1i("width", trailReadBuffer.getWidth());
-    blurShader.setUniform1i("height", trailReadBuffer.getHeight());
-    blurShader.setUniform1f("PI", PI);
-    blurShader.setUniform1f("decayFactor", GlobalSettings::DECAY_FACTOR);
-    blurShader.setUniform1f("time", time);
-    blurShader.dispatchCompute(trailReadBuffer.getWidth() / GlobalSettings::WORK_GROUP_SIZE, trailReadBuffer.getHeight() / GlobalSettings::WORK_GROUP_SIZE, 1);
-    blurShader.end();
+    diffusionShader.begin();
+    diffusionShader.setUniform1i("width", trailReadBuffer.getWidth());
+    diffusionShader.setUniform1i("height", trailReadBuffer.getHeight());
+    diffusionShader.setUniform1f("PI", PI);
+    diffusionShader.setUniform1f("decayFactor", GlobalSettings::DECAY_FACTOR);
+    diffusionShader.setUniform1f("time", time);
+    diffusionShader.dispatchCompute(trailReadBuffer.getWidth() / GlobalSettings::WORK_GROUP_SIZE, trailReadBuffer.getHeight() / GlobalSettings::WORK_GROUP_SIZE, 1);
+    diffusionShader.end();
 
     if (particlesSpawn)
         particlesSpawn = 0;
