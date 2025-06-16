@@ -1,6 +1,6 @@
 ## Interactive physarum
 
-Interactive physarum/organic simulations, mostly for an installation with gamepad control — but you can also try it with mouse and keyboard. It’s not meant to be scientific, but rather playful and aesthetically pleasing.
+Interactive physarum/organic simulations, mostly for an installation with gamepad control. But you can also try it with mouse and keyboard. It’s not meant to be scientific, but rather playful and aesthetically pleasing.
 
 See [how to compile and run](https://github.com/Bleuje/interactive-physarum/tree/main?tab=readme-ov-file#how-to-compile-and-run) section to run it yourself.
 
