@@ -271,6 +271,7 @@ void ofApp::update()
 
     moveShader.setUniform1f("mouseXchange", 1.0 * ofGetMouseX() / ofGetWidth());
     moveShader.setUniform1fv("L2ActionArray", curL2Array.data(), curL2Array.size());
+    moveShader.setUniform1fv("R2ActionArray", curR2Array.data(), curR2Array.size());
 
     moveShader.setUniform1i("spawnParticles", int(particlesSpawn));
     moveShader.setUniform1f("spawnFraction", GlobalSettings::SPAWN_FRACTION);
@@ -320,6 +321,8 @@ void ofApp::draw()
     float R2action = ofMap(curR2Array[0] + curR2Array[1] + 2.0, 0, 1.3, 0, 1, true);
     if (numberOfGamepads == 0)
         R2action = 0;
+
+    R2action = 0; // for install-3
 
     ofPushMatrix();
 
@@ -487,12 +490,12 @@ void ofApp::draw()
     informationImage.draw(0, 0);
     ofPopMatrix();
 
-    ofPushMatrix();
-    ofTranslate(1250 * u, 25 * u - 50 * u * infoProgress);
-    ofScale(0.7 * u);
-    std::string pressB = "Gâchette de droite pour afficher informations et commandes.";
-    drawTextBox(pressB, &myFontBold, col, 110);
-    ofPopMatrix();
+    // ofPushMatrix();
+    // ofTranslate(1250 * u, 25 * u - 50 * u * infoProgress);
+    // ofScale(0.7 * u);
+    // std::string pressB = "Gâchette de droite pour afficher informations et commandes.";
+    // drawTextBox(pressB, &myFontBold, col, 110);
+    // ofPopMatrix();
 
     ofPopMatrix();
 }

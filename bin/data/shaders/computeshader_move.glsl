@@ -32,6 +32,7 @@ uniform float waveSavedSigmas[MAX_NUMBER_OF_WAVES];
 
 uniform float mouseXchange;
 uniform float L2ActionArray[2];
+uniform float R2ActionArray[2];
 
 uniform int spawnParticles;
 uniform float spawnFraction;
@@ -336,27 +337,31 @@ void main() {
     float classicNewPositionY = particlePos.y + moveDistance * sin(newHeading) + moveBias.y;
 
     // float L2Action = 0.5*(L2ActionArray[0] + L2ActionArray[1] + 2.0);
-    float L2Action;
-    if(numberOfActiveGamepads == 2)
+    float L2Action,R2Action;
+    if(numberOfActiveGamepads == 2) {
         L2Action = (lerper * L2ActionArray[0] + (1 - lerper) * L2ActionArray[1] + 1.0) / 2.0;
-    else {
+        R2Action = (lerper * R2ActionArray[0] + (1 - lerper) * R2ActionArray[1] + 1.0) / 2.0;
+    } else {
         L2Action = (L2ActionArray[singleActiveGamepadIndex] + 1.0) / 2.0;
+        R2Action = (R2ActionArray[singleActiveGamepadIndex] + 1.0) / 2.0;
     }
+
     // inertia experimental stuff... actually it's a lot weirder than just modifying speed instead of position
     // probably the weirdest stuff in the code of this project
     velocity *= 0.98;
     float vf = 1.0;
-    float velocityBias = 0.2 * L2Action;
+    float velocityBias = 0.2 * (L2Action + R2Action);
     float vx = velocity.x + vf * cos(newHeading) + velocityBias * moveBias.x;
     float vy = velocity.y + vf * sin(newHeading) + velocityBias * moveBias.y;
 
-	// float dt = 0.05*moveDistance;
-    float dt = 0.07 * pow(moveDistance, 1.4); // really weird thing, I thought this looked satisfying
+    //float dt = 0.05*moveDistance;
+    float dt = L2Action * 0.07 * pow(moveDistance, 1.4); // really weird thing, I thought this looked satisfying
+    dt += R2Action * 0.14 * sin(moveDistance*3.0 + 0.75*time - 4.0*length((normalizedPosition-vec2(0.5))*vec2(width/float(height),1.0)));
 
     float inertiaNewPositionX = particlePos.x + dt * vx + moveBias.x;
     float inertiaNewPositionY = particlePos.y + dt * vy + moveBias.y;
 
-    float moveStyleLerper = 0.6 * L2Action + 0.8 * waveSum; // intensity of use of inertia
+    float moveStyleLerper = 0.8 * waveSum + 0.6 * max(R2Action,L2Action); // intensity of use of inertia
     // the new position of the particle:
     float px = mix(classicNewPositionX, inertiaNewPositionX, moveStyleLerper);
     float py = mix(classicNewPositionY, inertiaNewPositionY, moveStyleLerper);
